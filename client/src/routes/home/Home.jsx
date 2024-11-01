@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./Home.css";
+import "./home.css";
 import Card from "../../components/card/Card";
 
 const Home = () => {
