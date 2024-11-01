@@ -1,0 +1,16 @@
+.profilePic{
+    border-radius: 50%;
+    height: 70px;
+    width: 70px;
+    font-size: 40px;
+    font-weight: 600;
+    color: var(--neutral-800);
+}
+
+.profile-content{
+    cursor: pointer;
+}
+
+.profile{
+    height: 100vh;
+}

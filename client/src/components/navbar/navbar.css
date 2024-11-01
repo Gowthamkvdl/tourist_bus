@@ -1,0 +1,34 @@
+/* Default: fixed at the bottom (for mobile devices) */
+.navbar {
+  position: fixed !important;
+  bottom: 0 !important;
+  z-index: 10;
+  width: 100%;
+  height: 60px;
+}
+
+/* Media query for larger screens: fixed at the top */
+@media (min-width: 768px) {
+  .navbar {
+    top: 0 !important;
+    bottom: auto; /* Remove bottom fixation */
+    z-index: 10;
+  }
+}
+
+.link{
+  text-decoration: none !important;
+}
+
+.collapseClass{
+  background-color: #1aa7ffde !important;
+}
+.nav-link.active{
+  border-bottom: 2px solid black !important;
+  margin-bottom: 4px;
+}
+
+
+.mt-80{ 
+    margin-top: 80px !important;  
+}

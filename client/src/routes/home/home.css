@@ -1,0 +1,32 @@
+body {
+  background: linear-gradient(
+    to bottom,
+    var(--primary-300) 0%,
+    var(--primary-700) 100%
+  ) !important;
+  background-repeat: no-repeat;
+}
+
+.selection {
+  background-color: rgba(255, 255, 255, 0.575);
+  cursor: pointer;
+}
+
+.driverSelected {
+  transition-duration: .20s;
+}
+
+
+select.form-select {
+  border-top: 0;
+  border-left: 0;
+  border-right: 0;
+  border-bottom: 0;
+  font-size: 1.25rem; /* 20px */
+  font-weight: 500; /* Semi-bold */
+}
+.others{
+  border-top-left-radius: 30px;
+  border-top-right-radius: 30px;
+}
+

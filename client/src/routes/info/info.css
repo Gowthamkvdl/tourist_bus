@@ -1,0 +1,18 @@
+
+.carousel img{
+    border-radius: 10px;
+}
+
+.photo{
+    border-radius: 50% !important; 
+    height: 40px;
+    width: 40px;
+}
+
+.btn-transperant:focus{
+    border: none !important; 
+}
+
+.btn-transperant{
+    border: none !important;
+}
