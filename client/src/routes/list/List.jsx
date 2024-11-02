@@ -139,7 +139,7 @@ const List = () => {
           <button
             data-bs-toggle="modal"
             data-bs-target="#exampleModal"
-            className="btn d-flex gap-1 btn-outline-dark rounded-5"
+            className="btn d-flex gap-1 btn-outline-dark rounded-5 btn-sm"
           >
             <span class="material-symbols-outlined">tune</span>
             <span>Filter & Sort</span>
