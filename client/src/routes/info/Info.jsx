@@ -296,7 +296,7 @@ const Info = () => {
               <div className="reviewBox d-flex mt-3">
                 <div className="photoDiv d-flex">
                   <div className="d-flex justify-centent-center align-items-center text-center photo primary-600 fs-2 text-white">
-                    <span className="mx-auto mb-1">G</span>
+                    <span className="mx-auto">G</span>
                   </div>
                 </div>
                 <div className="nameAndReview ms-2">
@@ -311,7 +311,7 @@ const Info = () => {
               <div className="reviewBox d-flex mt-3">
                 <div className="photoDiv d-flex">
                   <div className="d-flex justify-centent-center align-items-center text-center photo primary-600 fs-2 text-white">
-                    <span className="mx-auto mb-1">S</span>
+                    <span className="mx-auto ">S</span>
                   </div>
                 </div>
                 <div className="nameAndReview ms-2">
