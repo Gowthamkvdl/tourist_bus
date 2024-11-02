@@ -196,15 +196,15 @@ html {
   }
 
   .subtitle-text {
-    font-size: 1.125rem; /* Adjusted for mobile */
+    font-size: 1.10rem; /* Adjusted for mobile */
   }
 
   .body-text {
-    font-size: 0.9rem; /* Adjusted for mobile */
+    font-size: 0.8rem; /* Adjusted for mobile */
   }
 
   .small-text {
-    font-size: 0.75rem; /* Adjusted for mobile */
+    font-size: 0.65rem; /* Adjusted for mobile */
   }
 }
 

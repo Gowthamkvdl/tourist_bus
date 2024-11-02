@@ -54,7 +54,7 @@ const Card = () => {
             <div className="btn primary-600 rounded-5 m-auto">
               <Link to={"/info/sghe"}>
                 <div className="d-flex align-items-center">
-                  <span className="fw-semibold text-white">More Info</span>
+                  <span className="fw-semibold text-white ">More Info</span>
                   <span class="material-symbols-outlined text-white">
                     chevron_right
                   </span>
