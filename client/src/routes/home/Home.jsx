@@ -41,7 +41,7 @@ const Home = () => {
         </div>
       </div>
       <div className="input mt-4 ">
-        <div className=" box-shadow mx-3 mx-md-5 py-2 d-flex align-items-center justify-content-between bg-white rounded-5">
+        <div className=" box-shadow mx-md-5 py-2 d-flex align-items-center justify-content-between bg-white rounded-5">
           <div className="locationIcon ms-2 p-1">
             <span class="material-symbols-outlined fs-1 bg-secondary rounded-5 text-white p-2">
               location_on
