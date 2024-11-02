@@ -72,20 +72,20 @@ const Info = () => {
           </button>
         </div>
 
-        <div className="specs d-flex gap-3 justify-content-center mt-2 align-items-center">
-          <div className="seats fs-5 d-flex justify-content-center  align-items-center">
+        <div className="specs d-flex gap-3  justify-content-center mt-2 align-items-center">
+          <div className="seats fs-6 d-flex justify-content-center  align-items-center">
             <span class="material-symbols-outlined opacity-75">
               airline_seat_recline_extra
             </span>
             <span>50</span>
           </div>
-          <div className="mileage d-flex fs-5 justify-content-center  align-items-center">
+          <div className="mileage d-flex fs-6 justify-content-center  align-items-center">
             <span class="material-symbols-outlined opacity-75">
               local_gas_station
             </span>
             <span>10km/L</span>
           </div>
-          <div className="ac d-flex fs-5 justify-content-center  align-items-center">
+          <div className="ac d-flex fs-6 justify-content-center  align-items-center">
             <span class="material-symbols-outlined opacity-75">ac_unit</span>
             <span>AC</span>
           </div>
@@ -280,7 +280,7 @@ const Info = () => {
           <hr />
           <div className="reviews">
             <div className="headingAndStars d-flex justify-content-between">
-              <div className="subtitle-text">Reviews</div>
+              <div className="subtitle-text opacity-75">Reviews</div>
               <div className="stars d-flex align-items-center">
                 <DisplayStarRating
                   rating={3}
