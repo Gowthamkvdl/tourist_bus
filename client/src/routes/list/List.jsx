@@ -7,8 +7,8 @@ const List = () => {
   const [sortByPrice, setSortByPrice] = useState("");
   const [sortByCapacity, setSortByCapacity] = useState("");
   const [ac, setAc] = useState({
-    nonac:false,
-    ac:false
+    nonac: false,
+    ac: false,
   });
   const [nonAc, setNonAc] = useState(false);
   const [busTypes, setBusTypes] = useState({
@@ -43,7 +43,6 @@ const List = () => {
   const handleAmenitiesChange = (event) => {
     const { name, checked } = event.target;
     setAmenities((prev) => ({ ...prev, [name]: checked }));
-
   };
 
   const handleACChange = (event) => {
@@ -57,37 +56,37 @@ const List = () => {
   };
 
   const handleReset = () => {
-     setDriver(true);
-     setSortByPrice("");
-     setSortByCapacity("");
-     setAc({ nonac: false, ac: false });
-     setNonAc(false);
-     setBusTypes({
-       luxury: false,
-       semiLuxury: false,
-       standard: false,
-       miniBus: false,
-       sleeper: false,
-       seater: false,
-     });
-     setAmenities({
-       wifi: false,
-       chargingPoints: false,
-       recliningSeats: false,
-       tvEntertainment: false,
-       restroom: false,
-     });
-     setRatings({
-       rating4: false,
-       rating3: false,
-     });
-  }
+    setDriver(true);
+    setSortByPrice("");
+    setSortByCapacity("");
+    setAc({ nonac: false, ac: false });
+    setNonAc(false);
+    setBusTypes({
+      luxury: false,
+      semiLuxury: false,
+      standard: false,
+      miniBus: false,
+      sleeper: false,
+      seater: false,
+    });
+    setAmenities({
+      wifi: false,
+      chargingPoints: false,
+      recliningSeats: false,
+      tvEntertainment: false,
+      restroom: false,
+    });
+    setRatings({
+      rating4: false,
+      rating3: false,
+    });
+  };
 
-  console.log(amenities)
-  console.log(diver)
-  console.log(busTypes)
-  console.log(ratings)
-  console.log(ac)
+  console.log(amenities);
+  console.log(diver);
+  console.log(busTypes);
+  console.log(ratings);
+  console.log(ac);
 
   return (
     <div>
@@ -145,9 +144,32 @@ const List = () => {
             <span>Filter & Sort</span>
           </button>
         </div>
-        <Card />
-        <Card />
-        <Card />
+        <div className="cards row">
+          <div className="col-md-6">
+            <Card />
+          </div>
+          <div className="col-md-6">
+            <Card />
+          </div>
+          <div className="col-md-6">
+            <Card />
+          </div>
+          <div className="col-md-6">
+            <Card />
+          </div>
+          <div className="col-md-6">
+            <Card />
+          </div>
+          <div className="col-md-6">
+            <Card />
+          </div>
+          <div className="col-md-6">
+            <Card />
+          </div>
+          <div className="col-md-6">
+            <Card />
+          </div>
+        </div>
       </div>
       <div
         class="modal fade"

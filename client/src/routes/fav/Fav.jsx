@@ -21,9 +21,32 @@ const Fav = () => {
               37 results avaiable
             </span>
           </div>
-          <Card />
-          <Card />
-          <Card />
+          <div className="cards row">
+            <div className="col-md-6">
+              <Card />
+            </div>
+            <div className="col-md-6">
+              <Card />
+            </div>
+            <div className="col-md-6">
+              <Card />
+            </div>
+            <div className="col-md-6">
+              <Card />
+            </div>
+            <div className="col-md-6">
+              <Card />
+            </div>
+            <div className="col-md-6">
+              <Card />
+            </div>
+            <div className="col-md-6">
+              <Card />
+            </div>
+            <div className="col-md-6">
+              <Card />
+            </div>
+          </div>
         </div>
       </div>
     </div>
