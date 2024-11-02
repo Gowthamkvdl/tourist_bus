@@ -168,28 +168,44 @@ html {
 
 
 
-/* Title Text (e.g., headings, large titles) */
+/* Default text styles (for desktop) */
 .title-text {
   font-size: 1.75rem; /* 28px */
   font-weight: 600;   /* Bold */
 }
 
-/* Subtitle Text (e.g., section titles, subtitles) */
 .subtitle-text {
   font-size: 1.25rem; /* 20px */
   font-weight: 500;   /* Semi-bold */
 }
 
-/* Body Text (e.g., paragraphs, content text) */
 .body-text {
   font-size: 1rem;    /* 16px */
   font-weight: 400;   /* Normal */
 }
 
-/* Small Text (e.g., captions, labels) */
 .small-text {
-  font-size: 0.775rem; /* 14px */
+  font-size: 0.875rem; /* 14px */
   font-weight: 400;    /* Normal */
+}
+
+/* Adjustments for smaller screens (mobile) */
+@media (max-width: 576px) {
+  .title-text {
+    font-size: 1.5rem; /* Slightly smaller for mobile */
+  }
+
+  .subtitle-text {
+    font-size: 1.125rem; /* Adjusted for mobile */
+  }
+
+  .body-text {
+    font-size: 0.9rem; /* Adjusted for mobile */
+  }
+
+  .small-text {
+    font-size: 0.75rem; /* Adjusted for mobile */
+  }
 }
 
 
