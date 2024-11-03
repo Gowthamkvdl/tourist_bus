@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import "./home.css";
 import Card from "../../components/card/Card";
+import { Link } from "react-router-dom";
 
 const Home = () => {
-
   const [diver, setDriver] = useState(true);
 
   const handleSelect = () => {
-    setDriver(!diver)
+    setDriver(!diver);
   };
 
   return (
@@ -62,9 +62,11 @@ const Home = () => {
             </select>
           </div>
           <div className="arrowIcon me-2  p-1">
-            <span class="material-symbols-outlined fs-1 rounded-5 p-2">
-              arrow_forward
-            </span>
+            <Link className="link" to={"/info/safsg"}>
+              <span class="material-symbols-outlined fs-1 rounded-5 p-2">
+                arrow_forward
+              </span>
+            </Link>
           </div>
         </div>
       </div>
