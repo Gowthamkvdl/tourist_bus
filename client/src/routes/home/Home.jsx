@@ -55,14 +55,39 @@ const Home = () => {
               className="form-select shadow-none b-none subtitle-text flex-grow-1"
             >
               <option value="">All places</option>
-              <option value="">Vadalur</option>
-              <option value="">Cuddalur</option>
+              <option value="">Ariyalur</option>
+              <option value="">Chengalpattu</option>
               <option value="">Chennai</option>
+              <option value="">Coimbatore</option>
+              <option value="">Cuddalore</option>
+              <option value="">Dindigul</option>
+              <option value="">Erode</option>
+              <option value="">Kanchipuram</option>
+              <option value="">Kanyakumari</option>
+              <option value="">Karur</option>
+              <option value="">Madurai</option>
+              <option value="">Nagapattinam</option>
+              <option value="">Namakkal</option>
               <option value="">Panruti</option>
+              <option value="">Pudukkottai</option>
+              <option value="">Ramanathapuram</option>
+              <option value="">Salem</option>
+              <option value="">Thanjavur</option>
+              <option value="">Theni</option>
+              <option value="">Thoothukudi</option>
+              <option value="">Tiruchirappalli</option>
+              <option value="">Tirunelveli</option>
+              <option value="">Tiruppur</option>
+              <option value="">Tiruvannamalai</option>
+              <option value="">Tiruvarur</option>
+              <option value="">Vadalur</option>
+              <option value="">Vellore</option>
+              <option value="">Viluppuram</option>
+              <option value="">Virudhunagar</option>
             </select>
           </div>
           <div className="arrowIcon me-2  p-1">
-            <Link className="link" to={"/info/safsg"}>
+            <Link className="link" to={"/list"}>
               <span class="material-symbols-outlined fs-1 rounded-5 p-2">
                 arrow_forward
               </span>

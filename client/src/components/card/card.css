@@ -1,3 +1,7 @@
 .brand {
   font-weight: 450;
 }
+
+.bus-img{
+  max-height: 100px !important;
+}

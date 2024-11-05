@@ -21,9 +21,7 @@ const Info = () => {
 
   return (
     <div>
-      <div
-        className="header mb-3 pt-md-2" 
-      >
+      <div className="header mb-3 pt-md-2">
         <div className="title-text text-center opacity-75 mt-3">
           <BackBtn />
           <span className="text-center">Bus Details</span>
@@ -90,7 +88,7 @@ const Info = () => {
             <span>AC</span>
           </div>
         </div>
-        <div className="imgs mx-2 my-3 rounded-3">
+        <div className="imgs mx-2 w-75 mx-auto my-3 rounded-3">
           <div
             id="carouselExampleIndicators"
             className="carousel box-shadow slide"
@@ -172,7 +170,7 @@ const Info = () => {
             </button>
           </div>
         </div>
-        <div className="details px-4">
+        <div className="details mx-md-4 px-4">
           <div className="Price  d-flex justify-content-between align-items-center">
             <div className="title-text mb-1 fw-medium mt-2">Price</div>
             <div className="price title-text">
@@ -219,7 +217,7 @@ const Info = () => {
             </div>
             <hr />
           </div>
-          <div className="more">
+          <div className="more ">
             <div className="subtitle-text opacity-75">Specifications</div>
             <div className="type  d-flex justify-content-between align-items-center">
               <div className="body-text mb-1 fw-medium mt-2">No. of seats</div>

@@ -8,7 +8,7 @@ const Card = () => {
     <div className="busCard rounded-4 box-shadow mx-3 mb-3 p-3">
       <div className="upperSection">
         <div className="details row">
-          <div className="col-7 d-flex flex-column my-auto">
+          <div className="col-7 d-flex flex-column">
             <div className="brand opacity-75 body-text">
               <span>Mahindra Tourister</span>
             </div>
@@ -17,27 +17,31 @@ const Card = () => {
             </div>
             <div className="specs d-flex gap-2 justify-content-start align-items-center">
               <div className="seats d-flex justify-content-center  align-items-center">
-                <span class="material-symbols-outlined opacity-75">
+                <span class="material-symbols-outlined fs-2 opacity-75">
                   airline_seat_recline_extra
                 </span>
-                <span>50</span>
+                <span className="fs-6">50</span>
               </div>
               <div className="mileage d-flex  justify-content-center  align-items-center">
-                <span class="material-symbols-outlined opacity-75">
+                <span class="material-symbols-outlined fs-2 opacity-75">
                   local_gas_station
                 </span>
-                <span>10km/L</span>
+                <span className="fs-6">10km/L</span>
               </div>
               <div className="ac d-flex  justify-content-center  align-items-center">
-                <span class="material-symbols-outlined opacity-75">
+                <span class="material-symbols-outlined fs-2 opacity-75">
                   ac_unit
                 </span>
-                <span>AC</span>
+                <span className="fs-6">AC</span>
               </div>
             </div>
           </div>
-          <div className="col-5 busImg">
-            <img src={bus} className="img-fluid rounded-3" alt="" />
+          <div className="col-5 busImg justify-content-end d-flex">
+            <img
+              src={bus}
+              className="img-fluid bus-img rounded-3"
+              alt=""
+            />
           </div>
         </div>
         <div className="priceAndBtn row mt-2 justify-content-between align-items-center">
@@ -50,11 +54,13 @@ const Card = () => {
               <span>Prices exclude fuel cost</span>
             </div>
           </div>
-          <div className="col-5 d-flex ">
-            <div className="btn primary-600 rounded-5 m-auto">
+          <div className="col-5 d-flex justify-content-end">
+            <div className="btn primary-600 rounded-5 me-4">
               <Link to={"/info/sghe"} className="link">
                 <div className="d-flex align-items-center">
-                  <span className="body-text fw-semibold text-white ">More</span>
+                  <span className="body-text fw-semibold text-white ">
+                    More
+                  </span>
                   <span class="material-symbols-outlined text-white">
                     chevron_right
                   </span>
