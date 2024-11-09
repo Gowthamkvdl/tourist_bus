@@ -13,11 +13,11 @@ const Info = () => {
   const [fav, setFav] = useState(false);
 
   const handleAddFav = () => {
-    setFav(!fav)
-    toast.success(fav? "Removed from favorites":"Added to favorites", {
-      id:"fav"
-    })
-  }
+    setFav(!fav);
+    toast.success(fav ? "Removed from favorites" : "Added to favorites", {
+      id: "fav",
+    });
+  };
 
   return (
     <div>
@@ -33,12 +33,24 @@ const Info = () => {
             favorite
           </span>
           <div className="d-flex mx-auto justify-content-center align-items-center gap-1">
-            <div className="locationIcon">
+            <div className="locationIcon my-auto">
               <span className="material-symbols-outlined fs-1 bg-secondary rounded-5 text-white p-2">
                 directions_bus
               </span>
             </div>
-            <span className="title-text">VARUN</span>
+            <div className="nameAndRating">
+              <span className="title-text">VARUN</span>
+              <div className="stars d-flex align-items-center justify-content-center">
+                <DisplayStarRating
+                  rating={3}
+                  numberOfStars={5}
+                  starDimension="20px"
+                  starRatedColor="#FFD700"
+                  starSpacing="1px"
+                />
+                <span>(86)</span>
+              </div>
+            </div>
           </div>
           <button className="btn btn-transperant" onClick={handleAddFav}>
             {fav ? (
@@ -279,16 +291,6 @@ const Info = () => {
           <div className="reviews">
             <div className="headingAndStars d-flex justify-content-between">
               <div className="subtitle-text opacity-75">Reviews</div>
-              <div className="stars d-flex align-items-center">
-                <DisplayStarRating
-                  rating={3}
-                  numberOfStars={5}
-                  starDimension="25px"
-                  starRatedColor="#FFD700"
-                  starSpacing="1px"
-                />{" "}
-                <span>(86)</span>
-              </div>
             </div>
             <div className="review mb-5">
               <div className="reviewBox d-flex mt-3">
