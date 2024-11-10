@@ -50,9 +50,9 @@ const Home = () => {
           <div className="inputBox d-flex align-items-center w-100 mx-3 ">
             <span className="subtitle-text text-nowrap">Search in</span>
             <select
-              name=""
+              name="" 
               id=""
-              className="form-select shadow-none b-none subtitle-text flex-grow-1"
+              className="form-select select shadow-none b-none subtitle-text flex-grow-1"
             >
               <option value="">All places</option>
               <option value="">Ariyalur</option>

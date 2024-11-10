@@ -33,18 +33,18 @@ const Info = () => {
             favorite
           </span>
           <div className="d-flex mx-auto justify-content-center align-items-center gap-1">
-            <div className="locationIcon my-auto">
+            {/* <div className="locationIcon my-auto">
               <span className="material-symbols-outlined fs-1 bg-secondary rounded-5 text-white p-2">
                 directions_bus
               </span>
-            </div>
-            <div className="nameAndRating">
+            </div> */}
+            <div className="nameAndRating d-flex flex-column justify-content-center align-items-center">
               <span className="title-text">VARUN</span>
-              <div className="stars d-flex align-items-center justify-content-center">
+              <div className="stars">
                 <DisplayStarRating
                   rating={3}
                   numberOfStars={5}
-                  starDimension="20px"
+                  starDimension="25px"
                   starRatedColor="#FFD700"
                   starSpacing="1px"
                 />
@@ -100,7 +100,7 @@ const Info = () => {
             <span>AC</span>
           </div>
         </div>
-        <div className="imgs mx-2 w-75 mx-auto my-3 rounded-3">
+        <div className="imgs mx-3 w-md-75  my-3 rounded-3">
           <div
             id="carouselExampleIndicators"
             className="carousel box-shadow slide"

@@ -111,6 +111,21 @@ const Navbar = () => {
                   </a>
                 </Link>
               </li>
+              <li className="nav-item">
+                <Link className="link" to={"/add"}>
+                  <a
+                    className={`nav-link d-flex flex-column align-items-center  ${isActive(
+                      "/add"
+                    )}`}
+                    href="#"
+                  >
+                    <span class="material-symbols-outlined d-md-none mt-1 title-text">
+                      add_circle
+                    </span>
+                    <span className="d-none d-md-block">Add Bus</span>
+                  </a>
+                </Link>
+              </li>
               <li className="nav-item d-md-none">
                 <Link className="link" to={"/profile"}>
                   <a

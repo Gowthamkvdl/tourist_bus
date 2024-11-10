@@ -469,7 +469,7 @@ const List = () => {
               ></button>
             </div>
             <div class="modal-body">
-              <select name="" className="form-select" id="">
+              <select name="" className="form-select shadow-none" id="">
                 <option value="">Select Location</option>
                 <option value="">Vadalur</option>
                 <option value="">Cuddalur</option>
