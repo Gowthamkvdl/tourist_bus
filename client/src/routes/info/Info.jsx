@@ -12,7 +12,7 @@ import bus5 from "../../assets/bus5 (1).jpg";
 const Info = () => {
   const [fav, setFav] = useState(false);
 
-  const handleAddFav = () => {
+  const handleAddFav = () => { 
     setFav(!fav);
     toast.success(fav ? "Removed from favorites" : "Added to favorites", {
       id: "fav",
