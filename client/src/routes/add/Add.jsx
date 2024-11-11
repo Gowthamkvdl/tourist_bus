@@ -3,8 +3,8 @@ import React from "react";
 const Add = () => {
   return (
     <div>
-      <div className="header mb-3 pt-md-2">
-        <div className="others box-shadow p-4 pb-5 bg-white mt-4">
+      <div className="header  pt-md-2">
+        <div className="others box-shadow p-4 bg-white mt-4">
           <h1 className="title-text opacity-80">Add Bus</h1>
           <div className="subtitle-text opacity-75">
             Enter detials to add your bus
