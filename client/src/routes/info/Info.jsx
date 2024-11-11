@@ -9,6 +9,7 @@ import bus3 from "../../assets/bus3 (1).jpg";
 import bus4 from "../../assets/bus4 (1).jpg";
 import bus5 from "../../assets/bus5 (1).jpg";
 
+
 const Info = () => {
   const [fav, setFav] = useState(false);
 
