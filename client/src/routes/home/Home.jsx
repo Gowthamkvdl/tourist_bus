@@ -88,7 +88,7 @@ const Home = () => {
           </div>
           <div className="arrowIcon me-2  p-1">
             <Link className="link" to={"/list"}>
-              <span class="material-symbols-outlined fs-1 rounded-5 p-2">
+              <span class="material-symbols-outlined text-dark fs-1 rounded-5 p-2">
                 arrow_forward
               </span>
             </Link>

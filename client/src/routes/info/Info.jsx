@@ -9,11 +9,10 @@ import bus3 from "../../assets/bus3 (1).jpg";
 import bus4 from "../../assets/bus4 (1).jpg";
 import bus5 from "../../assets/bus5 (1).jpg";
 
-
 const Info = () => {
   const [fav, setFav] = useState(false);
 
-  const handleAddFav = () => { 
+  const handleAddFav = () => {
     setFav(!fav);
     toast.success(fav ? "Removed from favorites" : "Added to favorites", {
       id: "fav",
@@ -101,7 +100,7 @@ const Info = () => {
             <span>AC</span>
           </div>
         </div>
-        <div className="imgs mx-3 w-md-75  my-3 rounded-3">
+        <div className="imgs mx-3 w-md-75 my-3 rounded-3">
           <div
             id="carouselExampleIndicators"
             className="carousel box-shadow slide"
@@ -292,8 +291,18 @@ const Info = () => {
           <div className="reviews">
             <div className="headingAndStars d-flex justify-content-between">
               <div className="subtitle-text opacity-75">Reviews</div>
+              <button
+                className="btn primary-700"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#collapseExample"
+                aria-expanded="false"
+                aria-controls="collapseExample"
+              >
+                Add a review
+              </button>
             </div>
-            <div className="review mb-5">
+            <div class="collapse" id="collapseExample">
               <div className="reviewBox d-flex mt-3">
                 <div className="photoDiv d-flex">
                   <div className="d-flex justify-centent-center align-items-center text-center photo primary-600 fs-2 text-white">
@@ -303,9 +312,38 @@ const Info = () => {
                 <div className="nameAndReview ms-2">
                   <div className="name subtitle-text">Gowtham K</div>
                   <div className="review body-text">
-                    Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                    Vitae minus, eos iste voluptatem veritatis consectetur
-                    reprehenderit incidunt deserunt ad sint.
+                    <form action="">
+                      <textarea
+                        name=""
+                        placeholder="Add a review..."
+                        className="form-control shadow-none w-100"
+                        cols="150"
+                        rows="2"
+                        required
+                      ></textarea>
+                      <button className="btn primary-700 mt-2 float-end">
+                        Add
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="review mb-5">
+              <div className="reviewBox d-flex mt-3">
+                <div className="photoDiv d-flex">
+                  <div className="d-flex justify-centent-center align-items-center text-center photo primary-600 fs-2 text-white">
+                    <span className="mx-auto">G</span>
+                  </div>
+                </div>
+                <div className="nameAndReview ms-2">
+                  <div className="name subtitle-text">
+                    Gowtham K<span className="small-text ms-2">2 min ago</span>
+                    <div className="review body-text">
+                      Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                      Vitae minus, eos iste voluptatem veritatis consectetur
+                      reprehenderit incidunt deserunt ad sint.
+                    </div>
                   </div>
                 </div>
               </div>
@@ -316,7 +354,9 @@ const Info = () => {
                   </div>
                 </div>
                 <div className="nameAndReview ms-2">
-                  <div className="name subtitle-text">Suriya</div>
+                  <div className="name subtitle-text">
+                    Suriya<span className="small-text ms-2">2 min ago</span>
+                  </div>
                   <div className="review body-text">
                     Lorem ipsum dolor sit, amet consectetur adipisicing elit.
                   </div>
