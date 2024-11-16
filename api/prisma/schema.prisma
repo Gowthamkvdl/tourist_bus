@@ -9,6 +9,92 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id         String       @id @default(auto()) @map("_id") @db.ObjectId
+  name       String
+  phone      String       @unique
+  city       String
+  isBanned   Boolean      @default(false)
+  savedPosts SavedPosts[]
+  Post       Post[]
+  createdAt  DateTime     @default(now())
+}
+
+model Post {
+  postId           String       @id @default(auto()) @map("_id") @db.ObjectId
+  user             User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId           String       @db.ObjectId
+  busName          String
+  busBrand         String
+  numberOfSeats    String
+  mileage          String
+  cost             String
+  numberOfSpeakers String
+  speakerBrand     String
+  busType          BusType
+  recliningSeats   Boolean      @default(false)
+  ac               Boolean      @default(false)
+  tv               Boolean      @default(false)
+  usb              Boolean      @default(false)
+  wifi             Boolean      @default(false)
+  savedPosts       SavedPosts[]
+  createdAt        DateTime     @default(now())
+}
+
+model Otp {
+  otpId     String   @id @default(auto()) @map("_id") @db.ObjectId
+  phone     String
+  otp       String
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+}
+
+model SavedPosts {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  post      Post     @relation(fields: [postId], references: [postId], onDelete: Cascade)
+  userId    String   @db.ObjectId
+  postId    String   @db.ObjectId
+  createdAt DateTime @default(now())
+
+  @@unique([userId, postId])
+}
+
+enum BusType {
+  STANDARD_SEATING
+  SEMI_SLEEPER
+  SLEEPER
+  SEMI_SLEEPER_SLEEPR_COMBO
+  AC_SEATER
+  AC_SLEEPER
+  NON_AC_LUXURY
+  MULTI_AXLE
+  EXECUTIVE_CLASS
+  SLEEPER_WITH_PRIVACY_CABINS
+  MINI_TOURIST
+  LUXURY_TEMPO_TRAVELLER
+  DOUBLE_DECKER
+  CHARTER_PARTY
+}
+
+
+// enum BusType {
+//   "Standard Seating Bus"
+//   "Semi-Sleeper Bus"
+//   "Sleeper Bus"
+//   "Semi-Sleeper + Sleeper Combo Bus"
+//   "AC Seater Bus"
+//   "AC Sleeper Bus"
+//   "Non-AC Luxury Bus"
+//   "Multi-Axle Bus"
+//   "Executive Class Bus"
+//   "Sleeper Bus with Privacy Cabins"
+//   "Mini Tourist Bus"
+//   "Luxury Tempo Traveller"
+//   "Double-Decker Bus"
+//   "Charter/Party Bus"
+// }

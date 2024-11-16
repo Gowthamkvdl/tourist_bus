@@ -231,3 +231,8 @@ html {
 .opacity-80{
     opacity: 80 !important;
 }
+
+.modal {
+  z-index: 999999999 !important;
+  color: rgb(46, 46, 46);   
+}

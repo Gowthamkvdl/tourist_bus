@@ -4,6 +4,7 @@ import App from './App.jsx'
 import './index.css'
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/js/index.umd.js" 
+import "bootstrap/js/index.esm.js"
 
 
 createRoot(document.getElementById('root')).render(

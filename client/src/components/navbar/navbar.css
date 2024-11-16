@@ -32,3 +32,16 @@
 .mt-80 {
   margin-top: 80px !important;
 }
+
+.modal-body {
+  border: none !important;
+  outline: none !important;
+}
+
+.login-img {
+  height: 60px !important;
+}
+
+.trust-img {
+  height: 85px !important;
+}

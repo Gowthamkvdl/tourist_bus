@@ -4,7 +4,7 @@ const Add = () => {
   return (
     <div>
       <div className="header  pt-md-2">
-        <div className="others box-shadow p-4 bg-white mt-4">
+        <div className="others box-shadow p-4 bg-white mt-4 pb-5">
           <h1 className="title-text opacity-80">Add Bus</h1>
           <div className="subtitle-text opacity-75">
             Enter detials to add your bus
@@ -212,7 +212,7 @@ const Add = () => {
                 </select>
               </div>
 
-              <button type="submit" className="btn primary-700 ">
+              <button type="submit" className="btn primary-700 mb-3">
                 Add My Bus
               </button>
             </div>

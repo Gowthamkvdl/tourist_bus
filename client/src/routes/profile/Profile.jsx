@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import "./profile.css";
 
 const Profile = () => {
+
+
+
   return (
     <div className="pt-md-4 profile">
       <div className="profileInfo  mt-4 d-flex flex-column justify-content-center">
@@ -38,7 +41,7 @@ const Profile = () => {
               className="form-control shadow-none"
               defaultValue={"Gowtham K"}
             />
-            <div className=" d-flex mt-2 justify-content-end"> 
+            <div className=" d-flex mt-2 justify-content-end">
               <button className="btn btn-primary">Update</button>
             </div>
           </div>
