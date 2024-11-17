@@ -1,9 +1,19 @@
 import express from "express";
-import {  } from "../controllers/post.controller.js";
+import {
+  addPost,
+  deletePost,
+  getPost,
+  getPosts,
+  updatePost,
+} from "../controllers/post.controller.js";
+import {verifyToken} from "../middleware/verifyToken.js";
 
 const router = express.Router();
 
-// router.post("/register", register);
-// router.post("/logout", logout);
+router.post("/", verifyToken , addPost);
+router.get("/posts", getPosts);
+router.get("/:id", getPost);
+router.put("/:id", verifyToken , updatePost);
+router.delete("/:id", verifyToken, deletePost);
 
 export default router;
