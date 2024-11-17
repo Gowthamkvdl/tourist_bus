@@ -2,6 +2,7 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import authRoute from "./routes/auth.route.js";
 import otpRoute from "./routes/otp.route.js"
+import postRoute from  "./routes/post.route.js"
 
 import cors from "cors";
 import mongoSanitize from "express-mongo-sanitize";
@@ -37,7 +38,7 @@ app.use(xss());
 
 app.use("/api/auth", authRoute);
 app.use("/api/otp", otpRoute);
-// app.use("/api/post", postRoute);
+app.use("/api/post", postRoute);
 // app.use("/api/user", userRoute);
 // app.use("/api/partner", partnerRoute);
 

@@ -15,6 +15,10 @@ const Card = () => {
             <div className="name title-text">
               <span>VARUN</span>
             </div>
+            <div className="location suntitle-text mb-1 d-flex justify-content-start  align-items-center">
+              <span class="material-symbols-outlined fs-4">location_on</span>
+              <span>Vadalur</span>
+            </div>
             <div className="specs d-flex gap-2 justify-content-start align-items-center">
               <div className="seats d-flex justify-content-center  align-items-center">
                 <span class="material-symbols-outlined fs-2 opacity-75">
@@ -37,11 +41,7 @@ const Card = () => {
             </div>
           </div>
           <div className="col-5 busImg justify-content-end d-flex">
-            <img
-              src={bus}
-              className="img-fluid bus-img rounded-3"
-              alt=""
-            />
+            <img src={bus} className="img-fluid bus-img rounded-3" alt="" />
           </div>
         </div>
         <div className="priceAndBtn row mt-2 justify-content-between align-items-center">

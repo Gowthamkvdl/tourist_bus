@@ -96,7 +96,7 @@ const Home = () => {
         </div>
       </div>
       <div className="others box-shadow pb-5 bg-white mt-4">
-        <h1 className="title-text p-4 pb-2  opacity-75">Featured</h1>
+        <h1 className="title-text p-4 pb-2 opacity-75">Featured</h1>
         <div className="cards row">
           <div className="col-md-6">
             <Card />

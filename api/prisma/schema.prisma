@@ -35,6 +35,7 @@ model Post {
   cost             String
   numberOfSpeakers String
   speakerBrand     String
+  city             String
   busType          BusType
   recliningSeats   Boolean      @default(false)
   ac               Boolean      @default(false)
@@ -80,7 +81,6 @@ enum BusType {
   DOUBLE_DECKER
   CHARTER_PARTY
 }
-
 
 // enum BusType {
 //   "Standard Seating Bus"

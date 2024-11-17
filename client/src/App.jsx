@@ -7,6 +7,7 @@ import List from "./routes/list/List";
 import Fav from "./routes/fav/Fav";
 import Info from "./routes/info/Info";
 import Add from "./routes/add/Add";
+import Edit from "./routes/edit/Edit";
 
 const App = () => {
   const router = createBrowserRouter([
@@ -33,6 +34,10 @@ const App = () => {
         {
           path: "/profile",
           element: <Profile />,
+        },
+        {
+          path: "/edit/:id",
+          element: <Edit />,
         },
         {
           path: "/add",

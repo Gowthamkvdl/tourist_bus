@@ -40,7 +40,10 @@ const Info = () => {
             </div> */}
             <div className="nameAndRating d-flex flex-column justify-content-center align-items-center">
               <span className="title-text">VARUN</span>
-              <div className="stars">
+              <div className="location subtitle-text mb-1 d-flex justify-content-center  align-items-center">
+                <span class="material-symbols-outlined fs-3">location_on</span>
+                <span>Vadalur</span>
+              </div><div className="stars">
                 <DisplayStarRating
                   rating={3}
                   numberOfStars={5}
@@ -50,6 +53,7 @@ const Info = () => {
                 />
                 <span>(86)</span>
               </div>
+              
             </div>
           </div>
           <button className="btn btn-transperant" onClick={handleAddFav}>
@@ -82,24 +86,6 @@ const Info = () => {
           </button>
         </div>
 
-        <div className="specs d-flex gap-3  justify-content-center mt-2 align-items-center">
-          <div className="seats fs-6 d-flex justify-content-center  align-items-center">
-            <span class="material-symbols-outlined opacity-75">
-              airline_seat_recline_extra
-            </span>
-            <span>50</span>
-          </div>
-          <div className="mileage d-flex fs-6 justify-content-center  align-items-center">
-            <span class="material-symbols-outlined opacity-75">
-              local_gas_station
-            </span>
-            <span>10km/L</span>
-          </div>
-          <div className="ac d-flex fs-6 justify-content-center  align-items-center">
-            <span class="material-symbols-outlined opacity-75">ac_unit</span>
-            <span>AC</span>
-          </div>
-        </div>
         <div className="imgs mx-3 w-md-75 my-3 rounded-3">
           <div
             id="carouselExampleIndicators"
