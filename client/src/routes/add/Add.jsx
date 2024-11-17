@@ -1,8 +1,11 @@
 import React from "react";
+import BackBtn from "../../components/backBtn/BackBtn";
 
 const Add = () => {
   return (
     <div>
+      <BackBtn />
+      <div className="py-3"></div>
       <div className="header  pt-md-2">
         <div className="others box-shadow p-4 bg-white mt-4 pb-5">
           <h1 className="title-text opacity-80">Add Bus</h1>
@@ -70,7 +73,6 @@ const Add = () => {
                       type="radio"
                       name="AC"
                       id="ACYes"
-                      
                     ></input>
                     <label class="form-check-label" for="ACYes">
                       Yes
@@ -81,7 +83,8 @@ const Add = () => {
                       class="form-check-input"
                       type="radio"
                       name="AC"
-                      id="ACNo"checked
+                      id="ACNo"
+                      checked
                     ></input>
                     <label class="form-check-label" for="ACNo">
                       No
@@ -98,7 +101,6 @@ const Add = () => {
                       type="radio"
                       name="seat"
                       id="seatYes"
-                      
                     ></input>
                     <label class="form-check-label" for="seatYes">
                       Yes
@@ -109,7 +111,8 @@ const Add = () => {
                       class="form-check-input"
                       type="radio"
                       name="seat"
-                      id="seatNo"checked
+                      id="seatNo"
+                      checked
                     ></input>
                     <label class="form-check-label" for="seatNo">
                       No
@@ -126,7 +129,6 @@ const Add = () => {
                       type="radio"
                       name="usb"
                       id="usbYes"
-                      
                     ></input>
                     <label class="form-check-label" for="usbYes">
                       Yes
@@ -137,7 +139,8 @@ const Add = () => {
                       class="form-check-input"
                       type="radio"
                       name="usb"
-                      id="usbNo"checked
+                      id="usbNo"
+                      checked
                     ></input>
                     <label class="form-check-label" for="usbNo">
                       No
@@ -157,7 +160,6 @@ const Add = () => {
                       type="radio"
                       name="tv"
                       id="tvYes"
-                      
                     ></input>
                     <label class="form-check-label" for="tvYes">
                       Yes
@@ -168,7 +170,8 @@ const Add = () => {
                       class="form-check-input"
                       type="radio"
                       name="tv"
-                      id="tvNo"checked
+                      id="tvNo"
+                      checked
                     ></input>
                     <label class="form-check-label" for="tvNo">
                       No
