@@ -1,18 +1,29 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import "./navbar.css";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Toaster } from "react-hot-toast";
+import { Toaster, toast } from "react-hot-toast";
 import lock from "../../assets/lock.svg";
 import OtpInput from "react-otp-input";
 import trust from "../../assets/trust.svg";
+import apiRequest from "../../lib/apiRequest";
+import { AuthContext } from "../../context/AuthContext";
 
 const Navbar = () => {
-  const [otp, setOtp] = useState("");
-  const [otpSent, setOtpSent] = useState(false);
-  const [verifyOtp, setVerifyOtp] = useState(false);
+  const {currentUser, updateUser} = useContext(AuthContext);
   const location = useLocation();
   const navigate = useNavigate();
   const loginBoxBtn = useRef(null);
+  const [otp, setOtp] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
+  const [verifyOtp, setVerifyOtp] = useState(false);
+  const [phone, setPhone] = useState("");
+  const [timer, setTimer] = useState(0);
+  const [newUser, setNewUser] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [checking, setChecking] = useState(false);
+  const [creating, setCreating] = useState(false);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     const sideParts = document.querySelectorAll(".sidePart");
@@ -42,7 +53,10 @@ const Navbar = () => {
   }, []);
 
   const onClickProfileBtn = () => {
-    if (!localStorage.getItem("user")) {
+    const user = localStorage.getItem("user");
+
+    // Check if the user is not logged in or user is null
+    if (!user || user === "null") {
       console.log("User not logged in, showing login modal");
       loginBoxBtn.current.click();
     } else {
@@ -51,15 +65,163 @@ const Navbar = () => {
     }
   };
 
+
   const isActive = (path) => (location.pathname === path ? "active" : "");
 
-  const handleSendOtp = (e) => {
+  const handleSendOtp = async (e) => {
     e.preventDefault();
-    setOtpSent(true);
+    setError(false);
+
+    // 1. Empty Phone Number
+    if (!phone) {
+      setError("Phone number cannot be empty");
+      return false; // Indicate validation failure
+    }
+
+    // Remove +91 if present
+    let formattedPhone = phone.startsWith("+91") ? phone.slice(3) : phone;
+
+    // 2. Incorrect Length (after removing +91)
+    if (formattedPhone.length !== 10) {
+      setError("Invalid Phone Number: Must be exactly 10 digits");
+      return false;
+    }
+
+    // 3. Non-Numeric Characters
+    const phoneNumberRegex = /^[0-9]+$/;
+    if (!formattedPhone.match(phoneNumberRegex)) {
+      setError("Phone number must contain only digits");
+      return false;
+    }
+
+    // 4. All Same Digits
+    if (/^(\d)\1+$/.test(formattedPhone)) {
+      setError("Invalid Phone Number: Cannot be all the same digit");
+      return false;
+    }
+
+    try {
+      setSending(true);
+      const response = await apiRequest.post("/otp/sendotp", {
+        phoneNumber: formattedPhone,
+      });
+      console.log(response);
+      toast.success("OTP sent successfully", {
+        id: "otp-sent",
+      });
+    } catch (error) {
+      console.log(error);
+      toast.error("Something went wrong!");
+      setOtpSent(true);
+    } finally {
+      setSending(false);
+      setError(false);
+    }
   };
-  const handleVerifyOtp = (e) => {
+
+  const handleVerifyOtp = async (e) => {
     e.preventDefault();
-    setVerifyOtp(true);
+    // Declare formattedPhone properly
+    const formattedPhone = phone.startsWith("+91") ? phone.slice(3) : phone;
+
+    try {
+      setChecking(true);
+
+      const response = await apiRequest.post("/otp/verifyotp", {
+        phoneNumber: formattedPhone,
+        otp: otp,
+      });
+
+      // Check the response structure
+      console.log("Response data:", response.data);
+
+      toast.success("OTP verified successfully", {
+        id: "otp-verified",
+      });
+
+      const newUser = response.data.newUser;
+      console.log(newUser);
+
+      if (response.data.user) {
+        // Set user data including category in localStorage
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            ...response.data.user,
+            category: response.data.category,
+          })
+        );
+
+        // Update user context
+        updateUser({
+          ...response.data.user,
+          category: response.data.category,
+        });
+      }
+
+      setNewUser(newUser);
+      setVerifyOtp(true);
+      if (!newUser) {
+        loginBoxBtn.current.click();
+      }
+    } catch (error) {
+      console.log("Error:", error);
+      toast.error(
+        error?.response?.data?.message ||
+          "An error occurred during OTP verification",
+        {
+          id: "otp-verification-error",
+        }
+      );
+    } finally {
+      setChecking(false);
+    }
+  };
+
+  const handleCreateAccount = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const name = formData.get("name").toString();
+    const city = formData.get("city").toString();
+
+    try {
+      setCreating(true);
+      const response = await apiRequest.post("/auth/register", {
+        phone: phone,
+        city: city,
+        name: name,
+      });
+      toast.success("Account created", {
+        id: "account created",
+      });
+      if (response.data.user) {
+        // Set user data including category in localStorage
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            ...response.data.user,
+          })
+        );
+
+        // Update user context
+        updateUser({
+          ...response.data.user,
+          category: response.data.category,
+        });
+      }
+      if (loginBoxBtn.current && newUser) {
+        loginBoxBtn.current.click();
+      } 
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.data.message);
+    } finally {
+      setCreating(false);
+    }
+  };
+
+  const handlePhoneChange = (event) => {
+    setPhone(event.target.value);
   };
 
   return (
@@ -148,11 +310,13 @@ const Navbar = () => {
         aria-hidden="true"
         data-bs-backdrop="static"
       >
+        <Toaster position="top-center" reverseOrder={false} />
+
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
             <div className="modal-body p-3">
               <div className={`${verifyOtp ? "d-none" : "d-block"}`}>
-                <div className="d-flex mb-4 mt-2">
+                <div className="d-flex align-items-center mb-4 mt-2">
                   <img
                     src={lock}
                     className="login-img me-3 img-fluid"
@@ -166,28 +330,39 @@ const Navbar = () => {
                   </div>
                 </div>
                 <form>
-                  <div className={`d-flex flex-column gap-3 mt-3`}>
-                    <div className="form-floating">
+                  <div className={`d-flex flex-column mt-3  `}>
+                    <div className="form-floating ">
                       <input
                         type="text"
-                        className="form-control fs-5 shadow-none"
+                        className={`form-control fs-5 shadow-none ${
+                          error ? "" : "mb-3"
+                        } `}
                         id="floatingNumber"
                         placeholder="Phone Number"
+                        defaultValue={phone}
+                        onChange={handlePhoneChange}
                       />
                       <label htmlFor="floatingNumber">Phone Number</label>
                     </div>
+                    {error && (
+                      <span className="small-text mb-3 text-danger">
+                        {error}
+                      </span>
+                    )}
                     <button
                       className={`btn text-white fs-5 primary-600 ${
                         otpSent ? "d-none" : "d-block"
                       }`}
                       onClick={handleSendOtp}
+                      disabled={sending}
                     >
                       Send OTP
                     </button>
                     <div
                       className={`otpVerify ${otpSent ? "d-block" : "d-none"}`}
                     >
-                      <div className="d-flex justify-content-around align-items-center">
+                      <span className="body-text">Enter OTP</span>
+                      <div className="d-flex mt-2 justify-content-around align-items-center">
                         <OtpInput
                           value={otp}
                           onChange={(otp) => setOtp(otp)}
@@ -209,13 +384,18 @@ const Navbar = () => {
                       </div>
                       <div className="row mt-3">
                         <div className="col-5">
-                          <button className="btn w-100 text-white primary-600">
+                          <button
+                            className="btn w-100 text-white primary-600"
+                            onClick={handleSendOtp}
+                            disabled={sending}
+                          >
                             Resend OTP
                           </button>
                         </div>
                         <div className="col-7">
                           <button
                             onClick={handleVerifyOtp}
+                            disabled={checking}
                             className="btn w-100 text-white primary-600"
                           >
                             Verify OTP
@@ -226,7 +406,7 @@ const Navbar = () => {
                   </div>
                 </form>
               </div>
-              <div className={`${verifyOtp ? "d-block" : "d-none"}`}>
+              <div className={`${verifyOtp && newUser ? "d-block" : "d-none"}`}>
                 <div className="d-flex mb-4 ">
                   <div className="img">
                     <img
@@ -238,31 +418,41 @@ const Navbar = () => {
                   <div className={`texts my-auto`}>
                     <div className="fs-3 ">Enter your details</div>
                     <div className="fs-6">
-                      Enter below details to create an account. 
+                      Enter below details to create an account.
                     </div>
                   </div>
                 </div>
-                <div className={`d-flex flex-column gap-3`}>
-                  <div className="form-floating">
-                    <input
-                      type="text"
-                      className="form-control fs-5 shadow-none"
-                      id="floatingName"
-                      placeholder="Name"
-                    />
-                    <label htmlFor="floatingName">Name</label>
+                <form action="" onSubmit={handleCreateAccount}>
+                  <div className={`d-flex flex-column gap-3`}>
+                    <div className="form-floating">
+                      <input
+                        type="text"
+                        className="form-control fs-5 shadow-none"
+                        id="floatingName"
+                        name="name"
+                        placeholder="Name"
+                      />
+                      <label htmlFor="floatingName">Name</label>
+                    </div>
+                    <div className="form-floating">
+                      <input
+                        type="text"
+                        className="form-control fs-5 shadow-none"
+                        id="floatingCity"
+                        placeholder="City"
+                        name="city"
+                      />
+                      <label htmlFor="floatingCity">City</label>
+                    </div>
                   </div>
-                  <div className="form-floating">
-                    <input
-                      type="text"
-                      className="form-control fs-5 shadow-none"
-                      id="floatingCity"
-                      placeholder="City"
-                    />
-                    <label htmlFor="floatingCity">City</label>
-                  </div>
-                </div>
-                <buttom className="btn primary-700 w-100 mt-2">Create Account</buttom>
+                  <button
+                    className="btn primary-700 w-100 mt-2"
+                    type="submit"
+                    disabled={creating}
+                  >
+                    Create Account
+                  </button>
+                </form>
               </div>
             </div>
           </div>
