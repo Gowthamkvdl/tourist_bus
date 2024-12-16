@@ -230,6 +230,7 @@ html {
 .others {
   animation-name: others;
   animation-duration: 0.6s;
+  min-height: 100lvh;
 }
 
 @keyframes others {

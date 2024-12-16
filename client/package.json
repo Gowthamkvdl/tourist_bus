@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "ago": "^1.0.0",
+    "agojs": "^0.0.1",
     "bootstrap": "^5.3.3",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.5",
@@ -17,7 +19,9 @@
     "react-hot-toast": "^2.4.1",
     "react-otp-input": "^3.1.1",
     "react-router-dom": "^6.28.0",
-    "react-star-ratings": "^2.3.0"
+    "react-star-ratings": "^2.3.0",
+    "star-ratings-react": "^1.4.0",
+    "timeago.js": "^4.0.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",

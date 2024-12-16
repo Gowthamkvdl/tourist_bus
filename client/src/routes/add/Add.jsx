@@ -1,202 +1,206 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import BackBtn from "../../components/backBtn/BackBtn";
+import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import apiRequest from "../../lib/apiRequest";
+import { AuthContext } from "../../context/AuthContext";
 
 const Add = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+  const { currentUser, updateUser } = useContext(AuthContext);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+
+    const data = {
+      busName: formData.get("busName")?.trim() || "",
+      busBrand: formData.get("busBrand")?.trim() || "",
+      numberOfSeats: formData.get("seats") || "0",
+      mileage: formData.get("mileage") || "0",
+      cost: formData.get("cost") || "0",
+      busType: formData.get("busType") || "",
+      ac: formData.get("AC") === "yes",
+      recliningSeats: formData.get("seat") === "yes",
+      usb: formData.get("usb") === "yes",
+      tv: formData.get("tv") === "yes",
+      numberOfSpeakers: formData.get("speakers") || "0",
+      speakerBrand: formData.get("speakersBrand") || "others",
+      city: currentUser.city,
+    };
+
+    if (!data.busName || !data.busType) {
+      toast.error("Please fill all required fields.");
+      return;
+    }
+
+    try {
+      setError("");
+      setIsLoading(true);
+      console.log(data);
+
+      const post = await apiRequest.post("/post", data);
+      navigate(`/info/${post.data.postId}`);
+      toast.success("Your bus has been added successfully!");
+    } catch (error) {
+      console.error(error);
+      toast.error("An error occurred. Please try again later.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div>
       <div className="py-3 py-md-0"></div>
       <BackBtn />
       <div className="py-3"></div>
-      <div className="header  pt-md-2">
+      <div className="header pt-md-2">
         <div className="others box-shadow p-4 bg-white mt-4 pb-5">
           <h1 className="title-text opacity-80">Add Bus</h1>
           <div className="subtitle-text opacity-75">
-            Enter detials to add your bus
+            Enter details to add your bus
           </div>
-          <form action="">
+          <form onSubmit={handleSubmit}>
             <div className="d-flex flex-column gap-3 mt-3">
-              <div class="form-floating ">
+              <div className="form-floating">
                 <input
                   type="text"
-                  class="form-control shadow-none"
-                  id="floatingName"
+                  className="form-control"
+                  name="busName"
                   placeholder="Bus Name"
-                ></input>
-                <label for="floatingName">Bus Name</label>
+                  required
+                />
+                <label>Bus Name</label>
               </div>
-              <div class="form-floating ">
+              <div className="form-floating">
                 <input
                   type="text"
-                  class="form-control shadow-none"
-                  id="floatingBrand"
-                  placeholder="Bus Name"
-                ></input>
-                <label for="floatingBrand">Bus Brand</label>
+                  className="form-control"
+                  name="busBrand"
+                  placeholder="Bus Brand"
+                />
+                <label>Bus Brand</label>
               </div>
-              <div class="form-floating">
+              <div className="form-floating">
                 <input
                   type="number"
-                  class="form-control shadow-none"
-                  id="floatingSeats"
-                  placeholder="Seats"
+                  className="form-control"
+                  name="seats"
+                  placeholder="Number of Seats"
                   max={100}
                   min={15}
-                ></input>
-                <label for="floatingSeats">Number of Seats</label>
+                />
+                <label>Number of Seats</label>
               </div>
-              <div class="form-floating">
+              <div className="form-floating">
                 <input
                   type="number"
-                  class="form-control shadow-none"
-                  id="floatingMileage"
+                  className="form-control"
+                  name="mileage"
                   placeholder="Mileage"
                   max={100}
-                ></input>
-                <label for="floatingMileage">Mileage per liter</label>
+                />
+                <label>Mileage per liter</label>
               </div>
-              <div class="form-floating">
+              <div className="form-floating">
                 <input
                   type="number"
-                  class="form-control shadow-none"
-                  id="floatingCost"
+                  className="form-control"
+                  name="cost"
                   placeholder="Cost"
-                  max="100"
                 />
-                <label for="floatingCost">Cost (₹/100 km)</label>
+                <label>Cost (₹/100 km)</label>
               </div>
               <div className="subtitle-text opacity-75 mt-3">Extra Details</div>
-              <div class="d-flex  justify-content-between">
-                <div className="name me-4">AC</div>
-                <div className="btns d-flex">
-                  <div class="form-check me-2">
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      name="AC"
-                      id="ACYes"
-                    ></input>
-                    <label class="form-check-label" for="ACYes">
-                      Yes
-                    </label>
-                  </div>
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      name="AC"
-                      id="ACNo"
-                      checked
-                    ></input>
-                    <label class="form-check-label" for="ACNo">
-                      No
-                    </label>
+              <div className="">
+                <label>Bus Type</label>
+                <select className="form-select" name="busType" required>
+                  <option value="">Select Bus Type</option>
+                  <option value="STANDARD_SEATING">Standard Seating Bus</option>
+                  <option value="SEMI_SLEEPER">Semi-Sleeper Bus</option>
+                  <option value="SLEEPER">Sleeper Bus</option>
+                  <option value="SEMI_SLEEPER_SLEEPR_COMBO">
+                    Semi-Sleeper + Sleeper Combo Bus
+                  </option>
+                  <option value="AC_SEATER">AC Seater Bus</option>
+                  <option value="AC_SLEEPER">AC Sleeper Bus</option>
+                  <option value="NON_AC_LUXURY">Non-AC Luxury Bus</option>
+                  <option value="MULTI_AXLE">Multi-Axle Bus</option>
+                  <option value="EXECUTIVE_CLASS">Executive Class Bus</option>
+                  <option value="SLEEPER_WITH_PRIVACY_CABINS">
+                    Sleeper Bus with Privacy Cabins
+                  </option>
+                  <option value="MINI_TOURIST">Mini Tourist Bus</option>
+                  <option value="LUXURY_TEMPO_TRAVELLER">
+                    Luxury Tempo Traveller
+                  </option>
+                  <option value="DOUBLE_DECKER">Double-Decker Bus</option>
+                  <option value="CHARTER_PARTY">Charter/Party Bus</option>
+                </select>
+              </div>
+              {[
+                { label: "AC", name: "AC" },
+                { label: "Reclining Seats", name: "seat" },
+                { label: "USB Charging Ports", name: "usb" },
+                { label: "TV", name: "tv" },
+              ].map((item) => (
+                <div key={item.name} className="d-flex justify-content-between">
+                  <div className="name me-4">{item.label}</div>
+                  <div className="btns d-flex">
+                    <div className="form-check me-2">
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        name={item.name}
+                        value="yes"
+                        id={`${item.name}Yes`}
+                      />
+                      <label
+                        className="form-check-label"
+                        htmlFor={`${item.name}Yes`}
+                      >
+                        Yes
+                      </label>
+                    </div>
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        name={item.name}
+                        value="no"
+                        id={`${item.name}No`}
+                        defaultChecked
+                      />
+                      <label
+                        className="form-check-label"
+                        htmlFor={`${item.name}No`}
+                      >
+                        No
+                      </label>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div class="d-flex justify-content-between">
-                <div className="name me-4">Reclining seats</div>
-                <div className="btns d-flex">
-                  <div class="form-check me-2">
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      name="seat"
-                      id="seatYes"
-                    ></input>
-                    <label class="form-check-label" for="seatYes">
-                      Yes
-                    </label>
-                  </div>
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      name="seat"
-                      id="seatNo"
-                      checked
-                    ></input>
-                    <label class="form-check-label" for="seatNo">
-                      No
-                    </label>
-                  </div>
-                </div>
-              </div>
-              <div class="d-flex  justify-content-between">
-                <div className="name me-4">USB charging ports</div>
-                <div className="btns d-flex">
-                  <div class="form-check me-2">
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      name="usb"
-                      id="usbYes"
-                    ></input>
-                    <label class="form-check-label" for="usbYes">
-                      Yes
-                    </label>
-                  </div>
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      name="usb"
-                      id="usbNo"
-                      checked
-                    ></input>
-                    <label class="form-check-label" for="usbNo">
-                      No
-                    </label>
-                  </div>
-                </div>
-              </div>
+              ))}
               <div className="subtitle-text opacity-75 mt-3">
                 Entertainment Details
               </div>
-              <div class="d-flex  justify-content-between">
-                <div className="name me-4">TV</div>
-                <div className="btns d-flex">
-                  <div class="form-check me-2">
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      name="tv"
-                      id="tvYes"
-                    ></input>
-                    <label class="form-check-label" for="tvYes">
-                      Yes
-                    </label>
-                  </div>
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      name="tv"
-                      id="tvNo"
-                      checked
-                    ></input>
-                    <label class="form-check-label" for="tvNo">
-                      No
-                    </label>
-                  </div>
-                </div>
-              </div>
-              <div class="form-floating">
+              <div className="form-floating">
                 <input
                   type="number"
-                  class="form-control shadow-none"
-                  id="floatingSpeakers"
+                  className="form-control"
+                  name="speakers"
                   placeholder="Speakers"
                   max={100}
-                ></input>
-                <label for="floatingSpeakers">Number of speakers</label>
+                />
+                <label>Number of Speakers</label>
               </div>
-              <div class="">
-                <label for="speakersBrand">Speaker Brand</label>
-                <select
-                  name="speakersBrand"
-                  class="form-select shadow-none"
-                  id="speakersBrand"
-                >
+              <div className="">
+                <label>Speaker Brand</label>
+                <select name="speakersBrand" className="form-select">
                   <option value="">Select Speaker Brand</option>
                   <option value="bose">Bose</option>
                   <option value="edifier">Edifier</option>
@@ -215,9 +219,12 @@ const Add = () => {
                   <option value="others">Others</option>
                 </select>
               </div>
-
-              <button type="submit" className="btn primary-700 mb-3">
-                Add My Bus
+              <button
+                type="submit"
+                className="btn primary-700 mb-3"
+                disabled={isLoading}
+              >
+                {isLoading ? "Adding..." : "Add My Bus"}
               </button>
             </div>
           </form>
@@ -225,6 +232,6 @@ const Add = () => {
       </div>
     </div>
   );
-}; 
+};
 
 export default Add;

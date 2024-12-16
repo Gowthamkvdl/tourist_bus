@@ -43,7 +43,7 @@ export const register = async (req, res) => {
       return res
         .cookie("token", token, {
           httpOnly: false, // This should be true in production
-          secure: false,
+          secure: true,
           sameSite: "None",
           maxAge: tokenDuration,
         })
@@ -65,4 +65,32 @@ export const register = async (req, res) => {
 
 export const logout = (req, res) => {
   res.clearCookie("token").status(200).json({ message: "Logout Successful" });
+};
+
+export const updateUser = async (req, res) => {
+  const userId = req.params.id;
+  const tokenUserId = req.userId;
+  const { ...inputs } = req.body;
+
+  console.log(userId, tokenUserId)
+
+  // if (userId !== tokenUserId) {
+  //   return res.status(403).json({ message: "Not Authorized!" });
+  // }
+
+  try {
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: {
+        ...inputs,
+      },
+    });
+
+    res.status(200).json({
+      updatedUser: updatedUser,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Failed to update User!" });
+  }
 };

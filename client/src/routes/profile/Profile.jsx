@@ -1,46 +1,76 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./profile.css";
 import Card from "../../components/card/Card";
-import { useNavigate } from "react-router-dom";
+import { useLoaderData, useNavigate } from "react-router-dom";
 import apiRequest from "../../lib/apiRequest";
 import rollingLoading from "../../assets/rollingLoading.svg";
 import { AuthContext } from "../../context/AuthContext";
+import { toast } from "react-hot-toast";
 
 const Profile = () => {
   const navigate = useNavigate();
   const { currentUser, updateUser } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
+  const [userName, setUserName] = useState(currentUser.name);
+  const [city, setCity] = useState(currentUser.city);
+  const [updating, setUpdating] = useState(false);
+  const posts = useLoaderData();
+  console.log(posts);
 
   const handleEditClick = (postId) => {
     navigate(`/edit/${postId}`);
     console.log(postId);
   };
 
-const handleLogout = async () => {
-  try {
-    setLoading(true);
-    await apiRequest.post("/auth/logout");
-    console.log("Removing user from localStorage");
-    updateUser(null);
-    localStorage.removeItem("user");
-    navigate("/"); // Navigate to home
+  const handleLogout = async () => {
+    try {
+      setLoading(true);
+      await apiRequest.post("/auth/logout");
+      console.log("Removing user from localStorage");
+      updateUser(null);
+      localStorage.removeItem("user");
+      navigate("/"); // Navigate to home
 
-    toast.success("Logout Successful", {
-      id: "logout-successful",
-      duration: 1000,
-      onClose: () => {
-        // Reload the page after the toast closes
-        window.location.reload();
-      },
-    });
-  } catch (error) {
-    console.error("Error during logout:", error);
-    toast.error("Failed to logout. Please try again.");
-  } finally {
-    setLoading(false);
-  }
-};
+      toast.success("Logout Successful", {
+        id: "logout-successful",
+        duration: 1000, // Toast duration in milliseconds
+      });
+    } catch (error) {
+      console.error("Error during logout:", error);
+      toast.error("Failed to logout. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  const handleNameChange = (event) => {
+    setUserName(event.target.value);
+  };
+  const handleCityChange = (event) => {
+    setCity(event.target.value);
+  };
+
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    try {
+      setUpdating(true);
+      const response = await apiRequest.put(`/auth/update/${currentUser?.id}`, {
+        city,
+        name: userName,
+      });
+      updateUser({
+        ...response.data.updatedUser,
+      });
+      toast.success("Profile Updated Successfully!", {
+        id: "profile update",
+      });
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.data.message);
+    } finally {
+      setUpdating(false);
+    }
+  };
 
   return (
     <div className="pt-md-4 profile">
@@ -76,17 +106,25 @@ const handleLogout = async () => {
               type="text"
               id="name"
               className="form-control shadow-none mb-2"
-              defaultValue={currentUser.name}
+              onChange={handleNameChange}
+              defaultValue={userName}
             />
             <label htmlFor="name">Edit City</label>
             <input
               type="text"
               id="city"
+              onChange={handleCityChange}
               className="form-control shadow-none"
-              defaultValue={currentUser.city}
+              defaultValue={city}
             />
             <div className=" d-flex mt-2 justify-content-end">
-              <button className="btn btn-primary">Update</button>
+              <button
+                className="btn btn-primary"
+                onClick={handleUpdate}
+                disabled={updating}
+              >
+                {updating ? "Updating..." : "Update"}
+              </button>
             </div>
           </div>
         </div>
@@ -118,62 +156,25 @@ const handleLogout = async () => {
       <div className="others box-shadow pb-5 bg-white mt-4">
         <h1 className="title-text p-4 pb-2  opacity-75">Your Buses</h1>
         <div className="cards row">
-          <div className="col-md-6 mb-4">
-            <Card />
-            <div className="float-end me-4">
-              <button
-                className="btn btn-warning me-2"
-                onClick={() => handleEditClick("id")}
-              >
-                Edit
-              </button>
-              <button
-                className="btn btn-danger"
-                type="button"
-                data-bs-toggle="modal"
-                data-bs-target="#delete"
-              >
-                Delete
-              </button>
+          {posts.map((post) => (
+            <div className="col-md-6 mb-4" key={post.postId}>
+              <Card post={post} />
+              <div className="float-end me-4">
+                <button
+                  className="btn btn-warning me-2"
+                  onClick={() => handleEditClick(post.postId)}
+                >
+                  Edit
+                </button>
+              </div>
             </div>
-          </div>
+          ))}
         </div>
-      </div>
-      <div
-        class="modal fade"
-        id="delete"
-        tabindex="-1"
-        aria-labelledby="deleteLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="deleteLabel">
-                Are you sure?
-              </h1>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div class="modal-body">Do you want to delete this bus (VARUN)</div>
-            <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
-                Close
-              </button>
-              <button type="button" class="btn btn-danger">
-                Delete
-              </button>
-            </div>
-          </div>
-        </div>
+          {posts.length === 0 && (
+            <span className="subtitle-text ms-2 p-3">
+              Your buses will appear here
+            </span>
+          )}
       </div>
     </div>
   );

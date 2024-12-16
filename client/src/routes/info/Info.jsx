@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import "./info.css";
 import BackBtn from "../../components/backBtn/BackBtn";
 import DisplayStarRating from "react-star-ratings";
@@ -8,15 +8,119 @@ import bus2 from "../../assets/bus2 (1).jpg";
 import bus3 from "../../assets/bus3 (1).jpg";
 import bus4 from "../../assets/bus4 (1).jpg";
 import bus5 from "../../assets/bus5 (1).jpg";
+import { format } from "timeago.js";
+import { useLoaderData, useNavigate } from "react-router-dom";
+import { StarRating } from "star-ratings-react";
+import { AuthContext } from "../../context/AuthContext";
+import apiRequest from "../../lib/apiRequest.js";
 
 const Info = () => {
-  const [fav, setFav] = useState(false);
+  const post = useLoaderData();
+  const [data, setData] = useState(post);
+  const [fav, setFav] = useState(data.isSaved);
+  const [rating, setRating] = useState(0);
+  const [review, setReview] = useState(null);
+  const [reviews, setReviews] = useState(data.reviews || []);
+  const { currentUser, updateUser } = useContext(AuthContext);
+  const [addingReview, setAddingReview] = useState(false);
+  const reviewBox = useRef(null);
+  const navigate = useNavigate();
 
-  const handleAddFav = () => {
-    setFav(!fav);
-    toast.success(fav ? "Removed from favorites" : "Added to favorites", {
-      id: "fav",
-    });
+  console.log(post)
+
+  const handleAddFav = async () => {
+    try {
+      // Toggle the favorite state optimistically
+      setFav((prevFav) => !prevFav);
+
+      // Send API request to add or remove favorite
+      const response = await apiRequest.post("/post/fav", {
+        postId: data.postId,
+        userId: currentUser.id,
+      });
+      console.log(response)
+
+      if (response.data) {
+        // Show a success message based on the updated state
+        toast.success(fav ? "Removed from favorites" : "Added to favorites", {
+          id: "fav",
+        });
+      } else {
+        // If API response indicates failure, revert the favorite state
+        setFav((prevFav) => !prevFav);
+        toast.error("Failed to update favorites");
+      }
+    } catch (error) {
+      console.error("Error updating favorite:", error);
+
+      // Revert the favorite state in case of an error
+      setFav((prevFav) => !prevFav);
+
+      toast.error("An error occurred while updating favorites");
+    }
+  };
+
+
+  const convertToAgo = (timestamp) => {
+    // Ensure timestamp is a valid date string or Date object
+    const date = new Date(timestamp);
+
+    // Use timeago.js to get the relative time
+    return format(date);
+  };
+
+  const handleEditClick = (postId) => {
+    navigate(`/edit/${postId}`);
+    console.log(postId);
+  };
+
+  const addReview = async (e) => {
+    e.preventDefault();
+    const userId = currentUser.id;
+    const name = currentUser.name;
+    setAddingReview(true);
+
+
+    if (!review) {
+      setAddingReview(false);
+      return toast.error("Review cannot be empty");
+    }
+
+    if (rating === 0) {
+      setAddingReview(false);
+      return toast.error("Please provide a rating");
+    }
+
+    try {
+      const addReview = await apiRequest.post("/review", {
+        review,
+        userId,
+        name,
+        postId: data.postId,
+      });
+      const addRating = await apiRequest.post("/post/rating", {
+        starCount: rating,
+        post: data,
+      });
+
+      setData((prevData) => ({
+        ...prevData,
+        starCount: addRating.data.averageRating,
+        totalRating: addRating.data.totalRatings,
+      }));
+
+      setReviews((prevReviews) => [...prevReviews, addReview.data]);
+      toast.success("Review added successfully", { id: "review" });
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to add review");
+    } finally {
+      // Clear the form and reset the states
+      setReview("");
+      setRating(0);
+      reviewBox.current.reset();
+      setAddingReview(false);
+    }
   };
 
   return (
@@ -25,6 +129,12 @@ const Info = () => {
         <div className="title-text text-center opacity-75 mt-3">
           <BackBtn />
           <span className="text-center">Bus Details</span>
+        <button
+          className="btn btn-warning me-2 float-end"
+          onClick={() => handleEditClick(post.postId)}
+        >
+          Edit
+        </button>
         </div>
       </div>
       <div className="others box-shadow pt-1 pb-5 bg-white ">
@@ -39,50 +149,43 @@ const Info = () => {
               </span>
             </div> */}
             <div className="nameAndRating d-flex flex-column justify-content-center align-items-center">
-              <span className="title-text">VARUN</span>
+              <span className="title-text">{data.busName}</span>
               <div className="location subtitle-text mb-1 d-flex justify-content-center  align-items-center">
                 <span class="material-symbols-outlined fs-3">location_on</span>
-                <span>Vadalur</span>
-              </div><div className="stars">
+                <span>{data.city}</span>
+              </div>
+              <div className="stars d-flex justify-content-center align-items-center">
                 <DisplayStarRating
-                  rating={3}
+                  rating={data.averageRating ? data.averageRating : 0}
                   numberOfStars={5}
                   starDimension="25px"
                   starRatedColor="#FFD700"
                   starSpacing="1px"
                 />
-                <span>(86)</span>
+                <span className="fs-5 mb-0 opacity-75">
+                  ({data.totalRating ? data.totalRating : 0})
+                </span>
               </div>
-              
             </div>
           </div>
           <button className="btn btn-transperant" onClick={handleAddFav}>
-            {fav ? (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="25"
-                height="25"
-                fill="red"
-                class="bi bi-heart-fill me-2"
-                viewBox="0 0 16 16"
-              >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="25"
+              height="25"
+              fill={fav ? "red" : "currentColor"}
+              className={`bi bi-heart${fav ? "-fill" : ""} me-2`}
+              viewBox="0 0 16 16"
+            >
+              {fav ? (
                 <path
-                  fill-rule="evenodd"
+                  fillRule="evenodd"
                   d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"
                 />
-              </svg>
-            ) : (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="25"
-                height="25"
-                fill="currentColor"
-                class="bi bi-heart me-2"
-                viewBox="0 0 16 16"
-              >
+              ) : (
                 <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15" />
-              </svg>
-            )}
+              )}
+            </svg>
           </button>
         </div>
 
@@ -172,14 +275,25 @@ const Info = () => {
           <div className="Price  d-flex justify-content-between align-items-center">
             <div className="title-text mb-1 fw-medium mt-2">Price</div>
             <div className="price title-text">
-              <span>₹10,000</span>
+              <span>₹{data.cost}</span>
               <span className="opacity-75 subtitle-text">/100km</span>
             </div>
           </div>
           <div className="contact  mt-3">
             <div className="row">
               <div className="col-6">
-                <button className="btn w-100 primary-600 d-flex justify-content-center align-items-center">
+                <button
+                  className="btn w-100 primary-600 d-flex justify-content-center align-items-center"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (data.user?.phone) {
+                      window.location.href = `tel:${data.user.phone}`;
+                    } else {
+                      toast.error("Phone number not available");
+                    }
+                    // Replace with your phone number
+                  }}
+                >
                   <span>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -196,7 +310,13 @@ const Info = () => {
                 </button>
               </div>
               <div className="col-6">
-                <button className="btn w-100 btn-warning d-flex justify-content-center align-items-center">
+                <button
+                  className="btn w-100 btn-warning d-flex justify-content-center align-items-center"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.location.href = `https://wa.me/${data.user.phone}`; // Replace with your phone number
+                  }}
+                >
                   <span>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -220,19 +340,19 @@ const Info = () => {
             <div className="type  d-flex justify-content-between align-items-center">
               <div className="body-text mb-1 fw-medium mt-2">No. of seats</div>
               <div className="price body-text">
-                <span>50</span>
+                <span>{data.numberOfSeats}</span>
               </div>
             </div>
             <div className="type  d-flex justify-content-between align-items-center">
               <div className="body-text mb-1 fw-medium mt-2">Bus type</div>
               <div className="price body-text">
-                <span>Standard</span>
+                <span>{data.busType}</span>
               </div>
             </div>
             <div className="type  d-flex justify-content-between align-items-center">
               <div className="body-text mb-1 fw-medium mt-2">AC/Non-AC</div>
               <div className="price body-text">
-                <span>AC</span>
+                <span>{data.ac ? "Yes" : "No"}</span>
               </div>
             </div>
             <div className="type  d-flex justify-content-between align-items-center">
@@ -240,7 +360,7 @@ const Info = () => {
                 Reclining Seats
               </div>
               <div className="price body-text">
-                <span>Yes</span>
+                <span>{data.recliningSeats ? "Yes" : "No"}</span>
               </div>
             </div>
             <div className="type mb-3 d-flex justify-content-between align-items-center">
@@ -248,14 +368,14 @@ const Info = () => {
                 USB Charging Ports
               </div>
               <div className="price body-text">
-                <span>Yes</span>
+                <span>{data.usb ? "Yes" : "No"}</span>
               </div>
             </div>
             <div className="subtitle-text opacity-75">Entertainment</div>
             <div className="type  d-flex justify-content-between align-items-center">
               <div className="body-text mb-1 fw-medium mt-2">TV</div>
               <div className="price body-text">
-                <span>Yes (24 inches)</span>
+                <span>{data.tv ? "Yes" : "No"}</span>
               </div>
             </div>
             <div className="type  d-flex justify-content-between align-items-center">
@@ -263,13 +383,15 @@ const Info = () => {
                 No. of speakers
               </div>
               <div className="price body-text">
-                <span>18 (JBL)</span>
+                <span>
+                  {data.numberOfSpeakers} ({data.speakerBrand})
+                </span>
               </div>
             </div>
             <div className="type  d-flex justify-content-between align-items-center">
               <div className="body-text mb-1 fw-medium mt-2">WiFi</div>
               <div className="price body-text">
-                <span>No</span>
+                <span>{data.wifi ? "Yes" : "No"}</span>
               </div>
             </div>
           </div>
@@ -292,13 +414,13 @@ const Info = () => {
               <div className="reviewBox d-flex mt-3">
                 <div className="photoDiv d-flex">
                   <div className="d-flex justify-centent-center align-items-center text-center photo primary-600 fs-2 text-white">
-                    <span className="mx-auto">G</span>
+                    <span className="mx-auto">{currentUser.name[0]}</span>
                   </div>
                 </div>
                 <div className="nameAndReview ms-2">
-                  <div className="name subtitle-text">Gowtham K</div>
+                  <div className="name subtitle-text">{currentUser.name}</div>
                   <div className="review body-text">
-                    <form action="">
+                    <form action="" ref={reviewBox} onSubmit={addReview}>
                       <textarea
                         name=""
                         placeholder="Add a review..."
@@ -306,9 +428,30 @@ const Info = () => {
                         cols="150"
                         rows="2"
                         required
+                        value={review}
+                        onChange={(e) => setReview(e.target.value)}
                       ></textarea>
-                      <button className="btn primary-700 mt-2 float-end">
-                        Add
+                      <div className="d-flex justify-content-center align-items-center flex-column">
+                        <p className="m-0 mt-3">
+                          Your feedback is valuable to us. Please provide your
+                          rating below:
+                        </p>
+                        <StarRating
+                          rating={rating}
+                          maxRating={5}
+                          starColor="#FFD700"
+                          textColor={"white"}
+                          onSetRating={setRating}
+                          size={20}
+                        />
+                        <span className="me-3 text-center">{rating} stars</span>
+                      </div>
+                      <button
+                        type="submit"
+                        className="btn primary-700 mt-2 float-end"
+                        disabled={addingReview}
+                      >
+                        {addingReview ? "Adding your review..." : "Add Review"}
                       </button>
                     </form>
                   </div>
@@ -316,38 +459,35 @@ const Info = () => {
               </div>
             </div>
             <div className="review mb-5">
-              <div className="reviewBox d-flex mt-3">
-                <div className="photoDiv d-flex">
-                  <div className="d-flex justify-centent-center align-items-center text-center photo primary-600 fs-2 text-white">
-                    <span className="mx-auto">G</span>
-                  </div>
-                </div>
-                <div className="nameAndReview ms-2">
-                  <div className="name subtitle-text">
-                    Gowtham K<span className="small-text ms-2">2 min ago</span>
-                    <div className="review body-text">
-                      Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                      Vitae minus, eos iste voluptatem veritatis consectetur
-                      reprehenderit incidunt deserunt ad sint.
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="reviewBox d-flex mt-3">
-                <div className="photoDiv d-flex">
-                  <div className="d-flex justify-centent-center align-items-center text-center photo primary-600 fs-2 text-white">
-                    <span className="mx-auto ">S</span>
-                  </div>
-                </div>
-                <div className="nameAndReview ms-2">
-                  <div className="name subtitle-text">
-                    Suriya<span className="small-text ms-2">2 min ago</span>
-                  </div>
-                  <div className="review body-text">
-                    Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                  </div>
-                </div>
-              </div>
+              {reviews.length > 0 ? (
+                reviews
+                  .slice() // Clone the array to avoid mutating the original state
+                  .reverse()
+                  .map((review) => {
+                    return (
+                      <div className="reviewBox d-flex mt-4" key={review.id}>
+                        <div className="photoDiv d-flex">
+                          <div className="d-flex justify-content-center align-items-center text-center photo primary-600 fs-2 text-white">
+                            <span className="mx-auto">{review.name[0]}</span>
+                          </div>
+                        </div>
+                        <div className="nameAndReview ms-2">
+                          <div className="name subtitle-text">
+                            {review.name}
+                            <span className="small-text ms-2 opacity-75">
+                              {convertToAgo(review.createdAt)}
+                            </span>
+                            <div className="review body-text">
+                              {review.review}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })
+              ) : (
+                <p>No reviews yet.</p>
+              )}
             </div>
           </div>
         </div>

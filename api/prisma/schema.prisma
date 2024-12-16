@@ -40,10 +40,33 @@ model Post {
   tv               Boolean      @default(false)
   usb              Boolean      @default(false)
   wifi             Boolean      @default(false)
-  user             User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  starRating       StarRating[]
+  reviews          Reviews[]
+  averageRating    Float?       @default(0.0)
+  totalRating      Int          @default(0)
   userId           String       @db.ObjectId
   savedPosts       SavedPosts[]
+  user             User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt        DateTime     @default(now())
+}
+
+model Reviews {
+  reviewId  String   @id @default(auto()) @map("_id") @db.ObjectId
+  Post      Post?    @relation(fields: [postId], references: [postId], onDelete: Cascade)
+  postId    String?  @db.ObjectId
+  review    String
+  name      String
+  userId    String
+  createdAt DateTime @default(now())
+}
+
+model StarRating {
+  starRatingId String   @id @default(auto()) @map("_id") @db.ObjectId
+  Post         Post?    @relation(fields: [postId], references: [postId], onDelete: Cascade)
+  postId       String?  @db.ObjectId
+  giverId      String
+  starCount    Int
+  createdAt    DateTime @default(now())
 }
 
 model Otp {

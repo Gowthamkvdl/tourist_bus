@@ -9,7 +9,7 @@ import apiRequest from "../../lib/apiRequest";
 import { AuthContext } from "../../context/AuthContext";
 
 const Navbar = () => {
-  const {currentUser, updateUser} = useContext(AuthContext);
+  const { currentUser, updateUser } = useContext(AuthContext);
   const location = useLocation();
   const navigate = useNavigate();
   const loginBoxBtn = useRef(null);
@@ -17,13 +17,12 @@ const Navbar = () => {
   const [otpSent, setOtpSent] = useState(false);
   const [verifyOtp, setVerifyOtp] = useState(false);
   const [phone, setPhone] = useState("");
-  const [timer, setTimer] = useState(0);
   const [newUser, setNewUser] = useState(false);
   const [sending, setSending] = useState(false);
-  const [sent, setSent] = useState(false);
   const [checking, setChecking] = useState(false);
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState(false);
+  const phoneInput = useRef(null);
 
   useEffect(() => {
     const sideParts = document.querySelectorAll(".sidePart");
@@ -59,12 +58,15 @@ const Navbar = () => {
     if (!user || user === "null") {
       console.log("User not logged in, showing login modal");
       loginBoxBtn.current.click();
+      setOtpSent(false);
+      setVerifyOtp(false);
+      setOtp("");
+      phoneInput.current.value = "";
     } else {
       console.log("User logged in, navigating to profile");
       navigate("/profile");
     }
   };
-
 
   const isActive = (path) => (location.pathname === path ? "active" : "");
 
@@ -211,7 +213,7 @@ const Navbar = () => {
       }
       if (loginBoxBtn.current && newUser) {
         loginBoxBtn.current.click();
-      } 
+      }
     } catch (error) {
       console.log(error);
       toast.error(error.response.data.message);
@@ -224,14 +226,13 @@ const Navbar = () => {
     setPhone(event.target.value);
   };
 
+
   return (
     <div>
       <nav className="navbar container navbar-expand d-flex align-items-center justify-content-md-between justify-content-center bg-body-white">
         <div className="touristBus d-none d-md-block sidePart">
           <h1 className="title-text">Tourist Bus</h1>
         </div>
-        <Toaster position="top-center" reverseOrder={false} />
-
         <div>
           <div
             className="collapse primary-400  navbar-collapse box-shadow px-3 rounded-4"
@@ -290,7 +291,7 @@ const Navbar = () => {
             className="btn secondary-700 d-flex align-items-center gap-1"
           >
             <span className="material-symbols-outlined">person</span>
-            Profile
+            {currentUser ? currentUser.name : "Login"}
           </button>
         </div>
         <button
@@ -310,8 +311,6 @@ const Navbar = () => {
         aria-hidden="true"
         data-bs-backdrop="static"
       >
-        <Toaster position="top-center" reverseOrder={false} />
-
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
             <div className="modal-body p-3">
@@ -339,6 +338,7 @@ const Navbar = () => {
                         } `}
                         id="floatingNumber"
                         placeholder="Phone Number"
+                        ref={phoneInput}
                         defaultValue={phone}
                         onChange={handlePhoneChange}
                       />

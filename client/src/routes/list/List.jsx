@@ -1,8 +1,13 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import "./list.css";
 import Card from "../../components/card/Card";
+import { useLoaderData, useLocation, useSearchParams } from "react-router-dom";
 
 const List = () => {
+  const posts = useLoaderData();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const closeBtn = useRef(null);
+  const [newLocation, setNewLocation] = useState(searchParams.get("location"));
   const [diver, setDriver] = useState(true);
   const [sortByPrice, setSortByPrice] = useState("");
   const [sortByCapacity, setSortByCapacity] = useState("");
@@ -87,17 +92,37 @@ const List = () => {
   console.log(busTypes);
   console.log(ratings);
   console.log(ac);
+  console.log(sortByPrice);
+
+  const handleSelectChange = (e) => {
+    const selectedLocation = e.target.value;
+    setNewLocation(selectedLocation); // Update the state
+    if (selectedLocation) {
+      searchParams.set("location", selectedLocation); // Update search params
+    } else {
+      searchParams.delete("location"); // Remove if no location is selected
+    }
+    setSearchParams(searchParams); // Update URL
+    closeBtn.current.click(); // Close the modal programmatically
+  };
+
+  console.log(posts);
 
   return (
     <div>
       <div className="header  pt-md-1">
-        <div className="city pb-3 mt-4 d-flex justify-content-center align-items-center gap-1 ">
+        <div className="city mt-4 d-flex justify-content-center align-items-center gap-1 ">
           <div className="locationIcon ">
             <span class="material-symbols-outlined fs-2 bg-secondary rounded-5 text-white p-2">
               location_on
             </span>
           </div>
-          <span className="title-text">Vadalur</span>
+          <span className="title-text">
+            {searchParams.get("location")
+              ? searchParams.get("location").charAt(0).toUpperCase() +
+                searchParams.get("location").slice(1).toLowerCase()
+              : "Select Location"}
+          </span>
           <span
             className="material-symbols-outlined btn mx-0 mt-2 px-0 btn-transperant"
             type="button"
@@ -108,7 +133,7 @@ const List = () => {
           </span>
         </div>
         <div className="selection rounded-5 mx-3 mx-md-5 mt-3">
-          <div className="row mx-auto" onClick={handleSelect}>
+          {/* <div className="row mx-auto" onClick={handleSelect}>
             <div
               className={`col-6 driverSelected ${
                 diver === true ? "box-shadow bg-white rounded-5" : ""
@@ -127,7 +152,7 @@ const List = () => {
               </p>
               <p className="text-center body-text">Less Expensive</p>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
       <div className="others box-shadow pb-5 bg-white mt-4">
@@ -145,30 +170,11 @@ const List = () => {
           </button>
         </div>
         <div className="cards row">
-          <div className="col-md-6">
-            <Card />
-          </div>
-          <div className="col-md-6">
-            <Card />
-          </div>
-          <div className="col-md-6">
-            <Card />
-          </div>
-          <div className="col-md-6">
-            <Card />
-          </div>
-          <div className="col-md-6">
-            <Card />
-          </div>
-          <div className="col-md-6">
-            <Card />
-          </div>
-          <div className="col-md-6">
-            <Card />
-          </div>
-          <div className="col-md-6">
-            <Card />
-          </div>
+          {posts.postData.map((post) => (
+            <div className="col-md-6" key={post.postId}>
+              <Card post={post} />
+            </div>
+          ))}
         </div>
       </div>
       <div
@@ -205,7 +211,11 @@ const List = () => {
                         id="priceLth"
                         name="price"
                         checked={sortByPrice === "LTH"}
-                        onChange={() => setSortByPrice("LTH")}
+                        onChange={() => {
+                          setSortByPrice("LTH");
+                          searchParams.set("price", "LTH");
+                          setSearchParams(searchParams);
+                        }}
                       />
                       <label for="priceLth">Low to High</label>
                     </div>
@@ -215,7 +225,11 @@ const List = () => {
                         id="priceHtl"
                         name="price"
                         checked={sortByPrice === "HTL"}
-                        onChange={() => setSortByPrice("HTL")}
+                        onChange={() => {
+                          setSortByPrice("HTL");
+                          searchParams.set("price", "HTL");
+                          setSearchParams(searchParams);
+                        }}
                       />
                       <label for="priceHtl">High to Low</label>
                     </div>
@@ -232,7 +246,11 @@ const List = () => {
                         id="capLth"
                         name="capacity"
                         checked={sortByCapacity === "LTH"}
-                        onChange={() => setSortByCapacity("LTH")}
+                        onChange={() => {
+                          setSortByCapacity("LTH");
+                          searchParams.set("seats", "LTH");
+                          setSearchParams(searchParams);
+                        }}
                       />
                       <label for="capLth">Low to High</label>
                     </div>
@@ -242,7 +260,11 @@ const List = () => {
                         id="capHtl"
                         name="capacity"
                         checked={sortByCapacity === "HTL"}
-                        onChange={() => setSortByCapacity("HTL")}
+                        onChange={() => {
+                          setSortByCapacity("HTL");
+                          searchParams.set("seats", "HTL");
+                          setSearchParams(searchParams);
+                        }}
                       />
                       <label for="capHtl">High to Low</label>
                     </div>
@@ -469,19 +491,61 @@ const List = () => {
               ></button>
             </div>
             <div class="modal-body">
-              <select name="" className="form-select shadow-none" id="">
-                <option value="">Select Location</option>
-                <option value="">Vadalur</option>
-                <option value="">Cuddalur</option>
-                <option value="">Chennai</option>
-                <option value="">Panruti</option>
+              <select
+                name=""
+                onChange={handleSelectChange}
+                value={newLocation}
+                className="form-select shadow-none"
+                id=""
+              >
+                <option value="">All places</option>
+                <option value="Ariyalur">Ariyalur</option>
+                <option value="Chengalpattu">Chengalpattu</option>
+                <option value="Chennai">Chennai</option>
+                <option value="Coimbatore">Coimbatore</option>
+                <option value="Cuddalore">Cuddalore</option>
+                <option value="Dindigul">Dindigul</option>
+                <option value="Erode">Erode</option>
+                <option value="Kanchipuram">Kanchipuram</option>
+                <option value="Kanyakumari">Kanyakumari</option>
+                <option value="Karur">Karur</option>
+                <option value="Madurai">Madurai</option>
+                <option value="Nagapattinam">Nagapattinam</option>
+                <option value="Namakkal">Namakkal</option>
+                <option value="Panruti">Panruti</option>
+                <option value="Pudukkottai">Pudukkottai</option>
+                <option value="Ramanathapuram">Ramanathapuram</option>
+                <option value="Salem">Salem</option>
+                <option value="Thanjavur">Thanjavur</option>
+                <option value="Theni">Theni</option>
+                <option value="Thoothukudi">Thoothukudi</option>
+                <option value="Tiruchirappalli">Tiruchirappalli</option>
+                <option value="Tirunelveli">Tirunelveli</option>
+                <option value="Tiruppur">Tiruppur</option>
+                <option value="Tiruvannamalai">Tiruvannamalai</option>
+                <option value="Tiruvarur">Tiruvarur</option>
+                <option value="Vadalur">Vadalur</option>
+                <option value="Vellore">Vellore</option>
+                <option value="Viluppuram">Viluppuram</option>
+                <option value="Virudhunagar">Virudhunagar</option>
+                <option value="Nagercoil">Nagercoil</option>
+                <option value="Sivakasi">Sivakasi</option>
+                <option value="Pollachi">Pollachi</option>
+                <option value="Avinashi">Avinashi</option>
+                <option value="Udumalaipettai">Udumalaipettai</option>
+                <option value="Dharmapuri">Dharmapuri</option>
+                <option value="Perambalur">Perambalur</option>
+                <option value="Arakkonam">Arakkonam</option>
+                <option value="Kumbakonam">Kumbakonam</option>
+                <option value="Pattukkottai">Pattukkottai</option>
               </select>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer d-none">
               <button
                 type="button"
                 class="btn btn-secondary"
                 data-bs-dismiss="modal"
+                ref={closeBtn}
               >
                 Close
               </button>
