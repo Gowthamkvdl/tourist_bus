@@ -155,7 +155,7 @@ const Profile = () => {
       </div>
       <div className="others box-shadow pb-5 bg-white mt-4">
         <h1 className="title-text p-4 pb-2  opacity-75">Your Buses</h1>
-        <div className="cards row">
+        <div className="cards row px-md-4 px-3">
           {posts.map((post) => (
             <div className="col-md-6 mb-4" key={post.postId}>
               <Card post={post} />

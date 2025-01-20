@@ -239,8 +239,8 @@ const Navbar = () => {
             id="navbarNav"
           >
             <ul className="navbar-nav">
-              <li className="nav-item">
-                <Link className={`nav-link ${isActive("/")}`} to="/">
+              <li className="nav-item ">
+                <Link className={`nav-link shadow-none ${isActive("/")}`} to="/">
                   <span className="material-symbols-outlined d-md-none mt-1 title-text">
                     home
                   </span>
@@ -248,7 +248,7 @@ const Navbar = () => {
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className={`nav-link ${isActive("/list")}`} to="/list">
+                <Link className={`nav-link shadow-none ${isActive("/list")}`} to="/list?limit=5">
                   <span className="material-symbols-outlined d-md-none mt-1 title-text">
                     search
                   </span>
@@ -256,7 +256,7 @@ const Navbar = () => {
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className={`nav-link ${isActive("/fav")}`} to="/fav">
+                <Link className={`nav-link shadow-none ${isActive("/fav")}`} to="/fav">
                   <span className="material-symbols-outlined d-md-none mt-1 title-text">
                     favorite
                   </span>
@@ -264,7 +264,7 @@ const Navbar = () => {
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className={`nav-link ${isActive("/add")}`} to="/add">
+                <Link className={`nav-link shadow-none ${isActive("/add")}`} to="/add">
                   <span className="material-symbols-outlined d-md-none mt-1 title-text">
                     add_circle
                   </span>
@@ -274,7 +274,7 @@ const Navbar = () => {
               <li className="nav-item d-md-none">
                 <button
                   onClick={onClickProfileBtn}
-                  className={`nav-link btn ${isActive("/profile")}`}
+                  className={`nav-link shadow-none btn ${isActive("/profile")}`}
                 >
                   <span className="material-symbols-outlined d-md-none mt-1 title-text">
                     person
@@ -309,7 +309,7 @@ const Navbar = () => {
         tabIndex="-1"
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
-        data-bs-backdrop="static"
+        // data-bs-backdrop="static"
       >
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">

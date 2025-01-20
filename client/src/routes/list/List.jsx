@@ -1,21 +1,28 @@
-import React, { useRef, useState } from "react";
+import React, { Suspense, useEffect, useRef, useState } from "react";
 import "./list.css";
 import Card from "../../components/card/Card";
-import { useLoaderData, useLocation, useSearchParams } from "react-router-dom";
+import {
+  Await,
+  useLoaderData,
+  useLocation,
+  useSearchParams,
+} from "react-router-dom";
+import toast from "react-hot-toast";
+import CardSkeleton from "../../components/cardSkeleton/CardSkeleton";
+import ErrorComponent from "../../components/errorComponent/ErrorComponent";
 
 const List = () => {
   const posts = useLoaderData();
   const [searchParams, setSearchParams] = useSearchParams();
+  const loadMoreButtonRef = useRef(null);
   const closeBtn = useRef(null);
   const [newLocation, setNewLocation] = useState(searchParams.get("location"));
   const [diver, setDriver] = useState(true);
   const [sortByPrice, setSortByPrice] = useState("");
   const [sortByCapacity, setSortByCapacity] = useState("");
-  const [ac, setAc] = useState({
-    nonac: false,
-    ac: false,
-  });
-  const [nonAc, setNonAc] = useState(false);
+  const [ac, setAc] = useState(false);
+  const [totalPost, setTotalPost] = useState(0);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [busTypes, setBusTypes] = useState({
     luxury: false,
     semiLuxury: false,
@@ -26,15 +33,12 @@ const List = () => {
   });
   const [amenities, setAmenities] = useState({
     wifi: false,
-    chargingPoints: false,
+    usb: false,
     recliningSeats: false,
-    tvEntertainment: false,
+    tv: false,
     restroom: false,
   });
-  const [ratings, setRatings] = useState({
-    rating4: false,
-    rating3: false,
-  });
+  const [ratings, setRatings] = useState("");
 
   const handleSelect = () => {
     setDriver(!diver);
@@ -47,17 +51,47 @@ const List = () => {
 
   const handleAmenitiesChange = (event) => {
     const { name, checked } = event.target;
+
+    // Update the amenities state
     setAmenities((prev) => ({ ...prev, [name]: checked }));
+
+    // Update the URL query parameter
+    if (checked) {
+      searchParams.set(name, true); // Add query parameter if checked is true
+    } else {
+      searchParams.delete(name); // Remove query parameter if checked is false
+    }
+
+    setSearchParams(searchParams);
   };
 
   const handleACChange = (event) => {
     const { name, checked } = event.target;
     setAc((prev) => ({ ...prev, [name]: checked }));
+    setAc(!ac);
+    searchParams.set("ac", !ac);
+    if (ac === true) {
+      searchParams.delete("ac");
+    }
+    setSearchParams(searchParams);
   };
 
-  const handleRatingsChange = (event) => {
-    const { name, checked } = event.target;
-    setRatings((prev) => ({ ...prev, [name]: checked }));
+  const handleRatingsChange3 = (event) => {
+    setRatings("3");
+    searchParams.set("averageRating", 3);
+    setSearchParams(searchParams);
+  };
+
+  const handleRatingsChange4 = (event) => {
+    setRatings("4");
+    searchParams.set("averageRating", 4);
+    setSearchParams(searchParams);
+  };
+
+  const handleRatingsChangeAll = () => {
+    setRatings("all");
+    searchParams.delete("averageRating");
+    setSearchParams(searchParams);
   };
 
   const handleReset = () => {
@@ -65,7 +99,6 @@ const List = () => {
     setSortByPrice("");
     setSortByCapacity("");
     setAc({ nonac: false, ac: false });
-    setNonAc(false);
     setBusTypes({
       luxury: false,
       semiLuxury: false,
@@ -76,23 +109,15 @@ const List = () => {
     });
     setAmenities({
       wifi: false,
-      chargingPoints: false,
+      usb: false,
       recliningSeats: false,
-      tvEntertainment: false,
+      tv: false,
       restroom: false,
     });
-    setRatings({
-      rating4: false,
-      rating3: false,
-    });
+    setRatings("");
+    toast.success("Filter has been reset");
+    setSearchParams("limit=5");
   };
-
-  console.log(amenities);
-  console.log(diver);
-  console.log(busTypes);
-  console.log(ratings);
-  console.log(ac);
-  console.log(sortByPrice);
 
   const handleSelectChange = (e) => {
     const selectedLocation = e.target.value;
@@ -108,6 +133,85 @@ const List = () => {
 
   console.log(posts);
 
+  const handleApply = () => {
+    toast.success("Filter Applied");
+  };
+
+  const loadMore = async () => {
+    setIsLoadingMore(true);
+    searchParams.set(
+      "limit",
+      parseInt(searchParams.get("limit"))
+        ? parseInt(searchParams.get("limit")) + 1
+        : 5
+    );
+    setSearchParams(searchParams);
+
+    setTimeout(() => {
+      setIsLoadingMore(false);
+    }, 1000);
+  };
+
+  // Set up Intersection Observer
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (
+            entry.isIntersecting &&
+            !isLoadingMore &&
+            parseInt(searchParams.get("limit")) <= totalPost
+          ) {
+            // Automatically trigger the button's click event
+            loadMoreButtonRef.current?.click();
+          }
+        });
+      },
+      {
+        root: null,
+        rootMargin: "250px",
+        threshold: 0.1,
+      }
+    );
+
+    const button = loadMoreButtonRef.current;
+    if (button) {
+      observer.observe(button);
+    }
+
+    return () => {
+      if (button) {
+        observer.unobserve(button);
+      }
+    };
+  }, [isLoadingMore, totalPost]);
+
+  const handlePostResponse = (postResponse) => {
+    const postData = postResponse.data.postData;
+    console.log(postData)
+    if (totalPost !== postData.length) {
+      setTotalPost(postData.length);
+      setIsLoadingMore(false);
+    }
+    console.log(postResponse.data);
+    if (postData.length > 0) {
+      return postData.map((post) => (
+        <div className="col-md-6">
+          <Card post={post} key={post.postId} />
+        </div>
+      ));
+    } else {
+      setTotalPost(0);
+      setIsLoadingMore(false);
+      return (
+        <div className="text-center">
+          <h3>No buses found</h3>
+          <p>Please use the filter to find suitable buses.</p>
+        </div>
+      );
+    }
+  };
+
   return (
     <div>
       <div className="header  pt-md-1">
@@ -117,7 +221,7 @@ const List = () => {
               location_on
             </span>
           </div>
-          <span className="title-text">
+          <span className="title-text mx-1">
             {searchParams.get("location")
               ? searchParams.get("location").charAt(0).toUpperCase() +
                 searchParams.get("location").slice(1).toLowerCase()
@@ -158,7 +262,7 @@ const List = () => {
       <div className="others box-shadow pb-5 bg-white mt-4">
         <div className="filterBtns mt-2 mb-1 d-flex justify-content-between align-items-center gap-2 p-3">
           <span className="subtitle-text opacity-75 ms-2">
-            37 results avaiable
+            Avaiable results
           </span>
           <button
             data-bs-toggle="modal"
@@ -169,12 +273,32 @@ const List = () => {
             <span>Filter & Sort</span>
           </button>
         </div>
-        <div className="cards row">
+        {/* <div className="cards row px-md-4 px-3">
           {posts.postData.map((post) => (
-            <div className="col-md-6" key={post.postId}>
+            <div className="col-md-6 " key={post.postId}>
               <Card post={post} />
             </div>
           ))}
+        </div> */}
+        <div className="cards row px-md-4 px-3">
+          <Suspense fallback={<CardSkeleton NoOfCards={4} />}>
+            <Await resolve={posts.postResponse} errorElement={<div><ErrorComponent /></div>}>
+              {handlePostResponse}
+            </Await>
+            <div
+              ref={loadMoreButtonRef}
+              className={`btn text-light mt-3 d-flex fs-5 justify-content-center mx-1`}
+              onClick={loadMore}
+            >
+              {isLoadingMore ? (
+                <span className="text-dark">Loading more Buses...</span>
+              ) : totalPost > 0 ? (
+                <span className="text-dark">No more Buses!</span>
+              ) : (
+                ""
+              )}
+            </div>
+          </Suspense>
         </div>
       </div>
       <div
@@ -199,7 +323,19 @@ const List = () => {
             </div>
             <div class="modal-body">
               <div className="sort">
-                <div className="subtitle-text">Sort By</div>
+                <div className="subtitle-text">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    fill="currentColor"
+                    class="bi bi-sort-up mb-1 me-1"
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="M3.5 12.5a.5.5 0 0 1-1 0V3.707L1.354 4.854a.5.5 0 1 1-.708-.708l2-1.999.007-.007a.5.5 0 0 1 .7.006l2 2a.5.5 0 1 1-.707.708L3.5 3.707zm3.5-9a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5M7.5 6a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1zm0 3a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1zm0 3a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1z" />
+                  </svg>
+                  Sort By
+                </div>
                 <div className="price">
                   <div className="body-text mb-1 opacity-75 fw-medium mt-2">
                     Price
@@ -273,7 +409,19 @@ const List = () => {
               </div>
               <hr />
               <div className="sort mt-4">
-                <div className="subtitle-text">Filter by</div>
+                <div className="subtitle-text">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    fill="currentColor"
+                    class="bi bi-filter mb-1 me-1"
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5" />
+                  </svg>
+                  Filter by
+                </div>
                 <div className="ac">
                   <div className="body-text mb-1 opacity-75 fw-medium mt-2">
                     AC/Non-AC
@@ -287,84 +435,7 @@ const List = () => {
                         checked={ac.ac}
                         onChange={handleACChange}
                       />
-                      <label for="ac">AC</label>
-                    </div>
-                    <div class="button-group">
-                      <input
-                        type="checkbox"
-                        id="nonac"
-                        name="nonac"
-                        checked={ac.nonac}
-                        onChange={handleACChange}
-                      />
-                      <label for="nonac">Non-AC</label>
-                    </div>
-                  </fieldset>
-                </div>
-                <div className="type">
-                  <div className="body-text mb-1 opacity-75 fw-medium mt-2">
-                    Bus Type
-                  </div>
-                  <fieldset>
-                    <div class="button-group">
-                      <input
-                        type="checkbox"
-                        id="Luxury"
-                        name="luxury"
-                        checked={busTypes.luxury}
-                        onChange={handleBusTypeChange}
-                      />
-                      <label for="Luxury">Luxury</label>
-                    </div>
-                    <div class="button-group">
-                      <input
-                        type="checkbox"
-                        id="Semi-Luxury"
-                        name="semiLuxury"
-                        checked={busTypes.semiLuxury}
-                        onChange={handleBusTypeChange}
-                      />
-                      <label for="Semi-Luxury">Semi-Luxury</label>
-                    </div>
-                    <div class="button-group">
-                      <input
-                        type="checkbox"
-                        id="Standard"
-                        name="standard"
-                        checked={busTypes.standard}
-                        onChange={handleBusTypeChange}
-                      />
-                      <label for="Standard">Standard</label>
-                    </div>
-                    <div class="button-group">
-                      <input
-                        type="checkbox"
-                        id="Mini-Bus"
-                        name="miniBus"
-                        checked={busTypes.miniBus}
-                        onChange={handleBusTypeChange}
-                      />
-                      <label for="Mini-Bus">Mini Bus</label>
-                    </div>
-                    <div class="button-group">
-                      <input
-                        type="checkbox"
-                        id="Sleeper"
-                        name="sleeper"
-                        checked={busTypes.sleeper}
-                        onChange={handleBusTypeChange}
-                      />
-                      <label for="Sleeper">Sleeper</label>
-                    </div>
-                    <div class="button-group">
-                      <input
-                        type="checkbox"
-                        id="Seater"
-                        name="seater"
-                        checked={busTypes.seater}
-                        onChange={handleBusTypeChange}
-                      />
-                      <label for="Seater">Seater</label>
+                      <label for="ac">AC Only</label>
                     </div>
                   </fieldset>
                 </div>
@@ -387,8 +458,8 @@ const List = () => {
                       <input
                         type="checkbox"
                         id="charging-points"
-                        name="chargingPoints"
-                        checked={amenities.chargingPoints}
+                        name="usb"
+                        checked={amenities.usb}
                         onChange={handleAmenitiesChange}
                       />
                       <label for="charging-points">Charging Points</label>
@@ -407,8 +478,8 @@ const List = () => {
                       <input
                         type="checkbox"
                         id="tv-entertainment"
-                        name="tvEntertainment"
-                        checked={amenities.tvEntertainment}
+                        name="tv"
+                        checked={amenities.tv}
                         onChange={handleAmenitiesChange}
                       />
                       <label for="tv-entertainment">TV/Entertainment</label>
@@ -433,22 +504,32 @@ const List = () => {
                     <div class="button-group">
                       <input
                         type="checkbox"
+                        id="rating-3"
+                        name="3"
+                        checked={ratings === "3"}
+                        onChange={handleRatingsChange3}
+                      />
+                      <label for="rating-3">3 Stars & Above</label>
+                    </div>
+                    <div class="button-group">
+                      <input
+                        type="checkbox"
                         id="rating-4"
-                        name="rating4"
-                        checked={ratings.rating4}
-                        onChange={handleRatingsChange}
+                        name="4"
+                        checked={ratings === "4"}
+                        onChange={handleRatingsChange4}
                       />
                       <label for="rating-4">4 Stars & Above</label>
                     </div>
                     <div class="button-group">
                       <input
                         type="checkbox"
-                        id="rating-3"
-                        name="rating3"
-                        checked={ratings.rating3}
-                        onChange={handleRatingsChange}
+                        id="all"
+                        name="all"
+                        checked={ratings === "all"}
+                        onChange={handleRatingsChangeAll}
                       />
-                      <label for="rating-3">3 Stars & Above</label>
+                      <label for="all">All</label>
                     </div>
                   </fieldset>
                 </div>
@@ -463,7 +544,12 @@ const List = () => {
               >
                 Reset
               </button>
-              <button type="button" class="btn btn-primary">
+              <button
+                type="button"
+                class="btn btn-primary"
+                data-bs-dismiss="modal"
+                onClick={handleApply}
+              >
                 Apply
               </button>
             </div>
@@ -498,7 +584,7 @@ const List = () => {
                 className="form-select shadow-none"
                 id=""
               >
-                <option value="">All places</option>
+                <option value="">All Cities</option>
                 <option value="Ariyalur">Ariyalur</option>
                 <option value="Chengalpattu">Chengalpattu</option>
                 <option value="Chennai">Chennai</option>

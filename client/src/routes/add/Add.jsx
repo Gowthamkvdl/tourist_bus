@@ -27,6 +27,7 @@ const Add = () => {
       recliningSeats: formData.get("seat") === "yes",
       usb: formData.get("usb") === "yes",
       tv: formData.get("tv") === "yes",
+      wifi: formData.get("wifi") === "yes",
       numberOfSpeakers: formData.get("speakers") || "0",
       speakerBrand: formData.get("speakersBrand") || "others",
       city: currentUser.city,
@@ -147,6 +148,7 @@ const Add = () => {
                 { label: "Reclining Seats", name: "seat" },
                 { label: "USB Charging Ports", name: "usb" },
                 { label: "TV", name: "tv" },
+                { label: "WiFi", name: "wifi" },
               ].map((item) => (
                 <div key={item.name} className="d-flex justify-content-between">
                   <div className="name me-4">{item.label}</div>

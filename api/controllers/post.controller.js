@@ -2,19 +2,18 @@ import prisma from "../lib/prisma.js";
 import jwt from "jsonwebtoken";
 
 export const getPosts = async (req, res) => {
-  const limit = parseInt(req.query.limit) || 5;
+  const limit = parseInt(req.query.limit) || 999;
   const {
     location,
     busType,
     recliningSeats,
     ac,
     wifi,
-    tv,
-    usb,
-    minCost,
-    maxCost,
-    price,
     seats,
+    tv,
+    price,
+    usb,
+    averageRating,
   } = req.query;
 
   const currentDate = new Date();
@@ -33,10 +32,15 @@ export const getPosts = async (req, res) => {
         wifi: wifi ? wifi === "true" : undefined,
         tv: tv ? tv === "true" : undefined,
         usb: usb ? usb === "true" : undefined,
+        averageRating: averageRating
+          ? { gt: parseFloat(averageRating) }
+          : undefined,
       },
       orderBy: [
-        {numberOfSeats : seats ? (seats === "HTL" ? "desc" : "asc") : undefined},
-        {cost: price ? (price === "HTL" ? "desc" : "asc") : undefined},
+        {
+          numberOfSeats: seats ? (seats === "HTL" ? "desc" : "asc") : undefined,
+        },
+        { cost: price ? (price === "HTL" ? "desc" : "asc") : undefined },
       ],
       include: {
         user: {
@@ -327,7 +331,7 @@ export const getSavedPosts = async (req, res) => {
         post: true,
       },
     });
-    res.status(200).json(savedPosts);
+    res.status(200).json({ postData: savedPosts, total: savedPosts.length });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Server error" });

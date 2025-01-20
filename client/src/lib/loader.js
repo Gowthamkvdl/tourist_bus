@@ -15,13 +15,18 @@ export const editPageLoader = async ({ params }) => {
 
 
 export const homePageLoader = async () => {
-  const response = await apiRequest.get("/post/posts");
-  return response.data;
+  const response =  apiRequest.get("/post/posts");
+  // return response.data;
+  return defer({
+    postResponse: response,
+  });
 }
 
 export const favPageLoader = async () => {
-  const response = await apiRequest.get("/post/fav");
-  return response.data;
+  const response = apiRequest.get("/post/fav");
+  return defer({
+    postResponse: response,
+  });
 };
 
 export const profilePageLoader = async () => {
@@ -33,11 +38,11 @@ export const profilePageLoader = async () => {
 export const listPageLoader = async ({ request }) => {
   const [others, limitStr] = request.url.split("?")[1].split("&limit=");
   const limit = parseInt(limitStr);
-  const postPromise = await apiRequest.get(`/post/posts?${others}&limit=${limit}`);
-  // return defer({
-  //   postResponse: postPromise,
-  // });
-  return postPromise.data;
+  const postPromise =  apiRequest.get(`/post/posts?${others}&limit=${limit}`);
+  return defer({
+    postResponse: postPromise,
+  });
+  // return postPromise.data;
 };
 
 

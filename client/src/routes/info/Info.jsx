@@ -74,12 +74,19 @@ const Info = () => {
     console.log(postId);
   };
 
+  const handleReviewtoggle = () => {
+    if(!currentUser){
+      toast.error("Login to add your review",{id:"not logged in"})
+    }
+  }
+
   const addReview = async (e) => {
     e.preventDefault();
     const userId = currentUser.id;
     const name = currentUser.name;
     setAddingReview(true);
 
+    
 
     if (!review) {
       setAddingReview(false);
@@ -352,7 +359,7 @@ const Info = () => {
             <div className="type  d-flex justify-content-between align-items-center">
               <div className="body-text mb-1 fw-medium mt-2">AC/Non-AC</div>
               <div className="price body-text">
-                <span>{data.ac ? "Yes" : "No"}</span>
+                <span>{data.ac ? "AC" : "Non-AC"}</span>
               </div>
             </div>
             <div className="type  d-flex justify-content-between align-items-center">
@@ -406,10 +413,12 @@ const Info = () => {
                 data-bs-target="#collapseExample"
                 aria-expanded="false"
                 aria-controls="collapseExample"
+                onClick={handleReviewtoggle}
               >
                 Add a review
               </button>
             </div>
+            {currentUser && 
             <div class="collapse" id="collapseExample">
               <div className="reviewBox d-flex mt-3">
                 <div className="photoDiv d-flex">
@@ -457,7 +466,7 @@ const Info = () => {
                   </div>
                 </div>
               </div>
-            </div>
+            </div> }
             <div className="review mb-5">
               {reviews.length > 0 ? (
                 reviews

@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 const Card = ({post}) => {
   return (
-    <div className="busCard rounded-4 box-shadow mx-3 mb-3 p-3">
+    <div className="busCard rounded-4 box-shadow mb-3 p-3 overflow-hidden">
       <div className="upperSection">
         <div className="details row">
           <div className="col-7 d-flex flex-column">
