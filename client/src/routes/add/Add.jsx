@@ -4,6 +4,7 @@ import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import apiRequest from "../../lib/apiRequest";
 import { AuthContext } from "../../context/AuthContext";
+import DismissibleToast from "../../components/dismissibleToast/DismissibleToast"
 
 const Add = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -34,7 +35,15 @@ const Add = () => {
     };
 
     if (!data.busName || !data.busType) {
-      toast.error("Please fill all required fields.");
+      toast(
+        (t) => (
+          <DismissibleToast
+            message= "Please fill all required fields."
+            toastProps={t}
+          />
+        ),
+        { icon: "🔔", duration: 5000, id:"Please fill all required fields." }
+      );
       return;
     }
 
@@ -45,10 +54,26 @@ const Add = () => {
 
       const post = await apiRequest.post("/post", data);
       navigate(`/info/${post.data.postId}`);
-      toast.success("Your bus has been added successfully!");
+      toast(
+        (t) => (
+          <DismissibleToast
+            message= "Your bus has been added successfully!"
+            toastProps={t}
+          />
+        ),
+        { icon: "🔔", duration: 5000, id:"Your bus has been added successfully!" }
+      );
     } catch (error) {
       console.error(error);
-      toast.error("An error occurred. Please try again later.");
+      toast(
+        (t) => (
+          <DismissibleToast
+            message= "An error occurred. Please try again later."
+            toastProps={t}
+          />
+        ),
+        { icon: "🔔", duration: 5000, id:"An error occurred. Please try again later." }
+      );
     } finally {
       setIsLoading(false);
     }

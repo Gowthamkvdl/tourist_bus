@@ -6,6 +6,7 @@ import apiRequest from "../../lib/apiRequest";
 import rollingLoading from "../../assets/rollingLoading.svg";
 import { AuthContext } from "../../context/AuthContext";
 import { toast } from "react-hot-toast";
+import DismissibleToast from "../../components/dismissibleToast/DismissibleToast";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -31,13 +32,25 @@ const Profile = () => {
       localStorage.removeItem("user");
       navigate("/"); // Navigate to home
 
-      toast.success("Logout Successful", {
-        id: "logout-successful",
-        duration: 1000, // Toast duration in milliseconds
-      });
+      toast(
+        (t) => <DismissibleToast message="logout successful" toastProps={t} />,
+        { icon: "🔔", duration: 5000, id: "logout successful" }
+      );
     } catch (error) {
       console.error("Error during logout:", error);
-      toast.error("Failed to logout. Please try again.");
+      toast(
+        (t) => (
+          <DismissibleToast
+            message="Failed to logout. Please try again."
+            toastProps={t}
+          />
+        ),
+        {
+          icon: "🔔",
+          duration: 5000,
+          id: "Failed to logout. Please try again.",
+        }
+      );
     } finally {
       setLoading(false);
     }
@@ -61,12 +74,27 @@ const Profile = () => {
       updateUser({
         ...response.data.updatedUser,
       });
-      toast.success("Profile Updated Successfully!", {
-        id: "profile update",
-      });
+      
+      toast(
+        (t) => (
+          <DismissibleToast
+            message= "Profile Updated Successfully!"
+            toastProps={t}
+          />
+        ),
+        { icon: "🔔", duration: 5000, id:"Profile Updated Successfully!" }
+      );
     } catch (error) {
       console.log(error);
-      toast.error(error.response.data.message);
+      toast(
+        (t) => (
+          <DismissibleToast
+            message= "Oops! Something went wrong while updating your account"
+            toastProps={t}
+          />
+        ),
+        { icon: "🔔", duration: 5000, id:"Oops! Something went wrong while updating your account" }
+      );
     } finally {
       setUpdating(false);
     }
@@ -170,11 +198,11 @@ const Profile = () => {
             </div>
           ))}
         </div>
-          {posts.length === 0 && (
-            <span className="subtitle-text ms-2 p-3">
-              Your buses will appear here
-            </span>
-          )}
+        {posts.length === 0 && (
+          <span className="subtitle-text ms-2 p-3">
+            Your buses will appear here
+          </span>
+        )}
       </div>
     </div>
   );

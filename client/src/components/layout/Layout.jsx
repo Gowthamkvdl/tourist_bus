@@ -4,6 +4,7 @@ import Navbar from "../navbar/Navbar";
 import TopBanner from "../topBanner/TopBanner";
 import { AuthContext } from "../../context/AuthContext";
 import { Toaster, toast } from "react-hot-toast";
+import DismissibleToast from "../dismissibleToast/DismissibleToast";
 
 export const Layout = () => {
   return (
@@ -23,11 +24,13 @@ export function AuthLayout() {
 
   if (!currentUser) {
     // Show the toast message before redirecting
-    toast.error("Please login to access this page", { id: "info" }, {
-      style:{
-        zIndex: 9999999
-      }
-    });
+    toast((t) => (
+      <DismissibleToast
+        message="Please login to access that page"
+        toastProps={t}
+      />
+    ),
+    { icon: "🔔", duration: 5000, id:"Please login to access that page" })
     return <Navigate to="/" />;
   }
 

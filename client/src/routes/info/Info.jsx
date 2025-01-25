@@ -13,6 +13,7 @@ import { useLoaderData, useNavigate } from "react-router-dom";
 import { StarRating } from "star-ratings-react";
 import { AuthContext } from "../../context/AuthContext";
 import apiRequest from "../../lib/apiRequest.js";
+import DismissibleToast from "../../components/dismissibleToast/DismissibleToast";
 
 const Info = () => {
   const post = useLoaderData();
@@ -26,9 +27,20 @@ const Info = () => {
   const reviewBox = useRef(null);
   const navigate = useNavigate();
 
-  console.log(post)
+  console.log(post);
 
   const handleAddFav = async () => {
+    if (!currentUser) {
+      toast(
+        (t) => (
+          <DismissibleToast
+            message="Login to add to your Favorites!"
+            toastProps={t}
+          />
+        ),
+        { icon: "🔔", duration: 5000 }
+      );
+    }
     try {
       // Toggle the favorite state optimistically
       setFav((prevFav) => !prevFav);
@@ -38,28 +50,54 @@ const Info = () => {
         postId: data.postId,
         userId: currentUser.id,
       });
-      console.log(response)
+      console.log(response);
 
       if (response.data) {
         // Show a success message based on the updated state
-        toast.success(fav ? "Removed from favorites" : "Added to favorites", {
-          id: "fav",
-        });
+        toast(
+          (t) => (
+            <DismissibleToast
+              message={fav ? "Removed from favorites" : "Added to favorites"}
+              toastProps={t}
+            />
+          ),
+          { icon: "🔔", duration: 5000, id: "fav" }
+        );
       } else {
         // If API response indicates failure, revert the favorite state
         setFav((prevFav) => !prevFav);
-        toast.error("Failed to update favorites");
+        toast(
+          (t) => (
+            <DismissibleToast
+              message="Failed to update favorites"
+              toastProps={t}
+            />
+          ),
+          { icon: "🔔", duration: 5000, id: "Failed to update favorites" }
+        );
       }
     } catch (error) {
       console.error("Error updating favorite:", error);
 
       // Revert the favorite state in case of an error
       setFav((prevFav) => !prevFav);
-
-      toast.error("An error occurred while updating favorites");
+      if (currentUser) {
+        toast(
+          (t) => (
+            <DismissibleToast
+              message="An error occurred while updating favorites"
+              toastProps={t}
+            />
+          ),
+          {
+            icon: "🔔",
+            duration: 5000,
+            id: "An error occurred while updating favorites",
+          }
+        );
+      }
     }
   };
-
 
   const convertToAgo = (timestamp) => {
     // Ensure timestamp is a valid date string or Date object
@@ -75,10 +113,18 @@ const Info = () => {
   };
 
   const handleReviewtoggle = () => {
-    if(!currentUser){
-      toast.error("Login to add your review",{id:"not logged in"})
+    if (!currentUser) {
+      toast(
+        (t) => (
+          <DismissibleToast
+            message="Login to add your review!"
+            toastProps={t}
+          />
+        ),
+        { icon: "🔔", duration: 5000 }
+      );
     }
-  }
+  };
 
   const addReview = async (e) => {
     e.preventDefault();
@@ -86,16 +132,27 @@ const Info = () => {
     const name = currentUser.name;
     setAddingReview(true);
 
-    
-
     if (!review) {
       setAddingReview(false);
-      return toast.error("Review cannot be empty");
+      return toast(
+        (t) => (
+          <DismissibleToast message="Review cannot be empty" toastProps={t} />
+        ),
+        { icon: "🔔", duration: 5000, id: "Review cannot be empty" }
+      );
     }
 
     if (rating === 0) {
       setAddingReview(false);
-      return toast.error("Please provide a rating");
+      return toast(
+        (t) => (
+          <DismissibleToast
+            message= "Please provide a rating"
+            toastProps={t}
+          />
+        ),
+        { icon: "🔔", duration: 5000, id:"Please provide a rating" }
+      );
     }
 
     try {
@@ -117,10 +174,26 @@ const Info = () => {
       }));
 
       setReviews((prevReviews) => [...prevReviews, addReview.data]);
-      toast.success("Review added successfully", { id: "review" });
+      toast(
+        (t) => (
+          <DismissibleToast
+            message= "Review added successfully"
+            toastProps={t}
+          />
+        ),
+        { icon: "🔔", duration: 5000, id:"Review added successfully" }
+      );
     } catch (error) {
       console.error(error);
-      toast.error("Failed to add review");
+      toast(
+        (t) => (
+          <DismissibleToast
+            message= "Failed to add review"
+            toastProps={t}
+          />
+        ),
+        { icon: "🔔", duration: 5000, id:"Failed to add review" }
+      );
     } finally {
       // Clear the form and reset the states
       setReview("");
@@ -136,12 +209,12 @@ const Info = () => {
         <div className="title-text text-center opacity-75 mt-3">
           <BackBtn />
           <span className="text-center">Bus Details</span>
-        <button
-          className="btn btn-warning me-2 float-end"
-          onClick={() => handleEditClick(post.postId)}
-        >
-          Edit
-        </button>
+          <button
+            className="btn btn-warning me-2 float-end"
+            onClick={() => handleEditClick(post.postId)}
+          >
+            Edit
+          </button>
         </div>
       </div>
       <div className="others box-shadow pt-1 pb-5 bg-white ">
@@ -296,7 +369,15 @@ const Info = () => {
                     if (data.user?.phone) {
                       window.location.href = `tel:${data.user.phone}`;
                     } else {
-                      toast.error("Phone number not available");
+                      toast(
+                        (t) => (
+                          <DismissibleToast
+                            message= "Phone number not available"
+                            toastProps={t}
+                          />
+                        ),
+                        { icon: "🔔", duration: 5000, id:"Phone number not available" }
+                      );
                     }
                     // Replace with your phone number
                   }}
@@ -418,55 +499,60 @@ const Info = () => {
                 Add a review
               </button>
             </div>
-            {currentUser && 
-            <div class="collapse" id="collapseExample">
-              <div className="reviewBox d-flex mt-3">
-                <div className="photoDiv d-flex">
-                  <div className="d-flex justify-centent-center align-items-center text-center photo primary-600 fs-2 text-white">
-                    <span className="mx-auto">{currentUser.name[0]}</span>
+            {currentUser && (
+              <div class="collapse" id="collapseExample">
+                <div className="reviewBox d-flex mt-3">
+                  <div className="photoDiv d-flex">
+                    <div className="d-flex justify-centent-center align-items-center text-center photo primary-600 fs-2 text-white">
+                      <span className="mx-auto">{currentUser.name[0]}</span>
+                    </div>
                   </div>
-                </div>
-                <div className="nameAndReview ms-2">
-                  <div className="name subtitle-text">{currentUser.name}</div>
-                  <div className="review body-text">
-                    <form action="" ref={reviewBox} onSubmit={addReview}>
-                      <textarea
-                        name=""
-                        placeholder="Add a review..."
-                        className="form-control shadow-none w-100"
-                        cols="150"
-                        rows="2"
-                        required
-                        value={review}
-                        onChange={(e) => setReview(e.target.value)}
-                      ></textarea>
-                      <div className="d-flex justify-content-center align-items-center flex-column">
-                        <p className="m-0 mt-3">
-                          Your feedback is valuable to us. Please provide your
-                          rating below:
-                        </p>
-                        <StarRating
-                          rating={rating}
-                          maxRating={5}
-                          starColor="#FFD700"
-                          textColor={"white"}
-                          onSetRating={setRating}
-                          size={20}
-                        />
-                        <span className="me-3 text-center">{rating} stars</span>
-                      </div>
-                      <button
-                        type="submit"
-                        className="btn primary-700 mt-2 float-end"
-                        disabled={addingReview}
-                      >
-                        {addingReview ? "Adding your review..." : "Add Review"}
-                      </button>
-                    </form>
+                  <div className="nameAndReview ms-2">
+                    <div className="name subtitle-text">{currentUser.name}</div>
+                    <div className="review body-text">
+                      <form action="" ref={reviewBox} onSubmit={addReview}>
+                        <textarea
+                          name=""
+                          placeholder="Add a review..."
+                          className="form-control shadow-none w-100"
+                          cols="150"
+                          rows="2"
+                          required
+                          value={review}
+                          onChange={(e) => setReview(e.target.value)}
+                        ></textarea>
+                        <div className="d-flex justify-content-center align-items-center flex-column">
+                          <p className="m-0 mt-3">
+                            Your feedback is valuable to us. Please provide your
+                            rating below:
+                          </p>
+                          <StarRating
+                            rating={rating}
+                            maxRating={5}
+                            starColor="#FFD700"
+                            textColor={"white"}
+                            onSetRating={setRating}
+                            size={20}
+                          />
+                          <span className="me-3 text-center">
+                            {rating} stars
+                          </span>
+                        </div>
+                        <button
+                          type="submit"
+                          className="btn primary-700 mt-2 float-end"
+                          disabled={addingReview}
+                        >
+                          {addingReview
+                            ? "Adding your review..."
+                            : "Add Review"}
+                        </button>
+                      </form>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div> }
+            )}
             <div className="review mb-5">
               {reviews.length > 0 ? (
                 reviews

@@ -4,6 +4,7 @@ import { useLoaderData, useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import apiRequest from "../../lib/apiRequest";
 import { AuthContext } from "../../context/AuthContext";
+import DismissibleToast from "../../components/dismissibleToast/DismissibleToast";
 
 const Edit = () => {
   const navigate = useNavigate();
@@ -19,11 +20,27 @@ const Edit = () => {
     try {
       await apiRequest.delete("/post/" + post.postId); // Ensure the request completes
       deleteBtn.current.click(); // Close the modal programmatically
-      toast.success("Bus Deleted");
+      toast(
+        (t) => (
+          <DismissibleToast
+            message= "Bus Deleted"
+            toastProps={t}
+          />
+        ),
+        { icon: "🔔", duration: 5000, id:"Bus Deleted" }
+      );
       navigate("/profile");
     } catch (error) {
       console.error(error);
-      toast.error("Failed to delete bus");
+      toast(
+        (t) => (
+          <DismissibleToast
+            message= "Failed to delete bus"
+            toastProps={t}
+          />
+        ),
+        { icon: "🔔", duration: 5000, id:"Failed to delete bus" }
+      );
     } finally {
       setDeleting(false);
     }
@@ -57,12 +74,26 @@ const Edit = () => {
 
       // On success, navigate and show toast
       navigate(`/info/${post.postId}`);
-      toast.success("Post Updated Successfully!", {
-        id: "post update",
-      });
+      toast(
+        (t) => (
+          <DismissibleToast
+            message= "Bus Updated Successfully!"
+            toastProps={t}
+          />
+        ),
+        { icon: "🔔", duration: 5000, id:"Bus Updated Successfully!" }
+      );
     } catch (error) {
       console.log(error);
-      toast.error(error.response?.data?.message || "Error updating post");
+      toast(
+        (t) => (
+          <DismissibleToast
+            message= "Failed to update Bus"
+            toastProps={t}
+          />
+        ),
+        { icon: "🔔", duration: 5000, id:"Failed to update Bus" }
+      );
     } finally {
       setUpdating(false);
     }

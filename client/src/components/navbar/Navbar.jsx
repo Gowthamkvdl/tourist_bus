@@ -7,6 +7,7 @@ import OtpInput from "react-otp-input";
 import trust from "../../assets/trust.svg";
 import apiRequest from "../../lib/apiRequest";
 import { AuthContext } from "../../context/AuthContext";
+import DismissibleToast from "../dismissibleToast/DismissibleToast";
 
 const Navbar = () => {
   const { currentUser, updateUser } = useContext(AuthContext);
@@ -108,12 +109,22 @@ const Navbar = () => {
         phoneNumber: formattedPhone,
       });
       console.log(response);
-      toast.success("OTP sent successfully", {
-        id: "otp-sent",
-      });
+      toast((t) => (
+        <DismissibleToast
+          message="OTP sent successfully"
+          toastProps={t}
+        />
+      ),
+      { icon: "🔔", duration: 5000, id:"OTP sent successfully" })
     } catch (error) {
       console.log(error);
-      toast.error("Something went wrong!");
+      toast((t) => (
+        <DismissibleToast
+          message="Something went wrong!"
+          toastProps={t}
+        />
+      ),
+      { icon: "🔔", duration: 5000, id:"Something went wrong!" })
       setOtpSent(true);
     } finally {
       setSending(false);
@@ -137,9 +148,15 @@ const Navbar = () => {
       // Check the response structure
       console.log("Response data:", response.data);
 
-      toast.success("OTP verified successfully", {
-        id: "otp-verified",
-      });
+      toast((t) => (
+        <DismissibleToast
+          message="OTP verified successfully"
+          toastProps={t}
+        />
+      ),
+      { icon: "🔔", duration: 5000, id:"OTP verified successfully" })
+
+
 
       const newUser = response.data.newUser;
       console.log(newUser);
@@ -168,12 +185,16 @@ const Navbar = () => {
       }
     } catch (error) {
       console.log("Error:", error);
-      toast.error(
-        error?.response?.data?.message ||
-          "An error occurred during OTP verification",
-        {
-          id: "otp-verification-error",
-        }
+      
+      toast(
+        (t) => (
+          <DismissibleToast
+            message= {error?.response?.data?.message ||
+              "An error occurred during OTP verification"}
+            toastProps={t}
+          />
+        ),
+        { icon: "🔔", duration: 5000, id:"An error occurred during OTP verification" }
       );
     } finally {
       setChecking(false);
@@ -193,9 +214,16 @@ const Navbar = () => {
         city: city,
         name: name,
       });
-      toast.success("Account created", {
-        id: "account created",
-      });
+
+      toast(
+        (t) => (
+          <DismissibleToast
+            message= {"Account created"}
+            toastProps={t}
+          />
+        ),
+        { icon: "🔔", duration: 5000, id:"Account created" }
+      );
       if (response.data.user) {
         // Set user data including category in localStorage
         localStorage.setItem(
@@ -216,7 +244,15 @@ const Navbar = () => {
       }
     } catch (error) {
       console.log(error);
-      toast.error(error.response.data.message);
+      toast(
+        (t) => (
+          <DismissibleToast
+            message= "Oops! Something went wrong while creating your account"
+            toastProps={t}
+          />
+        ),
+        { icon: "🔔", duration: 5000, id:"Oops! Something went wrong while creating your account" }
+      );
     } finally {
       setCreating(false);
     }

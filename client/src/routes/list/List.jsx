@@ -10,6 +10,7 @@ import {
 import toast from "react-hot-toast";
 import CardSkeleton from "../../components/cardSkeleton/CardSkeleton";
 import ErrorComponent from "../../components/errorComponent/ErrorComponent";
+import DismissibleToast from "../../components/dismissibleToast/DismissibleToast"
 
 const List = () => {
   const posts = useLoaderData();
@@ -115,7 +116,12 @@ const List = () => {
       restroom: false,
     });
     setRatings("");
-    toast.success("Filter has been reset");
+    toast(
+      (t) => (
+        <DismissibleToast message="Filter has been reset" toastProps={t} />
+      ),
+      { icon: "🔔", duration: 5000, id: "Filter has been reset" }
+    );
     setSearchParams("limit=5");
   };
 
@@ -134,7 +140,11 @@ const List = () => {
   console.log(posts);
 
   const handleApply = () => {
-    toast.success("Filter Applied");
+    toast((t) => <DismissibleToast message="Filter Applied" toastProps={t} />, {
+      icon: "🔔",
+      duration: 5000,
+      id: "Filter Applied",
+    });
   };
 
   const loadMore = async () => {
@@ -188,7 +198,7 @@ const List = () => {
 
   const handlePostResponse = (postResponse) => {
     const postData = postResponse.data.postData;
-    console.log(postData)
+    console.log(postData);
     if (totalPost !== postData.length) {
       setTotalPost(postData.length);
       setIsLoadingMore(false);
@@ -282,7 +292,14 @@ const List = () => {
         </div> */}
         <div className="cards row px-md-4 px-3">
           <Suspense fallback={<CardSkeleton NoOfCards={4} />}>
-            <Await resolve={posts.postResponse} errorElement={<div><ErrorComponent /></div>}>
+            <Await
+              resolve={posts.postResponse}
+              errorElement={
+                <div>
+                  <ErrorComponent />
+                </div>
+              }
+            >
               {handlePostResponse}
             </Await>
             <div
