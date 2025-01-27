@@ -1,0 +1,23 @@
+/* Card styling */
+.card {
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* File upload input container */
+  .p-fileupload {
+    border: 2px dashed #d3d3d3;
+    border-radius: 8px;
+    padding: 20px;
+    background-color: #fff;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  /* File upload input hover effect */
+  .p-fileupload:hover {
+    border-color: #007bff;
+    background-color: #f0f8ff;
+  }

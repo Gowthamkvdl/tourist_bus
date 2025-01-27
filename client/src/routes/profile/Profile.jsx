@@ -1,12 +1,20 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, {
+  Suspense,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import "./profile.css";
 import Card from "../../components/card/Card";
-import { useLoaderData, useNavigate } from "react-router-dom";
+import { Await, useLoaderData, useNavigate } from "react-router-dom";
 import apiRequest from "../../lib/apiRequest";
 import rollingLoading from "../../assets/rollingLoading.svg";
 import { AuthContext } from "../../context/AuthContext";
 import { toast } from "react-hot-toast";
 import DismissibleToast from "../../components/dismissibleToast/DismissibleToast";
+import CardSkeleton from "../../components/cardSkeleton/CardSkeleton";
+import ErrorComponent from "../../components/errorComponent/ErrorComponent";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -15,12 +23,43 @@ const Profile = () => {
   const [userName, setUserName] = useState(currentUser.name);
   const [city, setCity] = useState(currentUser.city);
   const [updating, setUpdating] = useState(false);
+  const [length, setLength] = useState(null);
+
   const posts = useLoaderData();
   console.log(posts);
 
   const handleEditClick = (postId) => {
     navigate(`/edit/${postId}`);
     console.log(postId);
+  };
+
+  const handlePostResponse = (postResponse) => {
+    const postData = postResponse.data;
+    console.log(postResponse.data);
+    setLength(postResponse.data.length);
+    if (postData.length > 0) {
+      return postResponse.data.map((post) => (
+        <div className="col-md-6">
+          <Card post={post} key={post.postId} />
+          {console.log(post.post)}
+          <div className="float-end me-4">
+                <button
+                  className="btn btn-warning me-2"
+                  onClick={() => handleEditClick(post.postId)}
+                >
+                  Edit Bus
+                </button>
+              </div>
+        </div>
+      ));
+    } else {
+      return (
+        <div className="text-center">
+          <h3>No buses found</h3>
+          <p>Your buses will appear here</p>
+        </div>
+      );
+    }
   };
 
   const handleLogout = async () => {
@@ -74,26 +113,30 @@ const Profile = () => {
       updateUser({
         ...response.data.updatedUser,
       });
-      
+
       toast(
         (t) => (
           <DismissibleToast
-            message= "Profile Updated Successfully!"
+            message="Profile Updated Successfully!"
             toastProps={t}
           />
         ),
-        { icon: "🔔", duration: 5000, id:"Profile Updated Successfully!" }
+        { icon: "🔔", duration: 5000, id: "Profile Updated Successfully!" }
       );
     } catch (error) {
       console.log(error);
       toast(
         (t) => (
           <DismissibleToast
-            message= "Oops! Something went wrong while updating your account"
+            message="Oops! Something went wrong while updating your account"
             toastProps={t}
           />
         ),
-        { icon: "🔔", duration: 5000, id:"Oops! Something went wrong while updating your account" }
+        {
+          icon: "🔔",
+          duration: 5000,
+          id: "Oops! Something went wrong while updating your account",
+        }
       );
     } finally {
       setUpdating(false);
@@ -184,19 +227,18 @@ const Profile = () => {
       <div className="others box-shadow pb-5 bg-white mt-4">
         <h1 className="title-text p-4 pb-2  opacity-75">Your Buses</h1>
         <div className="cards row px-md-4 px-3">
-          {posts.map((post) => (
-            <div className="col-md-6 mb-4" key={post.postId}>
-              <Card post={post} />
-              <div className="float-end me-4">
-                <button
-                  className="btn btn-warning me-2"
-                  onClick={() => handleEditClick(post.postId)}
-                >
-                  Edit
-                </button>
-              </div>
-            </div>
-          ))}
+          <Suspense fallback={<CardSkeleton NoOfCards={4} />}>
+            <Await
+              resolve={posts.postResponse}
+              errorElement={
+                <div>
+                  <ErrorComponent />
+                </div>
+              }
+            >
+              {handlePostResponse}
+            </Await>
+          </Suspense>
         </div>
         {posts.length === 0 && (
           <span className="subtitle-text ms-2 p-3">

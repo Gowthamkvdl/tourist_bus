@@ -1,9 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import "./card.css";
 import bus from "../../assets/bus.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-const Card = ({post}) => {
+const Card = ({ post }) => {
+  const navigate = useNavigate();
+  const [loading,setLoading] = useState(false)
+
+  const handleNavigation = (postId) => {
+    setLoading(true);
+    navigate(`/info/${post.postId}`, {
+      state: { from: location.pathname },
+    });
+  };
+
   return (
     <div className="busCard rounded-4 box-shadow mb-3 p-3 overflow-hidden">
       <div className="upperSection">
@@ -40,7 +50,9 @@ const Card = ({post}) => {
                 <span class="material-symbols-outlined fs-2 opacity-75">
                   ac_unit
                 </span>
-                <span className="fs-6">{post.ac === true ? "AC" : "Non-AC"}</span>
+                <span className="fs-6">
+                  {post.ac === true ? "AC" : "Non-AC"}
+                </span>
               </div>
             </div>
           </div>
@@ -51,7 +63,7 @@ const Card = ({post}) => {
         <div className="priceAndBtn row mt-2 justify-content-between align-items-center">
           <div className="col-7">
             <div className="price title-text">
-              <span>₹{post.cost? post.cost : "Cost"}</span>
+              <span>₹{post.cost ? post.cost : "Cost"}</span>
               <span className="opacity-75 subtitle-text">/100km</span>
             </div>
             <div className="small-text opacity-75">
@@ -59,18 +71,22 @@ const Card = ({post}) => {
             </div>
           </div>
           <div className="col-5 d-flex justify-content-end">
-            <div className="btn primary-600 rounded-5 me-4">
-              <Link to={`/info/${post.postId}`} className="link">
-                <div className="d-flex align-items-center">
-                  <span className="body-text fw-semibold text-white ">
-                    More
-                  </span>
-                  <span class="material-symbols-outlined text-white">
+          <button
+              className="btn primary-600 rounded-5 me-4"
+              onClick={() => handleNavigation(post.postId)}
+              disabled={loading}
+            >
+              <div className="d-flex align-items-center">
+                <span className="body-text fw-semibold text-white">
+                  {loading ? "Loading..." : "More"}
+                </span>
+                {!loading && (
+                  <span className="material-symbols-outlined text-white">
                     chevron_right
-                  </span> 
-                </div>
-              </Link>
-            </div>
+                  </span>
+                )}
+              </div>
+            </button>
           </div>
         </div>
       </div>

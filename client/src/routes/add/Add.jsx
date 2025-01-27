@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import apiRequest from "../../lib/apiRequest";
 import { AuthContext } from "../../context/AuthContext";
 import DismissibleToast from "../../components/dismissibleToast/DismissibleToast"
+import Upload from "../../components/upload/Upload";
 
 const Add = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -246,6 +247,7 @@ const Add = () => {
                   <option value="others">Others</option>
                 </select>
               </div>
+              <Upload /> 
               <button
                 type="submit"
                 className="btn primary-700 mb-3"

@@ -26,6 +26,7 @@ const Info = () => {
   const [addingReview, setAddingReview] = useState(false);
   const reviewBox = useRef(null);
   const navigate = useNavigate();
+  const [loadingEdit, setLoadingEdit] = useState(false);
 
   console.log(post);
 
@@ -203,6 +204,13 @@ const Info = () => {
     }
   };
 
+  const handleNavigation = (postId) => {
+    setLoadingEdit(true);
+    navigate(`/edit/${post.postId}`, {
+      state: { from: location.pathname },
+    });
+  };
+
   return (
     <div>
       <div className="header mb-3 pt-md-2">
@@ -210,11 +218,12 @@ const Info = () => {
           <BackBtn />
           <span className="text-center">Bus Details</span>
           <button
-            className="btn btn-warning me-2 float-end"
-            onClick={() => handleEditClick(post.postId)}
-          >
-            Edit
-          </button>
+              className="btn btn-warning me-2 float-end"
+              onClick={() => handleNavigation(data.postId)}
+              disabled={loadingEdit}
+            >
+              {loadingEdit ? "Editing..." : "Edit"}
+            </button>
         </div>
       </div>
       <div className="others box-shadow pt-1 pb-5 bg-white ">
