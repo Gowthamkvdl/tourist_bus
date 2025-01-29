@@ -9,6 +9,7 @@ import Info from "./routes/info/Info";
 import Add from "./routes/add/Add";
 import Edit from "./routes/edit/Edit";
 import {
+  addImageLoader,
   editPageLoader,
   favPageLoader,
   homePageLoader,
@@ -16,6 +17,7 @@ import {
   listPageLoader,
   profilePageLoader,
 } from "./lib/loader";
+import AddImage from "./routes/addImg/AddImage";
 
 const App = () => {
   const router = createBrowserRouter([
@@ -62,6 +64,11 @@ const App = () => {
         {
           path: "/add",
           element: <Add />,
+        },
+        {
+          path: "/addImg/:id",
+          element: <AddImage />,
+          loader: addImageLoader,
         },
       ],
     },

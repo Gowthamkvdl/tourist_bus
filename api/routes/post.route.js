@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  addImages,
   addPost,
   addPostRating,
   deletePost,
@@ -11,6 +12,7 @@ import {
   updatePost,
 } from "../controllers/post.controller.js";
 import {verifyToken} from "../middleware/verifyToken.js";
+import { upload } from "../lib/upload.js";
 
 const router = express.Router();
 
@@ -20,6 +22,7 @@ router.post("/fav", verifyToken, savePost);
 router.get("/fav", verifyToken, getSavedPosts);
 router.get("/profile", verifyToken, profilePosts);
 router.get("/posts", getPosts);
+router.post("/add-images/:id", upload.array("images", 5), addImages);
 router.get("/:id", getPost);
 router.put("/:id", verifyToken , updatePost);
 router.delete("/:id", verifyToken, deletePost);

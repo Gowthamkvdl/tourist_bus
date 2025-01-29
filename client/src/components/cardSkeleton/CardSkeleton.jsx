@@ -2,11 +2,11 @@ import React from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
-const CardSkeleton = ({ NoOfCards }) => {
+const CardSkeleton = ({ NoOfCards, className }) => {
   return Array(NoOfCards)
     .fill(0)
     .map((_, index) => (
-      <div className="col-md-6">
+      <div className={`col-md-6 ${className} `}>
         <div
           key={index}
           className="busCard rounded-4 box-shadow mb-3 p-3 overflow-hidden"

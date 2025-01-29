@@ -210,6 +210,7 @@ const Info = () => {
       state: { from: location.pathname },
     });
   };
+  
 
   return (
     <div>
@@ -217,13 +218,16 @@ const Info = () => {
         <div className="title-text text-center opacity-75 mt-3">
           <BackBtn />
           <span className="text-center">Bus Details</span>
-          <button
-              className="btn btn-warning me-2 float-end"
-              onClick={() => handleNavigation(data.postId)}
-              disabled={loadingEdit}
-            >
-              {loadingEdit ? "Editing..." : "Edit"}
-            </button>
+          {currentUser.id === data.userId ? (
+             <button
+             className="btn btn-warning me-2 float-end"
+             onClick={() => handleNavigation(data.postId)}
+             disabled={loadingEdit}
+           >
+             {loadingEdit ? "Loading..." : "Edit"}
+           </button>
+          ) : (null)}
+         
         </div>
       </div>
       <div className="others box-shadow pt-1 pb-5 bg-white ">
@@ -235,8 +239,9 @@ const Info = () => {
             {/* <div className="locationIcon my-auto">
               <span className="material-symbols-outlined fs-1 bg-secondary rounded-5 text-white p-2">
                 directions_bus
-              </span>
+              </span> 
             </div> */}
+            {console.log(data.img1)}
             <div className="nameAndRating d-flex flex-column justify-content-center align-items-center">
               <span className="title-text">{data.busName}</span>
               <div className="location subtitle-text mb-1 d-flex justify-content-center  align-items-center">
@@ -319,22 +324,22 @@ const Info = () => {
             </div>
             <div className="carousel-inner">
               <div className="carousel-item active">
-                <img src={bus1} className="d-block w-100" alt="..." />
+                <img src={`http://localhost:3000${data.img1}`} loading="lazy" className="d-block w-100" alt="..." />
               </div>
               <div className="carousel-item">
-                <img src={bus2} className="d-block w-100" alt="..." />
+                <img src={`http://localhost:3000${data.img2}`} loading="lazy" className="d-block w-100" alt="..." />
               </div>
               <div className="carousel-item">
-                <img src={bus3} className="d-block w-100" alt="..." />
+                <img src={`http://localhost:3000${data.img3}`} loading="lazy" className="d-block w-100" alt="..." />
               </div>
               <div className="carousel-item">
-                <img src={bus4} className="d-block w-100" alt="..." />
+                <img src={`http://localhost:3000${data.img4}`} loading="lazy" className="d-block w-100" alt="..." />
               </div>
               <div className="carousel-item">
-                <img src={bus5} className="d-block w-100" alt="..." />
+                <img src={`http://localhost:3000${data.img5}`} loading="lazy" className="d-block w-100" alt="..." />
               </div>
             </div>
-            <button
+            <button 
               className="carousel-control-prev"
               type="button"
               data-bs-target="#carouselExampleIndicators"

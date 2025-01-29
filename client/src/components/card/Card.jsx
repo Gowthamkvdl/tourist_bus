@@ -38,14 +38,14 @@ const Card = ({ post }) => {
                   {post.numberOfSeats ? post.numberOfSeats : "Seats"}
                 </span>
               </div>
-              <div className="mileage d-flex  justify-content-center  align-items-center">
+              {/* <div className="mileage d-flex  justify-content-center  align-items-center">
                 <span class="material-symbols-outlined fs-2 opacity-75">
                   local_gas_station
                 </span>
                 <span className="fs-6">
                   {post.mileage ? post.mileage : "Milage"} km
                 </span>
-              </div>
+              </div> */}
               <div className="ac d-flex  justify-content-center  align-items-center">
                 <span class="material-symbols-outlined fs-2 opacity-75">
                   ac_unit
@@ -57,7 +57,7 @@ const Card = ({ post }) => {
             </div>
           </div>
           <div className="col-5 busImg justify-content-end d-flex">
-            <img src={bus} className="img-fluid bus-img rounded-3" alt="" />
+            <img src={`http://localhost:3000${post.img1}`} loading="lazy" className="img-fluid bus-img rounded-3" alt="" />
           </div>
         </div>
         <div className="priceAndBtn row mt-2 justify-content-between align-items-center">

@@ -7,6 +7,12 @@ export const infoPageLoader = async ({ params }) => {
   return response.data;
 };
 
+export const addImageLoader = async ({ params }) => {
+  const { id } = params;
+  const response = await apiRequest.get("/post/" + id);
+  return response.data;
+};
+
 export const editPageLoader = async ({ params }) => {
   const { id } = params;
   const response = await apiRequest.get("/post/" + id);

@@ -4,6 +4,7 @@ import authRoute from "./routes/auth.route.js";
 import otpRoute from "./routes/otp.route.js"
 import postRoute from  "./routes/post.route.js"
 import reviewRoute from "./routes/review.route.js"
+import path from "path";
 
 import cors from "cors";
 import mongoSanitize from "express-mongo-sanitize";
@@ -11,6 +12,9 @@ import xss from "xss-clean";
 const PORT = 3000;
 const app = express();
 
+
+// Serve static files from the "uploads" directory
+app.use("/uploads", express.static(path.resolve("uploads"))); 
 app.use(express.json());
 app.use(cookieParser());
 const allowedOrigins = [process.env.CLIENT_URL, process.env.PARTNER_URL];

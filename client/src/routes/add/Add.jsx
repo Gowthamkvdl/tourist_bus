@@ -54,7 +54,7 @@ const Add = () => {
       console.log(data);
 
       const post = await apiRequest.post("/post", data);
-      navigate(`/info/${post.data.postId}`);
+      navigate(`/addImg/${post.data.postId}`);
       toast(
         (t) => (
           <DismissibleToast
@@ -247,13 +247,12 @@ const Add = () => {
                   <option value="others">Others</option>
                 </select>
               </div>
-              <Upload /> 
               <button
                 type="submit"
                 className="btn primary-700 mb-3"
                 disabled={isLoading}
               >
-                {isLoading ? "Adding..." : "Add My Bus"}
+                {isLoading ? "Adding Info..." : "Next"}
               </button>
             </div>
           </form>

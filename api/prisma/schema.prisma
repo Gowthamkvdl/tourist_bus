@@ -35,11 +35,17 @@ model Post {
   speakerBrand     String
   city             String
   busType          BusType
+  img1             String @default("")
+  img2             String @default("")
+  img3             String @default("")
+  img4             String @default("")
+  img5            String @default("")
   recliningSeats   Boolean      @default(false)
   ac               Boolean      @default(false)
   tv               Boolean      @default(false)
   usb              Boolean      @default(false)
   wifi             Boolean      @default(false)
+  hasImage             Boolean      @default(false)
   starRating       StarRating[]
   reviews          Reviews[]
   averageRating    Float?       @default(0.0)
