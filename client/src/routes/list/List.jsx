@@ -10,7 +10,7 @@ import {
 import toast from "react-hot-toast";
 import CardSkeleton from "../../components/cardSkeleton/CardSkeleton";
 import ErrorComponent from "../../components/errorComponent/ErrorComponent";
-import DismissibleToast from "../../components/dismissibleToast/DismissibleToast"
+import DismissibleToast from "../../components/dismissibleToast/DismissibleToast";
 
 const List = () => {
   const posts = useLoaderData();
@@ -152,7 +152,7 @@ const List = () => {
     searchParams.set(
       "limit",
       parseInt(searchParams.get("limit"))
-        ? parseInt(searchParams.get("limit")) + 1
+        ? parseInt(searchParams.get("limit")) + 5
         : 5
     );
     setSearchParams(searchParams);
@@ -302,9 +302,10 @@ const List = () => {
             >
               {handlePostResponse}
             </Await>
-            <div
+            <button
               ref={loadMoreButtonRef}
               className={`btn text-light mt-3 d-flex fs-5 justify-content-center mx-1`}
+              disabled
               onClick={loadMore}
             >
               {isLoadingMore ? (
@@ -314,7 +315,7 @@ const List = () => {
               ) : (
                 ""
               )}
-            </div>
+            </button>
           </Suspense>
         </div>
       </div>

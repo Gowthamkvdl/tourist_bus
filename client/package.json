@@ -13,6 +13,7 @@
     "ago": "^1.0.0",
     "agojs": "^0.0.1",
     "bootstrap": "^5.3.3",
+    "ngrok": "^5.0.0-beta.2",
     "primeicons": "^7.0.0",
     "primereact": "^10.9.2",
     "react": "^18.3.1",

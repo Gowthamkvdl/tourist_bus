@@ -19,6 +19,8 @@ app.use(express.json());
 app.use(cookieParser());
 const allowedOrigins = [process.env.CLIENT_URL, process.env.PARTNER_URL];
 
+app.use(cors()); 
+
 app.use(
   cors({
     origin: (origin, callback) => {
@@ -50,6 +52,6 @@ app.use("/api/review", reviewRoute);
 
 
 
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server is running on PORT ${PORT}`);
 });

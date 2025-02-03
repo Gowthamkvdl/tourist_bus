@@ -38,15 +38,15 @@ const Card = ({ post }) => {
                   {post.numberOfSeats ? post.numberOfSeats : "Seats"}
                 </span>
               </div>
-              {/* <div className="mileage d-flex  justify-content-center  align-items-center">
-                <span class="material-symbols-outlined fs-2 opacity-75">
+              <div className="mileage d-flex  justify-content-center  align-items-center">
+                <span class="material-symbols-outlined d-none d-xl-block fs-2 opacity-75">
                   local_gas_station
                 </span>
-                <span className="fs-6">
+                <span className="fs-6 d-none d-xl-block">
                   {post.mileage ? post.mileage : "Milage"} km
                 </span>
-              </div> */}
-              <div className="ac d-flex  justify-content-center  align-items-center">
+              </div> 
+              <div className="ac d-flex   justify-content-center  align-items-center">
                 <span class="material-symbols-outlined fs-2 opacity-75">
                   ac_unit
                 </span>

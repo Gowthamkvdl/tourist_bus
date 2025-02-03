@@ -1,40 +1,50 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { FileUpload } from "primereact/fileupload";
 import { toast } from "react-hot-toast";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
 import "primereact/resources/themes/saga-blue/theme.css";
 import "./upload.css";
 
 const Upload = ({ postId }) => {
   const fileUploadRef = useRef(null);
-  const navigate = useNavigate(); // Initialize navigate
+  const uploadButton = useRef(null)
+  const navigate = useNavigate();
+  const [selectedFiles, setSelectedFiles] = useState([]); // Track selected files
 
   const maxFiles = 5;
   const maxFileSize = 1000000;
 
-  const handleUpload = (e) => {
-    const response = e.xhr;
-    if (response.status === 200) {
-      toast.success("Files uploaded successfully!");
-      setTimeout(() => {
-        navigate(`/info/${postId}`); // Redirect after success
-      }, 1500); // Delay for a better UX
-    } else {
-      toast.error("Failed to upload files. Please try again.");
+  const handleUpload = async () => {
+    if (fileUploadRef.current) {
+      fileUploadRef.current.upload(); // Manually trigger upload
     }
+    toast.success("Files uploaded successfully!");
+    setTimeout(() => {
+      navigate(`/info/${postId}`);
+    }, 1500);
   };
 
   const handleSelect = (e) => {
-    if (e.files.length > maxFiles) {
+    const files = e.files;
+    setSelectedFiles(files);
+
+    if (files.length > maxFiles) {
       toast.error(`You can upload up to ${maxFiles} images only.`);
-      if (fileUploadRef.current) fileUploadRef.current.clear();
+      fileUploadRef.current.clear();
+      setSelectedFiles([]);
+    } else if (files.length < maxFiles) {
+      toast.error(`Please add ${maxFiles - files.length} more image(s) to proceed.`);
     } else {
-      toast.success(`${e.files.length} file(s) selected successfully!`);
+      toast.success("5 files selected successfully! You can now upload.");
     }
   };
 
-  const handleRemove = () => {
-    toast.success("File removed successfully!");
+  const handleRemove = (e) => {
+    setSelectedFiles(e.files);
+    const remaining = maxFiles - e.files.length;
+    if (remaining > 0) {
+      toast.error(`Please add ${remaining} more image(s) to proceed.`);
+    }
   };
 
   return (
@@ -47,13 +57,25 @@ const Upload = ({ postId }) => {
         accept="image/*"
         maxFileSize={maxFileSize}
         chooseLabel="Add Photos"
-        previewWidth={100}
         cancelLabel="Remove All"
-        onUpload={handleUpload}
+        uploadOptions={{ style: { display: "none" } }} // Hides the upload button
+        auto={false} // Prevent auto upload
         onSelect={handleSelect}
         onRemove={handleRemove}
         emptyTemplate={<p className="m-0">Drag and drop files here to upload.</p>}
       />
+
+      {/* Custom Upload Button */}
+      <div className="p-mt-2">
+        <button
+          type="button"
+          className="btn btn-success w-100 mt-3"
+          onClick={handleUpload}
+          disabled={selectedFiles.length !== maxFiles} // Disable until exactly 5 images are selected
+        >
+          Upload {selectedFiles.length}/{maxFiles}
+        </button>
+      </div>
     </div>
   );
 };

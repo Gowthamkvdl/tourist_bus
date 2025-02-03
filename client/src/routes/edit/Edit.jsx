@@ -45,6 +45,10 @@ const Edit = () => {
       setDeleting(false);
     }
   };
+  
+  const handleNavigate = (postId) => {
+    navigate(`/addImg/${postId}`)
+  }
 
   const handleUpdate = async (e) => {
     e.preventDefault(); // Prevent the default form submission
@@ -539,7 +543,8 @@ const Edit = () => {
                     Others
                   </option>
                 </select>
-              </div>
+              </div> 
+              <button type="button" onClick={() => handleNavigate(post.postId)} className="btn mt-2 btn-warning w-md-25 w-100" >Reupload Bus Images</button>
               <button type="submit" className="btn primary-700 mb-3" disabled={updating}>
                 {updating ?  "Updating your Bus...":"Update My Bus"} 
               </button>
