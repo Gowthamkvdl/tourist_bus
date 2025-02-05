@@ -215,7 +215,7 @@ const List = () => {
       setIsLoadingMore(false);
       return (
         <div className="text-center">
-          <h3>No buses found</h3>
+          <h3>No buses found in "{searchParams.get("location")}"</h3>
           <p>Please use the filter to find suitable buses.</p>
         </div>
       );
@@ -274,14 +274,23 @@ const List = () => {
           <span className="subtitle-text opacity-75 ms-2">
             Avaiable results
           </span>
-          <button
-            data-bs-toggle="modal"
-            data-bs-target="#exampleModal"
-            className="btn d-flex gap-1 justify-content-center align-items-center btn-outline-dark rounded-5 btn-sm"
-          >
-            <span class="material-symbols-outlined">tune</span>
-            <span>Filter & Sort</span>
-          </button>
+          <div className="btns d-flex gap-1">
+            <button
+              onClick={handleReset}
+              className="btn d-flex gap-1 justify-content-center align-items-center btn-outline-dark rounded-5 btn-sm"
+            >
+              <span class="material-symbols-outlined">close</span>
+              <span>Remove filters</span>
+            </button>
+            <button
+              data-bs-toggle="modal"
+              data-bs-target="#exampleModal"
+              className="btn d-flex gap-1 justify-content-center align-items-center btn-outline-dark rounded-5 btn-sm"
+            >
+              <span class="material-symbols-outlined">tune</span>
+              <span>Filter & Sort</span>
+            </button>
+          </div>
         </div>
         {/* <div className="cards row px-md-4 px-3">
           {posts.postData.map((post) => (

@@ -3,11 +3,6 @@ import "./info.css";
 import BackBtn from "../../components/backBtn/BackBtn";
 import DisplayStarRating from "react-star-ratings";
 import toast from "react-hot-toast";
-import bus1 from "../../assets/bus1 (1).jpg";
-import bus2 from "../../assets/bus2 (1).jpg";
-import bus3 from "../../assets/bus3 (1).jpg";
-import bus4 from "../../assets/bus4 (1).jpg";
-import bus5 from "../../assets/bus5 (1).jpg";
 import { format } from "timeago.js";
 import { useLoaderData, useNavigate } from "react-router-dom";
 import { StarRating } from "star-ratings-react";
@@ -218,7 +213,7 @@ const Info = () => {
         <div className="title-text text-center opacity-75 mt-3">
           <BackBtn />
           <span className="text-center">Bus Details</span>
-          {currentUser.id === data.userId ? (
+          {currentUser && currentUser.id === data.userId ? (
              <button
              className="btn btn-warning me-2 float-end"
              onClick={() => handleNavigation(data.postId)}

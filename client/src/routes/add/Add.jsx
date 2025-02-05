@@ -58,11 +58,11 @@ const Add = () => {
       toast(
         (t) => (
           <DismissibleToast
-            message= "Your bus has been added successfully!"
+            message= "Great! Your bus has been added successfully. 🚍 Now, upload some images to complete the listing."
             toastProps={t}
           />
         ),
-        { icon: "🔔", duration: 5000, id:"Your bus has been added successfully!" }
+        { icon: "🔔", duration: 5000, id:"Great! Your bus has been added successfully. 🚍 Now, upload some images to complete the listing." }
       );
     } catch (error) {
       console.error(error);

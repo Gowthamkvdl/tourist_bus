@@ -11,20 +11,18 @@ import mongoSanitize from "express-mongo-sanitize";
 import xss from "xss-clean";
 const PORT = 3000;
 const app = express();
+const allowedOrigins = [process.env.CLIENT_URL];
 
 
 // Serve static files from the "uploads" directory
 app.use("/uploads", express.static(path.resolve("uploads"))); 
 app.use(express.json());
 app.use(cookieParser());
-const allowedOrigins = [process.env.CLIENT_URL, process.env.PARTNER_URL];
 
-app.use(cors()); 
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      const allowedOrigins = [process.env.CLIENT_URL];
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
