@@ -113,7 +113,7 @@ export const getPost = async (req, res) => {
       .json({ message: "Failed to fetch post", error: error.message });
   }
 };
-   
+
 export const addPost = async (req, res) => {
   const tokenUserId = req.userId;
   const postData = req.body;
@@ -165,7 +165,6 @@ export const updatePost = async (req, res) => {
   }
 };
 
-
 export const addImages = async (req, res) => {
   const tokenUserId = req.userId; // Extract user ID from token
   const postId = req.params.id; // Get post ID from request parameters
@@ -184,11 +183,10 @@ export const addImages = async (req, res) => {
   const existingPost = await prisma.post.findUnique({
     where: { postId },
   });
-  
+
   if (!existingPost) {
     return res.status(404).json({ message: "Post not found." });
   }
-  
 
   try {
     // Map file paths for images
@@ -213,14 +211,14 @@ export const addImages = async (req, res) => {
       message: "Images added successfully.",
       updatedPost,
     });
-    console.log("img added")
+    console.log("img added");
   } catch (error) {
     console.error("Error adding images:", error);
-    res.status(500).json({ message: "Failed to add images. Please try again." });
+    res
+      .status(500)
+      .json({ message: "Failed to add images. Please try again." });
   }
 };
-
-
 
 export const deletePost = async (req, res) => {
   const tokenUserId = req.userId;
@@ -255,6 +253,8 @@ export const deletePost = async (req, res) => {
 export const addPostRating = async (req, res) => {
   const tokenUserId = req.userId;
   const { post, starCount } = req.body;
+
+  console.log(post, starCount);
 
   try {
     // Check if a rating from this user to the profile already exists
@@ -402,7 +402,7 @@ export const profilePosts = async (req, res) => {
     const profilePosts = await prisma.post.findMany({
       where: { userId: tokenUserId },
     });
-    res.status(200).json(profilePosts);
+    res.status(200).json({ postData: profilePosts });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Server error" });

@@ -1,10 +1,9 @@
 import { defer } from "react-router-dom";
 import apiRequest from "./apiRequest";
 
+
 export const infoPageLoader = async ({ params }) => {
-  const { id } = params;
-  const response = await apiRequest.get("/post/" + id);
-  return response.data;
+  return { id: params.id }; // Only passing the ID
 };
 
 export const addImageLoader = async ({ params }) => {
@@ -19,20 +18,6 @@ export const editPageLoader = async ({ params }) => {
   return response.data;
 };
 
-export const homePageLoader = () => {
-  const response =  apiRequest.get("/post/posts");
-  // return response.data;
-  return defer({
-    postResponse: response,
-  });
-}
-
-export const favPageLoader = () => {
-  const response = apiRequest.get("/post/fav");
-  return defer({
-    postResponse: response,
-  });
-};
 
 export const profilePageLoader = () => {
   const response = apiRequest.get("/post/profile");

@@ -4,20 +4,18 @@ import { Layout, AuthLayout } from "./components/layout/Layout";
 import Home from "./routes/home/Home";
 import Profile from "./routes/profile/Profile";
 import List from "./routes/list/List";
-import Fav from "./routes/fav/Fav";
 import Info from "./routes/info/Info";
 import Add from "./routes/add/Add";
 import Edit from "./routes/edit/Edit";
 import {
   addImageLoader,
   editPageLoader,
-  favPageLoader,
-  homePageLoader,
   infoPageLoader,
   listPageLoader,
   profilePageLoader,
 } from "./lib/loader";
 import AddImage from "./routes/addImg/AddImage";
+import Fav from "./routes/fav/Fav";
 
 const App = () => {
   const router = createBrowserRouter([
@@ -28,7 +26,6 @@ const App = () => {
         {
           path: "/",
           element: <Home />,
-          loader: homePageLoader,
         },
         {
           path: "/list",
@@ -49,7 +46,6 @@ const App = () => {
         {
           path: "/fav",
           element: <Fav />,
-          loader: favPageLoader,
         },
         {
           path: "/profile",

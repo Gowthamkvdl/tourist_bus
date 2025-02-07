@@ -8,22 +8,45 @@ import { useLoaderData, useNavigate } from "react-router-dom";
 import { StarRating } from "star-ratings-react";
 import { AuthContext } from "../../context/AuthContext";
 import apiRequest from "../../lib/apiRequest.js";
+import InfoSkeleton from "../../components/infoSkeleton/InfoSkeleton";
 import DismissibleToast from "../../components/dismissibleToast/DismissibleToast";
+import { QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const Info = () => {
-  const post = useLoaderData();
-  const [data, setData] = useState(post);
-  const [fav, setFav] = useState(data.isSaved);
+  const { id } = useLoaderData();
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["post", id],
+    queryFn: async () => {
+      const response = await apiRequest.get(`/post/${id}`);
+      return response.data;
+    },
+    enabled: !!id,
+  });
+  const queryClient = useQueryClient();
+
+  // ✅ Initialize state with safe defaults
+  const [fav, setFav] = useState(false);
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState(null);
-  const [reviews, setReviews] = useState(data.reviews || []);
+  const [reviews, setReviews] = useState([]);
+  const [requesting, setRequesting] = useState(false);
+
+  // ✅ Update state after data loads
+  React.useEffect(() => {
+    if (data) {
+      setFav(data.isSaved || false);
+      setReviews(data.reviews || []);
+    }
+  }, [data]);
+
   const { currentUser, updateUser } = useContext(AuthContext);
   const [addingReview, setAddingReview] = useState(false);
   const reviewBox = useRef(null);
   const navigate = useNavigate();
   const [loadingEdit, setLoadingEdit] = useState(false);
 
-  console.log(post);
+  if (isLoading) return <InfoSkeleton />;
+  if (error) return <p>Error: {error.message}</p>;
 
   const handleAddFav = async () => {
     if (!currentUser) {
@@ -124,10 +147,13 @@ const Info = () => {
 
   const addReview = async (e) => {
     e.preventDefault();
-    const userId = currentUser.id;
-    const name = currentUser.name;
+    if (!data) return; // ✅ Ensure `data` is available
+
+    const userId = currentUser?.id;
+    const name = currentUser?.name;
     setAddingReview(true);
 
+    // ✅ Validate Review & Rating
     if (!review) {
       setAddingReview(false);
       return toast(
@@ -142,70 +168,75 @@ const Info = () => {
       setAddingReview(false);
       return toast(
         (t) => (
-          <DismissibleToast
-            message= "Please provide a rating"
-            toastProps={t}
-          />
+          <DismissibleToast message="Please provide a rating" toastProps={t} />
         ),
-        { icon: "🔔", duration: 5000, id:"Please provide a rating" }
+        { icon: "🔔", duration: 5000, id: "Please provide a rating" }
       );
     }
 
     try {
-      const addReview = await apiRequest.post("/review", {
+      // ✅ Send Review
+      const newReview = await apiRequest.post("/review", {
         review,
         userId,
         name,
-        postId: data.postId,
+        postId: id,
       });
-      const addRating = await apiRequest.post("/post/rating", {
+
+      // ✅ Send Rating
+      const updatedRating = await apiRequest.post("/post/rating", {
         starCount: rating,
         post: data,
       });
+      setRequesting(true);
 
-      setData((prevData) => ({
-        ...prevData,
-        starCount: addRating.data.averageRating,
-        totalRating: addRating.data.totalRatings,
-      }));
+      if (requesting) {
+        console.log(updatedRating.averageRating);
+        console.log(updatedRating.totalRatings);
 
-      setReviews((prevReviews) => [...prevReviews, addReview.data]);
-      toast(
-        (t) => (
-          <DismissibleToast
-            message= "Review added successfully"
-            toastProps={t}
-          />
-        ),
-        { icon: "🔔", duration: 5000, id:"Review added successfully" }
-      );
+        // ✅ Update React Query Cache Instead of `setData`
+        queryClient.setQueryData(["post", id], (oldData) => ({
+          ...oldData,
+          starCount: updatedRating.averageRating,
+          totalRating: updatedRating.totalRatings,
+          reviews: [...(oldData?.reviews || []), newReview],
+        }));
+
+        toast(
+          (t) => (
+            <DismissibleToast
+              message="Review added successfully"
+              toastProps={t}
+            />
+          ),
+          { icon: "🔔", duration: 5000, id: "Review added successfully" }
+        );
+      }
+      queryClient.invalidateQueries(["post", id]);
     } catch (error) {
       console.error(error);
       toast(
         (t) => (
-          <DismissibleToast
-            message= "Failed to add review"
-            toastProps={t}
-          />
+          <DismissibleToast message="Failed to add review" toastProps={t} />
         ),
-        { icon: "🔔", duration: 5000, id:"Failed to add review" }
+        { icon: "🔔", duration: 5000, id: "Failed to add review" }
       );
     } finally {
-      // Clear the form and reset the states
+      // ✅ Reset Form
       setReview("");
       setRating(0);
-      reviewBox.current.reset();
+      if (reviewBox.current) reviewBox.current.value = ""; // ✅ Reset input value
       setAddingReview(false);
+      setRequesting(false);
     }
   };
 
   const handleNavigation = (postId) => {
     setLoadingEdit(true);
-    navigate(`/edit/${post.postId}`, {
+    navigate(`/edit/${postId}`, {
       state: { from: location.pathname },
     });
   };
-  
 
   return (
     <div>
@@ -214,15 +245,14 @@ const Info = () => {
           <BackBtn />
           <span className="text-center">Bus Details</span>
           {currentUser && currentUser.id === data.userId ? (
-             <button
-             className="btn btn-warning me-2 float-end"
-             onClick={() => handleNavigation(data.postId)}
-             disabled={loadingEdit}
-           >
-             {loadingEdit ? "Loading..." : "Edit"}
-           </button>
-          ) : (null)}
-         
+            <button
+              className="btn btn-warning me-2 float-end"
+              onClick={() => handleNavigation(data.postId)}
+              disabled={loadingEdit}
+            >
+              {loadingEdit ? "Loading..." : "Edit"}
+            </button>
+          ) : null}
         </div>
       </div>
       <div className="others box-shadow pt-1 pb-5 bg-white ">
@@ -319,22 +349,47 @@ const Info = () => {
             </div>
             <div className="carousel-inner">
               <div className="carousel-item active">
-                <img src={`http://localhost:3000${data.img1}`} loading="lazy" className="d-block w-100" alt="..." />
+                <img
+                  src={`http://localhost:3000${data.img1}`}
+                  loading="lazy"
+                  className="d-block w-100"
+                  alt="..."
+                />
               </div>
               <div className="carousel-item">
-                <img src={`http://localhost:3000${data.img2}`} loading="lazy" className="d-block w-100" alt="..." />
+                <img
+                  src={`http://localhost:3000${data.img2}`}
+                  loading="lazy"
+                  className="d-block w-100"
+                  alt="..."
+                />
               </div>
               <div className="carousel-item">
-                <img src={`http://localhost:3000${data.img3}`} loading="lazy" className="d-block w-100" alt="..." />
+                <img
+                  src={`http://localhost:3000${data.img3}`}
+                  loading="lazy"
+                  className="d-block w-100"
+                  alt="..."
+                />
               </div>
               <div className="carousel-item">
-                <img src={`http://localhost:3000${data.img4}`} loading="lazy" className="d-block w-100" alt="..." />
+                <img
+                  src={`http://localhost:3000${data.img4}`}
+                  loading="lazy"
+                  className="d-block w-100"
+                  alt="..."
+                />
               </div>
               <div className="carousel-item">
-                <img src={`http://localhost:3000${data.img5}`} loading="lazy" className="d-block w-100" alt="..." />
+                <img
+                  src={`http://localhost:3000${data.img5}`}
+                  loading="lazy"
+                  className="d-block w-100"
+                  alt="..."
+                />
               </div>
             </div>
-            <button 
+            <button
               className="carousel-control-prev"
               type="button"
               data-bs-target="#carouselExampleIndicators"
@@ -381,11 +436,15 @@ const Info = () => {
                       toast(
                         (t) => (
                           <DismissibleToast
-                            message= "Phone number not available"
+                            message="Phone number not available"
                             toastProps={t}
                           />
                         ),
-                        { icon: "🔔", duration: 5000, id:"Phone number not available" }
+                        {
+                          icon: "🔔",
+                          duration: 5000,
+                          id: "Phone number not available",
+                        }
                       );
                     }
                     // Replace with your phone number
@@ -508,14 +567,15 @@ const Info = () => {
                 Add a review
               </button>
             </div>
-            {currentUser && (
+
+            {currentUser && ( 
               <div class="collapse" id="collapseExample">
                 <div className="reviewBox d-flex mt-3">
                   <div className="photoDiv d-flex">
                     <div className="d-flex justify-centent-center align-items-center text-center photo primary-600 fs-2 text-white">
                       <span className="mx-auto">{currentUser.name[0]}</span>
                     </div>
-                  </div>
+                  </div> 
                   <div className="nameAndReview ms-2">
                     <div className="name subtitle-text">{currentUser.name}</div>
                     <div className="review body-text">
@@ -542,7 +602,7 @@ const Info = () => {
                             textColor={"white"}
                             onSetRating={setRating}
                             size={20}
-                          />
+                          /> 
                           <span className="me-3 text-center">
                             {rating} stars
                           </span>
