@@ -11,6 +11,7 @@ import apiRequest from "../../lib/apiRequest.js";
 import InfoSkeleton from "../../components/infoSkeleton/InfoSkeleton";
 import DismissibleToast from "../../components/dismissibleToast/DismissibleToast";
 import { QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
+import noImage from "../../assets/noImage.jpg";
 
 const Info = () => {
   const { id } = useLoaderData();
@@ -189,7 +190,15 @@ const Info = () => {
         post: data,
       });
       setRequesting(true);
-
+      toast(
+        (t) => (
+          <DismissibleToast
+            message="Review added successfully"
+            toastProps={t}
+          />
+        ),
+        { icon: "🔔", duration: 5000, id: "Review added successfully" }
+      );
       if (requesting) {
         console.log(updatedRating.averageRating);
         console.log(updatedRating.totalRatings);
@@ -201,16 +210,6 @@ const Info = () => {
           totalRating: updatedRating.totalRatings,
           reviews: [...(oldData?.reviews || []), newReview],
         }));
-
-        toast(
-          (t) => (
-            <DismissibleToast
-              message="Review added successfully"
-              toastProps={t}
-            />
-          ),
-          { icon: "🔔", duration: 5000, id: "Review added successfully" }
-        );
       }
       queryClient.invalidateQueries(["post", id]);
     } catch (error) {
@@ -350,7 +349,9 @@ const Info = () => {
             <div className="carousel-inner">
               <div className="carousel-item active">
                 <img
-                  src={`http://localhost:3000${data.img1}`}
+                  src={
+                    data.img1 ? `http://localhost:3000${data.img1}` : noImage
+                  }
                   loading="lazy"
                   className="d-block w-100"
                   alt="..."
@@ -358,7 +359,9 @@ const Info = () => {
               </div>
               <div className="carousel-item">
                 <img
-                  src={`http://localhost:3000${data.img2}`}
+                  src={
+                    data.img2 ? `http://localhost:3000${data.img2}` : noImage
+                  }
                   loading="lazy"
                   className="d-block w-100"
                   alt="..."
@@ -366,7 +369,9 @@ const Info = () => {
               </div>
               <div className="carousel-item">
                 <img
-                  src={`http://localhost:3000${data.img3}`}
+                  src={
+                    data.img3 ? `http://localhost:3000${data.img3}` : noImage
+                  }
                   loading="lazy"
                   className="d-block w-100"
                   alt="..."
@@ -374,7 +379,9 @@ const Info = () => {
               </div>
               <div className="carousel-item">
                 <img
-                  src={`http://localhost:3000${data.img4}`}
+                  src={
+                    data.img4 ? `http://localhost:3000${data.img4}` : noImage
+                  }
                   loading="lazy"
                   className="d-block w-100"
                   alt="..."
@@ -382,7 +389,9 @@ const Info = () => {
               </div>
               <div className="carousel-item">
                 <img
-                  src={`http://localhost:3000${data.img5}`}
+                  src={
+                    data.img5 ? `http://localhost:3000${data.img5}` : noImage
+                  }
                   loading="lazy"
                   className="d-block w-100"
                   alt="..."
@@ -568,14 +577,14 @@ const Info = () => {
               </button>
             </div>
 
-            {currentUser && ( 
+            {currentUser && (
               <div class="collapse" id="collapseExample">
                 <div className="reviewBox d-flex mt-3">
                   <div className="photoDiv d-flex">
                     <div className="d-flex justify-centent-center align-items-center text-center photo primary-600 fs-2 text-white">
                       <span className="mx-auto">{currentUser.name[0]}</span>
                     </div>
-                  </div> 
+                  </div>
                   <div className="nameAndReview ms-2">
                     <div className="name subtitle-text">{currentUser.name}</div>
                     <div className="review body-text">
@@ -602,7 +611,7 @@ const Info = () => {
                             textColor={"white"}
                             onSetRating={setRating}
                             size={20}
-                          /> 
+                          />
                           <span className="me-3 text-center">
                             {rating} stars
                           </span>

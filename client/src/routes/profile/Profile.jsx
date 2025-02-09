@@ -24,7 +24,8 @@ const Profile = () => {
   const [userName, setUserName] = useState(currentUser.name);
   const [city, setCity] = useState(currentUser.city);
   const [updating, setUpdating] = useState(false);
-  const [length, setLength] = useState(null);
+  const [unfinished, setUnfinished] = useState(false);
+  const [buses, setBuses] = useState(false);
 
   // Fetch posts using React Query
   const { data, isLoading, error } = useQuery({
@@ -207,14 +208,16 @@ const Profile = () => {
           <span class="material-symbols-outlined">arrow_forward_ios</span>
         </div>
       </div>
-      <div className="others p-4 box-shadow pt-1 mt-4 pb-5 bg-white">
-        <h1 className="title-text pt-3 pb-1 opacity-75">
-          Your Unfinished Buses Uploads
-        </h1>
-
+      <div className="others box-shadow pb-5 bg-white mt-4">
+      <div className="cards row px-md-4 px-3">
+        {data?.postData?.filter((post) => !post.hasImage).length > 0 && (
+          <h1 className="title-text pt-3 pb-1 opacity-75">
+            Your Unfinished Buses Uploads
+          </h1>
+        )}
         {isLoading ? (
           // Show loading skeleton while fetching data
-          <CardSkeleton NoOfCards={6} />
+          <CardSkeleton NoOfCards={0} />
         ) : error ? (
           // Show error message if API request fails
           <p className="text-center">
@@ -229,7 +232,7 @@ const Profile = () => {
               <div className="col-md-6" key={post.postId}>
                 <Card post={post} />
                 <button
-                  className="btn btn-info me-2 d-flex justify-content-center align-items-center"
+                  className="btn btn-info me-2 mb-4 d-flex justify-content-center align-items-center"
                   onClick={() => handleFinishClick(post.postId)}
                 >
                   <span className="material-symbols-outlined">check</span>
@@ -239,16 +242,18 @@ const Profile = () => {
             ))
         ) : (
           // Fallback message
-          <p className="opacity-75">
-            No unfinished bus uploads yet. Start uploading to see them here!
-          </p>
+          data.postData.filter((post) => !post.hasImage).length > 0 && (
+            <p className="opacity-75">
+              No unfinished bus uploads yet. Start uploading to see them here!
+            </p>
+          )
         )}
 
-        <h1 className="title-text pb-1 mt-4 opacity-75">Your Buses</h1>
 
+        <h1 className="title-text pb-1 mt-3 opacity-75">Your Buses</h1>
         {isLoading ? (
           // Show loading skeleton while fetching data
-          <CardSkeleton NoOfCards={6} />
+          <CardSkeleton NoOfCards={2} />
         ) : error ? (
           // Show error message if API request fails
           <p className="text-center">
@@ -263,7 +268,7 @@ const Profile = () => {
               <div className="col-md-6" key={post.postId}>
                 <Card post={post} />
                 <button
-                  className="btn btn-info me-2 d-flex justify-content-center align-items-center"
+                  className="btn btn-info me-2 mb-4 d-flex justify-content-center align-items-center"
                   onClick={() => handleEditClick(post.postId)}
                 >
                   <span className="material-symbols-outlined">edit</span>
@@ -277,6 +282,7 @@ const Profile = () => {
             You haven't posted any buses yet. Start uploading now!
           </p>
         )}
+        </div>
       </div>
     </div>
   );

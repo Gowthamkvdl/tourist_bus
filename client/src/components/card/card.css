@@ -3,5 +3,8 @@
 }
 
 .bus-img{
-  max-height: 100px !important;
+  width: 100%; /* Makes the image responsive */
+  aspect-ratio: 16 / 9; /* Adjust this as needed, e.g., 4/3, 1/1, etc. */
+  object-fit: cover; /* Ensures the image fills the area without distortion */
+  object-position: center;
 }

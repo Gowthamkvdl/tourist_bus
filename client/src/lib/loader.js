@@ -18,15 +18,6 @@ export const editPageLoader = async ({ params }) => {
   return response.data;
 };
 
-
-export const profilePageLoader = () => {
-  const response = apiRequest.get("/post/profile");
-  return defer({
-    postResponse: response,
-  });
-}
-
-
 export const listPageLoader = ({ request }) => {
   const [others, limitStr] = request.url.split("?")[1].split("&limit=");
   const limit = parseInt(limitStr);

@@ -17,7 +17,6 @@ const Home = () => {
     },
   });
 
-
   // State to store selected location
   const [location, setLocation] = useState("");
 
@@ -29,8 +28,6 @@ const Home = () => {
     "Coimbatore",
     "Cuddalore",
   ];
-
-
 
   // Function to update selected location from dropdown
   const handleLocationChange = (e) => {
@@ -46,7 +43,6 @@ const Home = () => {
         </h1>
         <p className="small-text text-center mt-0 d-md-none">By Shada Group</p>
       </div>
-
 
       {/* Location Selection */}
       <div className="input mt-4">
@@ -103,11 +99,13 @@ const Home = () => {
             </p>
           ) : data?.postData?.length > 0 ? (
             // Render posts if available
-            data.postData.map((post) => (
-              <div className="col-md-6" key={post.postId}>
-                <Card post={post} />
-              </div>
-            )) 
+            data.postData
+              .filter((post) => post.hasImage)
+              .map((post) => (
+                <div className="col-md-6" key={post.postId}>
+                  <Card post={post} />
+                </div>
+              ))
           ) : (
             // Display fallback if no posts are found
             <p className="text-center">No posts available.</p>

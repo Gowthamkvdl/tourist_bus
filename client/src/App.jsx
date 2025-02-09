@@ -12,7 +12,6 @@ import {
   editPageLoader,
   infoPageLoader,
   listPageLoader,
-  profilePageLoader,
 } from "./lib/loader";
 import AddImage from "./routes/addImg/AddImage";
 import Fav from "./routes/fav/Fav";
@@ -50,7 +49,6 @@ const App = () => {
         {
           path: "/profile",
           element: <Profile />,
-          loader: profilePageLoader,
         },
         {
           path: "/edit/:id",
