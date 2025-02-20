@@ -12,7 +12,7 @@ const Upload = ({ postId }) => {
   const [selectedFiles, setSelectedFiles] = useState([]); // Track selected files
 
   const maxFiles = 5;
-  const maxFileSize = 1000000;
+  const maxFileSize = 10000000;
 
   const handleUpload = async () => {
     if (fileUploadRef.current) {
@@ -73,7 +73,7 @@ const Upload = ({ postId }) => {
           onClick={handleUpload}
           disabled={selectedFiles?.length !== maxFiles} // Disable until exactly 5 images are selected
         >
-          Upload {selectedFiles?.length}/{maxFiles}
+          Upload {selectedFiles?.length ? selectedFiles?.length : "0"}/{maxFiles}
         </button>
       </div>
     </div>
