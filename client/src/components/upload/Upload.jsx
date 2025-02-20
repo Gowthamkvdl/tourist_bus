@@ -52,7 +52,7 @@ const Upload = ({ postId }) => {
       <FileUpload
         ref={fileUploadRef}
         name="images"
-        url={`http://localhost:3000/api/post/add-images/${postId || ""}`}
+        url={`https://tourist-bus-backend.onrender.com/api/post/add-images/${postId || ""}`}
         multiple
         accept="image/*"
         maxFileSize={maxFileSize}
