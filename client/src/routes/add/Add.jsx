@@ -247,6 +247,7 @@ const Add = () => {
                   <option value="others">Others</option>
                 </select>
               </div>
+              <span>(The phone number you provided during login will be added to your contact details.)</span>
               <button
                 type="submit"
                 className="btn primary-700 mb-3"

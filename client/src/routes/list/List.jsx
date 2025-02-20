@@ -224,7 +224,7 @@ const List = () => {
 
   return (
     <div>
-      <div className="header  pt-md-1">
+      <div className="header pt-md-1">
         <div className="city mt-4 d-flex justify-content-center align-items-center gap-1 ">
           <div className="locationIcon ">
             <span class="material-symbols-outlined fs-2 bg-secondary rounded-5 text-white p-2">
@@ -269,8 +269,8 @@ const List = () => {
           </div> */}
         </div>
       </div>
-      <div className="others box-shadow pb-5 bg-white mt-4">
-        <div className="filterBtns mt-2 mb-1 d-flex justify-content-between align-items-center gap-2 p-3">
+      <div className="others box-shadow  bg-white mt-4">
+        <div className="filterBtns mt-2  mb-1 d-flex justify-content-between align-items-center gap-2 p-3">
           <span className="subtitle-text opacity-75 ms-2">
             Avaiable results
           </span>
@@ -280,7 +280,7 @@ const List = () => {
               className="btn d-flex gap-1 justify-content-center align-items-center btn-outline-dark rounded-5 btn-sm"
             >
               <span class="material-symbols-outlined">close</span>
-              <span>Remove filters</span>
+              <span className="d-md-block d-none">Remove filters</span>
             </button>
             <button
               data-bs-toggle="modal"
@@ -313,8 +313,8 @@ const List = () => {
             </Await>
             <button
               ref={loadMoreButtonRef}
-              className={`btn text-light mt-3 d-flex fs-5 justify-content-center mx-1`}
-              disabled
+              className={`btn text-light mb-5 pb-5 d-flex fs-5 justify-content-center mx-1`}
+              disabled={isLoadingMore } 
               onClick={loadMore}
             >
               {isLoadingMore ? (

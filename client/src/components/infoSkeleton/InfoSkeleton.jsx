@@ -29,7 +29,7 @@ const InfoSkeleton = () => {
         </div>
 
         <div className="imgs mx-3 w-md-75 my-3 rounded-3">
-          <Skeleton height={350} />
+          <Skeleton height={200} />
         </div>
 
         <div className="details mx-md-4 px-4">

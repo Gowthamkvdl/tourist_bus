@@ -36,7 +36,7 @@ const Fav = () => {
         <div className="cards row px-md-4 px-3">
           {isLoading ? (
             // Show loading skeleton while fetching data
-            <CardSkeleton NoOfCards={6} />
+            <CardSkeleton NoOfCards={2} />
           ) : error ? (
             // Show error message if API request fails
             <p className="text-center">
@@ -53,7 +53,7 @@ const Fav = () => {
             )))
           ) : (
             // Display fallback if no posts are found
-            <div>
+            <div className="p-3" >
               <h4 className="mb-2">
                 Your Favorite Buses Will Appear Here
               </h4>

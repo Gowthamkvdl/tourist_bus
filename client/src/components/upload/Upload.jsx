@@ -71,9 +71,9 @@ const Upload = ({ postId }) => {
           type="button"
           className="btn btn-success w-100 mt-3"
           onClick={handleUpload}
-          disabled={selectedFiles.length !== maxFiles} // Disable until exactly 5 images are selected
+          disabled={selectedFiles?.length !== maxFiles} // Disable until exactly 5 images are selected
         >
-          Upload {selectedFiles.length}/{maxFiles}
+          Upload {selectedFiles?.length}/{maxFiles}
         </button>
       </div>
     </div>

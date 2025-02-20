@@ -29,7 +29,7 @@ const App = () => {
         {
           path: "/list",
           element: <List />,
-          loader: listPageLoader,
+          loader: listPageLoader
         },
         {
           path: "/info/:id",

@@ -33,12 +33,7 @@ const CardSkeleton = ({ NoOfCards, className }) => {
                     </span>
                     <Skeleton width={50} />
                   </div>
-                  <div className="mileage d-flex justify-content-center align-items-center">
-                    <span className="material-symbols-outlined fs-2 opacity-75">
-                      local_gas_station
-                    </span>
-                    <Skeleton width={50} />
-                  </div>
+                  
                   <div className="ac d-flex justify-content-center align-items-center">
                     <span className="material-symbols-outlined fs-2 opacity-75">
                       ac_unit

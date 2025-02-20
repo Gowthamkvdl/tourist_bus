@@ -276,7 +276,7 @@ const Navbar = () => {
           >
             <ul className="navbar-nav">
               <li className="nav-item ">
-                <Link className={`nav-link shadow-none ${isActive("/")}`} to="/">
+                <Link className={`nav-link shadow-none mb-0 pb-0 ${isActive("/")}`} to="/">
                   <span className="material-symbols-outlined d-md-none mt-1 title-text">
                     home
                   </span>
@@ -284,7 +284,7 @@ const Navbar = () => {
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className={`nav-link shadow-none ${isActive("/list")}`} to="/list?limit=5">
+                <Link className={`nav-link shadow-none mb-0 pb-0 ${isActive("/list")}`} to="/list?limit=5">
                   <span className="material-symbols-outlined d-md-none mt-1 title-text">
                     search
                   </span>
@@ -292,7 +292,7 @@ const Navbar = () => {
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className={`nav-link shadow-none ${isActive("/fav")}`} to="/fav">
+                <Link className={`nav-link shadow-none mb-0 pb-0 mb-md-2 ${isActive("/fav")}`} to="/fav">
                   <span className="material-symbols-outlined d-md-none mt-1 title-text">
                     favorite
                   </span>
@@ -300,7 +300,7 @@ const Navbar = () => {
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className={`nav-link shadow-none ${isActive("/add")}`} to="/add">
+                <Link className={`nav-link shadow-none mb-0 pb-0 ${isActive("/add")}`} to="/add">
                   <span className="material-symbols-outlined d-md-none mt-1 title-text">
                     add_circle
                   </span>
@@ -310,7 +310,7 @@ const Navbar = () => {
               <li className="nav-item d-md-none">
                 <button
                   onClick={onClickProfileBtn}
-                  className={`nav-link shadow-none btn ${isActive("/profile")}`}
+                  className={`nav-link shadow-none  rounded-0 btn ${isActive("/profile")}`}
                 >
                   <span className="material-symbols-outlined d-md-none mt-1 title-text">
                     person

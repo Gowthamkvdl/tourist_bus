@@ -55,6 +55,7 @@ export const getPosts = async (req, res) => {
     });
 
     // Optionally format the data (e.g., compute a total count or enrich posts)
+    console.log(posts)
     res.status(200).json({ postData: posts, total: posts.length });
   } catch (error) {
     console.error("Error fetching posts:", error);

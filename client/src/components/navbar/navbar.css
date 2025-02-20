@@ -24,11 +24,12 @@
 .collapseClass {
   background-color: #1aa7ffde !important;
 }
+
+
 .nav-link.active {
   border-bottom: 2px solid black !important;
   margin-bottom: 4px;
 }
-
 
 
 .mt-80 {
