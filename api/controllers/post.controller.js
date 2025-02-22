@@ -74,7 +74,12 @@ export const getPost = async (req, res) => {
       },
       include: {
         user: true,
-        reviews: true, // Assuming reviews are related in the schema
+        reviews: true, 
+        img1: true,
+        img2: true,
+        img3: true,
+        img4: true,
+        img5: true,
       },
     });
 
