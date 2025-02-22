@@ -101,11 +101,10 @@ const Home = () => {
             <p className="text-center">
               <ErrorComponent />
             </p>
-          ) : Array.isArray(data?.postData) && data.postData.length > 0 ? (
+          ) : data?.postData.length > 0 ? (
             // Render posts if available
-            data.postData
-              .filter((post) => post.hasImage)
-              .map((post) => (
+            data?.postData
+              .map((post) => (   
                 <div className="col-md-6" key={post.postId}>
                   <Card post={post} />
                 </div>
