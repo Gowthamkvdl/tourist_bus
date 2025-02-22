@@ -46,7 +46,7 @@ const Upload = ({ postId }) => {
           }
         })
       );
-
+   
       if (urls.includes(null)) {
         toast.error("Some images failed to upload. Please try again.", {
           id: "uploading",
@@ -124,7 +124,7 @@ const Upload = ({ postId }) => {
           onClick={handleUpload}
           disabled={selectedFiles?.length !== maxFiles} // Disable until exactly 5 images are selected
         >
-          Upload {selectedFiles?.length}/{maxFiles}
+          Upload {selectedFiles?.length ? selectedFiles?.length : "0"}/{maxFiles}
         </button>
       </div>
 

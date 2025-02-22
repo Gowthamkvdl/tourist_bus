@@ -15,10 +15,10 @@ const CardSkeleton = ({ NoOfCards, className }) => {
             <div className="details row">
               <div className="col-7 d-flex flex-column">
                 <div className="brand opacity-75 body-text">
-                  <Skeleton width={100} />
+                  <Skeleton width={50} />
                 </div>
                 <div className="name title-text">
-                  <Skeleton width={150} height={20} />
+                  <Skeleton width={100} height={20} />
                 </div>
                 <div className="location subtitle-text mb-1 d-flex justify-content-start align-items-center">
                   <span className="material-symbols-outlined fs-4">
@@ -31,14 +31,14 @@ const CardSkeleton = ({ NoOfCards, className }) => {
                     <span className="material-symbols-outlined fs-2 opacity-75">
                       airline_seat_recline_extra
                     </span>
-                    <Skeleton width={50} />
+                    <Skeleton width={25} />
                   </div>
                   
                   <div className="ac d-flex justify-content-center align-items-center">
                     <span className="material-symbols-outlined fs-2 opacity-75">
                       ac_unit
                     </span>
-                    <Skeleton width={50} />
+                    <Skeleton width={25} />
                   </div>
                 </div>
               </div>

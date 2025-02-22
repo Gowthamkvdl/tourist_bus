@@ -21,7 +21,7 @@ const Card = ({ post }) => {
     <div className="busCard rounded-4 box-shadow mb-3 p-3 overflow-hidden">
       <div className="upperSection">
         <div className="details row">
-          <div className="col-7 d-flex flex-column">
+          <div className="col-6 d-flex flex-column">
             <div className="brand opacity-75 body-text">
               <span>{post.busBrand ? post.busBrand : "Bus Brand"}</span>
             </div>
@@ -59,7 +59,7 @@ const Card = ({ post }) => {
               </div>
             </div>
           </div>
-          <div className="col-5 busImg justify-content-end d-flex">
+          <div className="col-6 busImg justify-content-end d-flex">
             <img src={post.img1 ? post.img1 : noImage } loading="lazy" className="img-fluid bus-img rounded-3" alt="" />
           </div>
         </div>
