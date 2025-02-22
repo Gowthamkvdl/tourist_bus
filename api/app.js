@@ -19,7 +19,7 @@ app.use("/uploads", express.static(path.resolve("uploads")));
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true })); // Parses URL-encoded data
-
+app.use(cors())
 
 app.use(
   cors({
