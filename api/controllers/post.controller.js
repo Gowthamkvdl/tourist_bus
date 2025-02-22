@@ -67,14 +67,43 @@ export const getPost = async (req, res) => {
   const paramPostId = req.params.id;
 
   try {
-    // Fetch the post and include user and reviews
     const post = await prisma.post.findUnique({
-      where: {
-        postId: paramPostId,
-      },
-      include: {
-        user: true,
-        reviews: true, // Assuming reviews are related in the schema
+      where: { postId: paramPostId },
+      select: {
+        postId: true,
+        busName: true,
+        busBrand: true,
+        numberOfSeats: true,
+        mileage: true,
+        cost: true,
+        numberOfSpeakers: true,
+        speakerBrand: true,
+        city: true,
+        busType: true,
+        img1: true,
+        img2: true,
+        img3: true,
+        img4: true,
+        img5: true,
+        recliningSeats: true,
+        ac: true,
+        tv: true,
+        usb: true,
+        wifi: true,
+        hasImage: true,
+        starRating: true,
+        reviews: true,
+        averageRating: true,
+        totalRating: true,
+        userId: true,
+        savedPosts: true,
+        user: {
+          select: {
+            name: true,
+            phone: true,
+          },
+        },
+        createdAt: true,
       },
     });
 
@@ -83,8 +112,6 @@ export const getPost = async (req, res) => {
     }
 
     const token = req.cookies?.token;
-
-    // Default response data
     let isSaved = false;
 
     if (token) {
@@ -98,14 +125,13 @@ export const getPost = async (req, res) => {
             },
           },
         });
-        isSaved = !!saved; // Boolean value
+        isSaved = !!saved;
       } catch (err) {
         console.error("Token verification failed:", err.message);
         return res.status(401).json({ message: "Invalid or expired token" });
       }
     }
 
-    // Return post data with isSaved and reviews
     return res.status(200).json({ ...post, isSaved });
   } catch (error) {
     console.error("Error fetching post:", error);

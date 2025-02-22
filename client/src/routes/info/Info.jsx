@@ -265,7 +265,6 @@ const Info = () => {
                 directions_bus
               </span> 
             </div> */}
-            {console.log(data.img1)}
             <div className="nameAndRating d-flex flex-column justify-content-center align-items-center">
               <span className="title-text">{data.busName}</span>
               <div className="location subtitle-text mb-1 d-flex justify-content-center  align-items-center">

@@ -60,7 +60,7 @@ const Card = ({ post }) => {
             </div>
           </div>
           <div className="col-5 busImg justify-content-end d-flex">
-            <img src={post.img1} loading="lazy" className="img-fluid bus-img rounded-3" alt="" />
+            <img src={post.img1 ? post.img1 : noImage } loading="lazy" className="img-fluid bus-img rounded-3" alt="" />
           </div>
         </div>
         <div className="priceAndBtn row mt-2 justify-content-between align-items-center">
