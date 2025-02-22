@@ -1,62 +1,58 @@
 import express from "express";
 import cookieParser from "cookie-parser";
-import authRoute from "./routes/auth.route.js";
-import otpRoute from "./routes/otp.route.js"
-import postRoute from  "./routes/post.route.js"
-import reviewRoute from "./routes/review.route.js"
-import path from "path";
-
 import cors from "cors";
 import mongoSanitize from "express-mongo-sanitize";
 import xss from "xss-clean";
+import path from "path";
+
+import authRoute from "./routes/auth.route.js";
+import otpRoute from "./routes/otp.route.js";
+import postRoute from "./routes/post.route.js";
+import reviewRoute from "./routes/review.route.js";
+
 const PORT = 3000;
 const app = express();
-const allowedOrigins = [process.env.CLIENT_URL || "https://touristbus.onrender.com"];
 
+// ✅ Define allowed origins properly
+const allowedOrigins = [
+  "https://touristbus.onrender.com", // ✅ Your frontend URL
+  "http://localhost:3000", // ✅ Allow local development
+];
 
-
-// Serve static files from the "uploads" directory
-app.use("/uploads", express.static(path.resolve("uploads"))); 
-app.use(express.json());
-app.use(cookieParser());
-app.use(express.urlencoded({ extended: true })); // Parses URL-encoded data
-app.use(cors())
-
+// ✅ Correct CORS configuration
 app.use(
   cors({
-    origin: (origin, callback) => {
-      // Allow requests from allowed origins OR requests without an origin (e.g., mobile apps)
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true, // ✅ Allow credentials (cookies, auth headers)
+    origin: allowedOrigins, // ✅ Allow only specific origins
+    credentials: true, // ✅ Allow cookies & auth headers
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
-app.use((req, res, next) => {
-  console.log(`Incoming Request: ${req.method} ${req.url}`);
-  next();
-});
-
-// Data sanitization against NoSQL query injection
+// ✅ Middleware Setup
+app.use(express.json());
+app.use(cookieParser());
+app.use(express.urlencoded({ extended: true }));
 app.use(mongoSanitize());
-// Data sanitization against site script xss
 app.use(xss());
 
+// ✅ Static file serving
+app.use("/uploads", express.static(path.resolve("uploads")));
+
+// ✅ API Routes
 app.use("/api/auth", authRoute);
 app.use("/api/otp", otpRoute);
 app.use("/api/post", postRoute);
 app.use("/api/review", reviewRoute);
-// app.use("/api/partner", partnerRoute);
 
+// ✅ Debugging logs
+app.use((req, res, next) => {
+  console.log(`Incoming Request: ${req.method} ${req.url}`);
+  console.log(`Origin: ${req.headers.origin}`);
+  next();
+});
 
-
-
+// ✅ Start Server
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server is running on PORT ${PORT}`);
 });
