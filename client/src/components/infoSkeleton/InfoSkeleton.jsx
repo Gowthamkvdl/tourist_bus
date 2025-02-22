@@ -34,8 +34,8 @@ const InfoSkeleton = () => {
 
         <div className="details mx-md-4 px-4">
           <div className="Price d-flex justify-content-between align-items-center">
-            <Skeleton width={150} height={40} />
-            <Skeleton width={200} height={40} />
+            <Skeleton width={auto} height={40} />
+            <Skeleton width={auto} height={40} />
           </div>
           <div className="contact mt-3">
             <div className="row">
