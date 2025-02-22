@@ -17,6 +17,8 @@ const Home = () => {
     },
   });
 
+  console.log(data)
+
   // State to store selected location
   const [location, setLocation] = useState("");
 
