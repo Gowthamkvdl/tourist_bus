@@ -131,7 +131,7 @@ const Profile = () => {
     <div className="pt-md-4 profile">
       <div className="profileInfo  mt-4 d-flex flex-column justify-content-center">
         <div className="profilePic bg-white text-center p-2 d-flex justify-content-center align-items-center m-auto">
-          G
+        {currentUser.name[0].toUpperCase()}
         </div>
         <div className="name title-text text-center mt-2">
           <p className="mb-0">{currentUser.name}</p>
