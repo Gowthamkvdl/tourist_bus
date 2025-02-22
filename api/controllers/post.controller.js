@@ -55,7 +55,7 @@ export const getPosts = async (req, res) => {
     });
 
     // Optionally format the data (e.g., compute a total count or enrich posts)
-    console.log(posts)
+    console.log(posts);
     res.status(200).json({ postData: posts, total: posts.length });
   } catch (error) {
     console.error("Error fetching posts:", error);
@@ -167,55 +167,44 @@ export const updatePost = async (req, res) => {
 };
 
 export const addImages = async (req, res) => {
-  const tokenUserId = req.userId; // Extract user ID from token
-  const postId = req.params.id; // Get post ID from request parameters
-  const files = req.files; // Access uploaded files
-  console.log("Post ID:", postId);
-  console.log("Uploaded files:", files);
-
-  if (!postId) {
-    return res.status(400).json({ message: "Post ID is required." });
-  }
-
-  if (!files || files.length === 0) {
-    return res.status(400).json({ message: "No files were uploaded." });
-  }
-
-  const existingPost = await prisma.post.findUnique({
-    where: { postId },
-  });
-
-  if (!existingPost) {
-    return res.status(404).json({ message: "Post not found." });
-  }
-
   try {
-    // Map file paths for images
-    const imgPaths = files.map((file) => `/uploads/${file.filename}`);
+    console.log("Inside addImages function");
 
-    // Add images and hasImage to post data
+    const postId = req.params.id;
+    const { images } = req.body;
+
+    console.log("Post ID:", postId);
+    console.log("Received images:", images);
+
+    if (!postId)
+      return res.status(400).json({ message: "Post ID is required." });
+    if (!images || images.length === 0)
+      return res.status(400).json({ message: "No images provided." });
+
+    const existingPost = await prisma.post.findUnique({ where: { postId } });
+    if (!existingPost)
+      return res.status(404).json({ message: "Post not found." });
+
+    // Update images
     const updatedPost = await prisma.post.update({
-      where: {
-        postId,
-      },
+      where: { postId },
       data: {
-        img1: imgPaths[0] || null,
-        img2: imgPaths[1] || null,
-        img3: imgPaths[2] || null,
-        img4: imgPaths[3] || null,
-        img5: imgPaths[4] || null,
-        hasImage: imgPaths.length > 0,
+        img1: images[0] || null,
+        img2: images[1] || null,
+        img3: images[2] || null,
+        img4: images[3] || null,
+        img5: images[4] || null,
+        hasImage: images.length > 0,
       },
     });
 
-    res.status(200).json({
-      message: "Images added successfully.",
-      updatedPost,
-    });
-    console.log("img added");
+    console.log("Images added successfully!");
+    return res
+      .status(200)
+      .json({ message: "Images added successfully.", updatedPost });
   } catch (error) {
     console.error("Error adding images:", error);
-    res
+    return res
       .status(500)
       .json({ message: "Failed to add images. Please try again." });
   }

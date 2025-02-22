@@ -350,7 +350,7 @@ const Info = () => {
               <div className="carousel-item active">
                 <img
                   src={
-                    data.img1 ? `https://tourist-bus-backend.onrender.com${data.img1}` : noImage
+                    data.img1 ? data.img1 : noImage
                   }
                   loading="lazy"
                   className="d-block w-100"
@@ -360,7 +360,7 @@ const Info = () => {
               <div className="carousel-item">
                 <img
                   src={
-                    data.img2 ? `https://tourist-bus-backend.onrender.com${data.img2}` : noImage
+                    data.img2 ? data.img2 : noImage
                   }
                   loading="lazy"
                   className="d-block w-100"
@@ -370,7 +370,7 @@ const Info = () => {
               <div className="carousel-item">
                 <img
                   src={
-                    data.img3 ? `https://tourist-bus-backend.onrender.com${data.img3}` : noImage
+                    data.img3 ? data.img3 : noImage
                   }
                   loading="lazy"
                   className="d-block w-100"
@@ -380,7 +380,7 @@ const Info = () => {
               <div className="carousel-item">
                 <img
                   src={
-                    data.img4 ? `https://tourist-bus-backend.onrender.com${data.img4}` : noImage
+                    data.img4 ? data.img4 : noImage
                   }
                   loading="lazy"
                   className="d-block w-100"
@@ -390,7 +390,7 @@ const Info = () => {
               <div className="carousel-item">
                 <img
                   src={
-                    data.img5 ? `https://tourist-bus-backend.onrender.com${data.img5}` : noImage
+                    data.img5 ? data.img5 : noImage
                   }
                   loading="lazy"
                   className="d-block w-100"
