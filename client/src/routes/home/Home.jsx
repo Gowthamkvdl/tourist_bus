@@ -15,9 +15,11 @@ const Home = () => {
       const response = await apiRequest.get(`/post/posts`);
       return response.data; // Ensure correct data extraction
     },
+    staleTime: 0, // Disable caching for debugging
+    cacheTime: 0, // Prevents old data being used
   });
 
-  console.log(data)
+  console.log(data);
 
   // State to store selected location
   const [location, setLocation] = useState("");
@@ -99,7 +101,7 @@ const Home = () => {
             <p className="text-center">
               <ErrorComponent />
             </p>
-          ) : data?.postData?.length > 0 ? (
+          ) : Array.isArray(data?.postData) && data.postData.length > 0 ? (
             // Render posts if available
             data.postData
               .filter((post) => post.hasImage)
