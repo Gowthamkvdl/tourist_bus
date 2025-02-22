@@ -11,7 +11,8 @@ import mongoSanitize from "express-mongo-sanitize";
 import xss from "xss-clean";
 const PORT = 3000;
 const app = express();
-const allowedOrigins = [process.env.CLIENT_URL];
+const allowedOrigins = [process.env.CLIENT_URL || "https://touristbus.onrender.com"];
+
 
 
 // Serve static files from the "uploads" directory
@@ -24,13 +25,14 @@ app.use(cors())
 app.use(
   cors({
     origin: (origin, callback) => {
+      // Allow requests from allowed origins OR requests without an origin (e.g., mobile apps)
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
         callback(new Error("Not allowed by CORS"));
       }
     },
-    credentials: true,
+    credentials: true, // ✅ Allow credentials (cookies, auth headers)
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
