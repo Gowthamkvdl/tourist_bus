@@ -28,13 +28,13 @@ const Card = ({ post }) => {
             <div className="name title-text">
               <span>{post.busName ? post.busName : "Bus Name"}</span>
             </div>
-            <div className="location -text mb-1 d-flex justify-content-start  align-items-center">
+            <div className="location mb-1 d-flex justify-content-start  align-items-center">
               <span class="material-symbols-outlined fs-4">location_on</span>
-              <span>{post.city ? post.city.toUpperCase() : "City"}</span>
+              <span className="body-text" >{post.city ? post.city.toUpperCase() : "City"}</span>
             </div>
             <div className="specs d-flex gap-2 justify-content-start align-items-center">
               <div className="seats  d-flex justify-content-center  align-items-center">
-                <span class="material-symbols-outlined fs-3 opacity-75">
+                <span class="material-symbols-outlined fs-4 opacity-75">
                   airline_seat_recline_extra
                 </span>
                 <span className="body-text">
@@ -42,7 +42,7 @@ const Card = ({ post }) => {
                 </span>
               </div>
               <div className="mileage d-flex  justify-content-center  align-items-center">
-                <span class="material-symbols-outlined d-none d-xl-block fs-3 opacity-75">
+                <span class="material-symbols-outlined d-none d-xl-block fs-4 opacity-75">
                   local_gas_station
                 </span>  
                 <span className="fs-6 d-none body-text d-xl-block">
@@ -50,7 +50,7 @@ const Card = ({ post }) => {
                 </span>
               </div> 
               <div className="ac d-flex   justify-content-center  align-items-center">
-                <span class="material-symbols-outlined fs-3 opacity-75">
+                <span class="material-symbols-outlined fs-4 opacity-75">
                   ac_unit
                 </span>
                 <span className="fs-6 body-text">
