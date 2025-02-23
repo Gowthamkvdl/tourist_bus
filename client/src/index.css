@@ -163,13 +163,13 @@ html {
 
 /* Default text styles (for desktop) */
 .title-text {
-  font-size: 1.75rem; /* 28px */
-  font-weight: 600; /* Bold */
+  font-size: 1.75rem !important; /* 28px */
+  font-weight: 600 !important; /* Bold */
 }
 
 .subtitle-text {
-  font-size: 1.25rem; /* 20px */
-  font-weight: 500; /* Semi-bold */
+  font-size: 1.25rem !important; /* 20px */
+  font-weight: 500 !important; /* Semi-bold */
 }
 
 .body-text {
@@ -185,11 +185,11 @@ html {
 /* Adjustments for smaller screens (mobile) */
 @media (max-width: 576px) {
   .title-text {
-    font-size: 1.3rem; /* Slightly smaller for mobile */
+    font-size: 1.3rem !important; /* Slightly smaller for mobile */
   }
 
   .subtitle-text {
-    font-size: 1.1rem; /* Adjusted for mobile */
+    font-size: 1.1rem !important; /* Adjusted for mobile */
   }
 
   .body-text {

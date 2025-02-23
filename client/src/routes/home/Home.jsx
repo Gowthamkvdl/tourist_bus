@@ -104,7 +104,7 @@ const Home = () => {
 
           {/* Location Dropdown */}
           <div className="inputBox d-flex align-items-center w-100 mx-3">
-            <span className="subtitle-text text-nowrap">Search in</span>
+            <span className="subtitle-text text-nowrap ">Search in</span>
             <select
               value={location}
               onChange={handleLocationChange}
