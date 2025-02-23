@@ -271,7 +271,7 @@ const Navbar = () => {
         </div>
         <div>
           <div
-            className="collapse primary-400  mb-4 mb-md-0  navbar-collapse box-shadow px-3 rounded-4"
+            className="collapse primary-400  mb-2 mb-md-0  navbar-collapse box-shadow px-3 rounded-4"
             id="navbarNav"
           >
             <ul className="navbar-nav">
