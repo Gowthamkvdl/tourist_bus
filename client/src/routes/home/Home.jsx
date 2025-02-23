@@ -63,7 +63,7 @@ const Home = () => {
   return (
     <div className="home pt-md-4">
       {/* Header Section */}
-      <div className="header d-flex justify-content-between align-items-center my-3">
+      <div className="header d-flex justify-content-between align-items-center my-4">
         <div className="title">
           <h1 className="text-center text-title fs-2 d-md-none mb-0">
             Turist Bus
