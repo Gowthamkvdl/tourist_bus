@@ -63,9 +63,9 @@ const Home = () => {
   return (
     <div className="home pt-md-4">
       {/* Header Section */}
-      <div className="header d-flex justify-content-between align-items-center">
+      <div className="header d-flex justify-content-between align-items-center my-3">
         <div className="title">
-          <h1 className="text-center fs-2 d-md-none mb-0 mt-3">
+          <h1 className="text-center text-title fs-2 d-md-none mb-0">
             Turist Bus
           </h1>
           {/* <p className="small-text text-center mt-0 d-md-none">
@@ -78,7 +78,7 @@ const Home = () => {
               onClick={onClickProfileBtn}
               className="btn secondary-700 d-flex align-items-center gap-1"
             >
-              <span className="material-symbols-outlined">person</span>
+              <span className="material-symbols-outlined fs-4">person</span>
               {currentUser ? currentUser.name : "Login"}
             </button>
             <button
