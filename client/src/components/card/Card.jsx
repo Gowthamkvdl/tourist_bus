@@ -28,32 +28,32 @@ const Card = ({ post }) => {
             <div className="name title-text">
               <span>{post.busName ? post.busName : "Bus Name"}</span>
             </div>
-            <div className="location suntitle-text mb-1 d-flex justify-content-start  align-items-center">
+            <div className="location -text mb-1 d-flex justify-content-start  align-items-center">
               <span class="material-symbols-outlined fs-4">location_on</span>
-              <span>{post.city ? post.city : "City"}</span>
+              <span>{post.city ? post.city.toUpperCase() : "City"}</span>
             </div>
             <div className="specs d-flex gap-2 justify-content-start align-items-center">
-              <div className="seats d-flex justify-content-center  align-items-center">
-                <span class="material-symbols-outlined fs-2 opacity-75">
+              <div className="seats  d-flex justify-content-center  align-items-center">
+                <span class="material-symbols-outlined fs-3 opacity-75">
                   airline_seat_recline_extra
                 </span>
-                <span className="fs-6">
+                <span className="body-text">
                   {post.numberOfSeats ? post.numberOfSeats : "Seats"}
                 </span>
               </div>
               <div className="mileage d-flex  justify-content-center  align-items-center">
-                <span class="material-symbols-outlined d-none d-xl-block fs-2 opacity-75">
+                <span class="material-symbols-outlined d-none d-xl-block fs-3 opacity-75">
                   local_gas_station
-                </span>
-                <span className="fs-6 d-none d-xl-block">
+                </span>  
+                <span className="fs-6 d-none body-text d-xl-block">
                   {post.mileage ? post.mileage : "Milage"} km
                 </span>
               </div> 
               <div className="ac d-flex   justify-content-center  align-items-center">
-                <span class="material-symbols-outlined fs-2 opacity-75">
+                <span class="material-symbols-outlined fs-3 opacity-75">
                   ac_unit
                 </span>
-                <span className="fs-6">
+                <span className="fs-6 body-text">
                   {post.ac === true ? "AC" : "Non-AC"}
                 </span>
               </div>

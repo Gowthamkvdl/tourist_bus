@@ -68,9 +68,9 @@ const Home = () => {
           <h1 className="text-center fs-2 d-md-none mb-0 mt-3">
             Turist Bus
           </h1>
-          <p className="small-text text-center mt-0 d-md-none">
+          {/* <p className="small-text text-center mt-0 d-md-none">
             By Shada Group
-          </p>
+          </p> */}
         </div>
         <div className="login">
           <div className="profileBtn d-block d-md-none sidePart">
