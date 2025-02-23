@@ -18,9 +18,10 @@ const Fav = () => {
   return (
     <div>
       <div className="header pt-md-1">
-        <div className="city mt-4 d-flex justify-content-center align-items-center gap-1 ">
-          <div className="locationIcon ">
-            <span class="material-symbols-outlined fs-2 bg-secondary rounded-5 text-white p-2">
+        {/* Favorites Section */}
+        <div className="city mt-4 d-flex justify-content-center align-items-center gap-1">
+          <div className="locationIcon">
+            <span className="material-symbols-outlined fs-2 bg-secondary rounded-5 text-white p-2">
               favorite
             </span>
           </div>
@@ -53,10 +54,8 @@ const Fav = () => {
             )))
           ) : (
             // Display fallback if no posts are found
-            <div className="p-3" >
-              <h4 className="mb-2">
-                Your Favorite Buses Will Appear Here
-              </h4>
+            <div className="p-3">
+              <h4 className="mb-2">Your Favorite Buses Will Appear Here</h4>
 
               <p className="text-muted mb-4">
                 You haven't added any buses to your favorites yet. Start

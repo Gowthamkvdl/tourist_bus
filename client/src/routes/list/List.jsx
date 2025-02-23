@@ -233,9 +233,10 @@ const List = () => {
   return (
     <div>
       <div className="header pt-md-1">
-        <div className="city mt-4 d-flex justify-content-center align-items-center gap-1 ">
-          <div className="locationIcon ">
-            <span class="material-symbols-outlined fs-2 bg-secondary rounded-5 text-white p-2">
+        {/* Location Selection Section */}
+        <div className="city mt-4 d-flex justify-content-center align-items-center gap-1">
+          <div className="locationIcon">
+            <span className="material-symbols-outlined fs-2 bg-secondary rounded-5 text-white p-2">
               location_on
             </span>
           </div>
@@ -246,35 +247,13 @@ const List = () => {
               : "Select Location"}
           </span>
           <span
-            className="material-symbols-outlined btn mx-0 mt-2 px-0 btn-transperant"
+            className="material-symbols-outlined btn mx-0 mt-2 px-0 btn-transparent"
             type="button"
             data-bs-toggle="modal"
             data-bs-target="#exampleModal1"
           >
             <span className="material-symbols-outlined fs-2">edit</span>
           </span>
-        </div>
-        <div className="selection rounded-5 mx-3 mx-md-5 mt-3">
-          {/* <div className="row mx-auto" onClick={handleSelect}>
-            <div
-              className={`col-6 driverSelected ${
-                diver === true ? "box-shadow bg-white rounded-5" : ""
-              } d-flex flex-column  justify-content-center align-items-center`}
-            >
-              <p className="text-center my-0 mt-3 subtitle-text">With Driver</p>
-              <p className="text-center body-text">More Expensive</p>
-            </div>
-            <div
-              className={`col-6 driverSelected ${
-                diver === false ? "box-shadow bg-white rounded-5" : ""
-              } d-flex flex-column  justify-content-center align-items-center`}
-            >
-              <p className="text-center my-0 mt-3 subtitle-text">
-                Without Driver
-              </p>
-              <p className="text-center body-text">Less Expensive</p>
-            </div>
-          </div> */}
         </div>
       </div>
       <div className="others box-shadow  bg-white mt-4">
@@ -591,7 +570,7 @@ const List = () => {
           </div>
         </div>
       </div>
-      
+
       <div
         class="modal fade"
         id="exampleModal1"
@@ -614,7 +593,7 @@ const List = () => {
             </div>
             <div class="modal-body">
               <p class="mb-2">
-              Enter the city where you want to search for a bus:
+                Enter the city where you want to search for a bus:
               </p>
               <input
                 type="text"
@@ -636,7 +615,6 @@ const List = () => {
                 Change Location
               </button>
             </div>
-            
           </div>
         </div>
       </div>
