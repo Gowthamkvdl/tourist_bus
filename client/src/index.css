@@ -185,7 +185,7 @@ html {
 /* Adjustments for smaller screens (mobile) */
 @media (max-width: 576px) {
   .title-text {
-    font-size: 1.2rem; /* Slightly smaller for mobile */
+    font-size: 1.3rem; /* Slightly smaller for mobile */
   }
 
   .subtitle-text {
@@ -193,7 +193,7 @@ html {
   }
 
   .body-text {
-    font-size: 0.65rem; /* Adjusted for mobile */
+    font-size: 0.7rem; /* Adjusted for mobile */
   }
 
   .small-text {
