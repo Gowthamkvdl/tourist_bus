@@ -591,6 +591,7 @@ const List = () => {
           </div>
         </div>
       </div>
+      
       <div
         class="modal fade"
         id="exampleModal1"
@@ -623,6 +624,7 @@ const List = () => {
                 className="form-control shadow-none"
                 placeholder="Enter city name"
                 id=""
+                list="cities"
               />
             </div>
             <div class="modal-footer">
@@ -634,6 +636,7 @@ const List = () => {
                 Change Location
               </button>
             </div>
+            
           </div>
         </div>
       </div>
