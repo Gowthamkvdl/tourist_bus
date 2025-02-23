@@ -15,6 +15,9 @@
     bottom: auto; /* Remove bottom fixation */
     z-index: 10;
   }
+  .nav-text{
+    font-size: 20px;
+  }
 }
 
 .link {
@@ -23,6 +26,11 @@
 
 .collapseClass {
   background-color: #1aa7ffde !important;
+}
+
+
+.nav-text{
+  font-size: 12px;
 }
 
 /* 

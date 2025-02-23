@@ -280,7 +280,7 @@ const Navbar = () => {
                   <span className="material-symbols-outlined d-md-none mt-1 title-text">
                     home
                   </span>
-                  <span className="">Home</span>
+                  <span className="nav-text">Home</span>
                 </Link>
               </li>
               <li className="nav-item">
@@ -288,7 +288,7 @@ const Navbar = () => {
                   <span className="material-symbols-outlined d-md-none mt-1 title-text">
                     search
                   </span>
-                  <span className="">Search</span>
+                  <span className="nav-text">Search</span>
                 </Link>
               </li>
               <li className="nav-item">
@@ -296,7 +296,7 @@ const Navbar = () => {
                   <span className="material-symbols-outlined d-md-none mt-1 title-text">
                     favorite
                   </span>
-                  <span className="">Favorite</span>
+                  <span className="nav-text">Favorite</span>
                 </Link>
               </li>
               <li className="nav-item">
@@ -304,7 +304,7 @@ const Navbar = () => {
                   <span className="material-symbols-outlined d-md-none mt-1 title-text">
                     add_circle
                   </span>
-                  <span className="">Add Bus</span>
+                  <span className="nav-text">Add Bus</span>
                 </Link>
               </li>
               <li className="nav-item d-md-none">
@@ -315,7 +315,7 @@ const Navbar = () => {
                   <span className="material-symbols-outlined d-md-none mt-1 title-text">
                     person
                   </span>
-                  <span className="">Profile</span>
+                  <span className="nav-text">Profile</span>
                 </button>
               </li>
             </ul>
