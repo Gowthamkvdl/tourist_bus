@@ -271,51 +271,51 @@ const Navbar = () => {
         </div>
         <div>
           <div
-            className="collapse primary-400  navbar-collapse box-shadow px-3 rounded-4"
+            className="collapse primary-400  mb-4 navbar-collapse box-shadow px-3 rounded-4"
             id="navbarNav"
           >
             <ul className="navbar-nav">
               <li className="nav-item ">
-                <Link className={`nav-link shadow-none mb-0 pb-0 ${isActive("/")}`} to="/">
+                <Link className={`nav-link shadow-none d-flex flex-column align-items-center mb-0 pb-0 ${isActive("/")}`} to="/">
                   <span className="material-symbols-outlined d-md-none mt-1 title-text">
                     home
                   </span>
-                  <span className="d-none d-md-block">Home</span>
+                  <span className="">Home</span>
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className={`nav-link shadow-none mb-0 pb-0 ${isActive("/list")}`} to="/list?limit=5">
+                <Link className={`nav-link shadow-none d-flex flex-column align-items-center mb-0 pb-0 ${isActive("/list")}`} to="/list?limit=5">
                   <span className="material-symbols-outlined d-md-none mt-1 title-text">
                     search
                   </span>
-                  <span className="d-none d-md-block">Search</span>
+                  <span className="">Search</span>
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className={`nav-link shadow-none mb-0 pb-0 mb-md-2 ${isActive("/fav")}`} to="/fav">
+                <Link className={`nav-link shadow-none d-flex flex-column align-items-center mb-0 pb-0 mb-md-2 ${isActive("/fav")}`} to="/fav">
                   <span className="material-symbols-outlined d-md-none mt-1 title-text">
                     favorite
                   </span>
-                  <span className="d-none d-md-block">Favorite</span>
+                  <span className="">Favorite</span>
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className={`nav-link shadow-none mb-0 pb-0 ${isActive("/add")}`} to="/add">
+                <Link className={`nav-link shadow-none d-flex flex-column align-items-center mb-0 pb-0 ${isActive("/add")}`} to="/add">
                   <span className="material-symbols-outlined d-md-none mt-1 title-text">
                     add_circle
                   </span>
-                  <span className="d-none d-md-block">Add Bus</span>
+                  <span className="">Add Bus</span>
                 </Link>
               </li>
               <li className="nav-item d-md-none">
                 <button
                   onClick={onClickProfileBtn}
-                  className={`nav-link shadow-none  rounded-0 btn ${isActive("/profile")}`}
+                  className={`nav-link shadow-none d-flex flex-column align-items-center  rounded-0 btn ${isActive("/profile")}`}
                 >
                   <span className="material-symbols-outlined d-md-none mt-1 title-text">
                     person
                   </span>
-                  <span className="d-none d-md-block">Profile</span>
+                  <span className="">Profile</span>
                 </button>
               </li>
             </ul>

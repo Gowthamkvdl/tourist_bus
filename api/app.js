@@ -16,7 +16,7 @@ const app = express();
 // ✅ Define allowed origins properly
 const allowedOrigins = [
   "https://touristbus.onrender.com", // ✅ Your frontend URL
-  "http://localhost:3000", // ✅ Allow local development
+  "http://localhost:5173", // ✅ Allow local development
 ];
 
 // ✅ Correct CORS configuration
