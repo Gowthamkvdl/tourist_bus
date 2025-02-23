@@ -134,7 +134,7 @@ const List = () => {
       searchParams.delete("location"); // Remove if no location is selected
     }
     setSearchParams(searchParams); // Update URL
-    closeBtn.current.click(); // Close the modal programmatically
+    // closeBtn.current.click(); // Close the modal programmatically
   };
 
   console.log(posts);
@@ -217,6 +217,14 @@ const List = () => {
         <div className="text-center">
           <h3>No buses found in "{searchParams.get("location")}"</h3>
           <p>Please use the filter to find suitable buses.</p>
+          <button
+            className="btn btn-primary"
+            type="button"
+            data-bs-toggle="modal"
+            data-bs-target="#exampleModal1"
+          >
+            Change Loaction
+          </button>
         </div>
       );
     }
@@ -314,7 +322,7 @@ const List = () => {
             <button
               ref={loadMoreButtonRef}
               className={`btn text-light mb-5 pb-5 d-flex fs-5 justify-content-center mx-1`}
-              disabled={isLoadingMore } 
+              disabled={isLoadingMore}
               onClick={loadMore}
             >
               {isLoadingMore ? (
@@ -594,7 +602,7 @@ const List = () => {
           <div class="modal-content">
             <div class="modal-header">
               <h1 class="modal-title fs-5" id="exampleModalLabel">
-                Change location
+                Change Location
               </h1>
               <button
                 type="button"
@@ -604,66 +612,26 @@ const List = () => {
               ></button>
             </div>
             <div class="modal-body">
-              <select
+              <p class="mb-2">
+              Enter the city where you want to search for a bus:
+              </p>
+              <input
+                type="text"
                 name=""
                 onChange={handleSelectChange}
                 value={newLocation}
-                className="form-select shadow-none"
+                className="form-control shadow-none"
+                placeholder="Enter city name"
                 id=""
-              >
-                <option value="">All Cities</option>
-                <option value="Ariyalur">Ariyalur</option>
-                <option value="Chengalpattu">Chengalpattu</option>
-                <option value="Chennai">Chennai</option>
-                <option value="Coimbatore">Coimbatore</option>
-                <option value="Cuddalore">Cuddalore</option>
-                <option value="Dindigul">Dindigul</option>
-                <option value="Erode">Erode</option>
-                <option value="Kanchipuram">Kanchipuram</option>
-                <option value="Kanyakumari">Kanyakumari</option>
-                <option value="Karur">Karur</option>
-                <option value="Madurai">Madurai</option>
-                <option value="Nagapattinam">Nagapattinam</option>
-                <option value="Namakkal">Namakkal</option>
-                <option value="Panruti">Panruti</option>
-                <option value="Pudukkottai">Pudukkottai</option>
-                <option value="Ramanathapuram">Ramanathapuram</option>
-                <option value="Salem">Salem</option>
-                <option value="Thanjavur">Thanjavur</option>
-                <option value="Theni">Theni</option>
-                <option value="Thoothukudi">Thoothukudi</option>
-                <option value="Tiruchirappalli">Tiruchirappalli</option>
-                <option value="Tirunelveli">Tirunelveli</option>
-                <option value="Tiruppur">Tiruppur</option>
-                <option value="Tiruvannamalai">Tiruvannamalai</option>
-                <option value="Tiruvarur">Tiruvarur</option>
-                <option value="Vadalur">Vadalur</option>
-                <option value="Vellore">Vellore</option>
-                <option value="Viluppuram">Viluppuram</option>
-                <option value="Virudhunagar">Virudhunagar</option>
-                <option value="Nagercoil">Nagercoil</option>
-                <option value="Sivakasi">Sivakasi</option>
-                <option value="Pollachi">Pollachi</option>
-                <option value="Avinashi">Avinashi</option>
-                <option value="Udumalaipettai">Udumalaipettai</option>
-                <option value="Dharmapuri">Dharmapuri</option>
-                <option value="Perambalur">Perambalur</option>
-                <option value="Arakkonam">Arakkonam</option>
-                <option value="Kumbakonam">Kumbakonam</option>
-                <option value="Pattukkottai">Pattukkottai</option>
-              </select>
+              />
             </div>
-            <div class="modal-footer d-none">
+            <div class="modal-footer">
               <button
                 type="button"
-                class="btn btn-secondary"
+                class="btn btn-primary"
                 data-bs-dismiss="modal"
-                ref={closeBtn}
               >
-                Close
-              </button>
-              <button type="button" class="btn btn-primary">
-                Change location
+                Change Location
               </button>
             </div>
           </div>
