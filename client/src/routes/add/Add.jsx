@@ -4,7 +4,7 @@ import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import apiRequest from "../../lib/apiRequest";
 import { AuthContext } from "../../context/AuthContext";
-import DismissibleToast from "../../components/dismissibleToast/DismissibleToast"
+import DismissibleToast from "../../components/dismissibleToast/DismissibleToast";
 import Upload from "../../components/upload/Upload";
 
 const Add = () => {
@@ -30,7 +30,7 @@ const Add = () => {
       usb: formData.get("usb") === "yes",
       tv: formData.get("tv") === "yes",
       wifi: formData.get("wifi") === "yes",
-      numberOfSpeakers: formData.get("speakers") || "0",
+      speakerType: formData.get("speakers") || "0",
       speakerBrand: formData.get("speakersBrand") || "others",
       city: currentUser.city,
     };
@@ -39,11 +39,11 @@ const Add = () => {
       toast(
         (t) => (
           <DismissibleToast
-            message= "Please fill all required fields."
+            message="Please fill all required fields."
             toastProps={t}
           />
         ),
-        { icon: "🔔", duration: 5000, id:"Please fill all required fields." }
+        { icon: "🔔", duration: 5000, id: "Please fill all required fields." }
       );
       return;
     }
@@ -58,22 +58,30 @@ const Add = () => {
       toast(
         (t) => (
           <DismissibleToast
-            message= "Great! Your bus has been added successfully. 🚍 Now, upload some images to complete the listing."
+            message="Great! Your bus has been added successfully. 🚍 Now, upload some images to complete the listing."
             toastProps={t}
           />
         ),
-        { icon: "🔔", duration: 5000, id:"Great! Your bus has been added successfully. 🚍 Now, upload some images to complete the listing." }
+        {
+          icon: "🔔",
+          duration: 5000,
+          id: "Great! Your bus has been added successfully. 🚍 Now, upload some images to complete the listing.",
+        }
       );
     } catch (error) {
       console.error(error);
       toast(
         (t) => (
           <DismissibleToast
-            message= "An error occurred. Please try again later."
+            message="An error occurred. Please try again later."
             toastProps={t}
           />
         ),
-        { icon: "🔔", duration: 5000, id:"An error occurred. Please try again later." }
+        {
+          icon: "🔔",
+          duration: 5000,
+          id: "An error occurred. Please try again later.",
+        }
       );
     } finally {
       setIsLoading(false);
@@ -129,7 +137,7 @@ const Add = () => {
                   className="form-control"
                   name="mileage"
                   placeholder="Mileage"
-                  max={100}
+                  max={200}
                 />
                 <label>Mileage per liter</label>
               </div>
@@ -171,7 +179,7 @@ const Add = () => {
               </div>
               {[
                 { label: "AC", name: "AC" },
-                { label: "Reclining Seats", name: "seat" },
+                { label: "Pushback Seats", name: "seat" },
                 { label: "USB Charging Ports", name: "usb" },
                 { label: "TV", name: "tv" },
                 { label: "WiFi", name: "wifi" },
@@ -216,7 +224,7 @@ const Add = () => {
               <div className="subtitle-text opacity-75 mt-3">
                 Entertainment Details
               </div>
-              <div className="form-floating">
+              {/* <div className="form-floating">
                 <input
                   type="number"
                   className="form-control"
@@ -225,6 +233,22 @@ const Add = () => {
                   max={100}
                 />
                 <label>Number of Speakers</label>
+              </div> */}
+              <div className="">
+                <label>Speaker Type</label>
+
+                <select name="speakers" className="form-select">
+                  <option value="">Select Speaker Type</option>
+                  <option value="stereo">Stereo</option>
+                  <option value="dolby">Dolby Audio</option>
+                  <option value="dts">DTS Surround</option>
+                  <option value="surround-5.1">5.1 Surround</option>
+                  <option value="surround-7.1">7.1 Surround</option>
+                  <option value="subwoofer">With Subwoofer</option>
+                  <option value="party-mode">Party Mode (Disco & Loud)</option>
+                  <option value="pa-system">PA System (Microphone)</option>
+                  <option value="others">Others</option>
+                </select>
               </div>
               <div className="">
                 <label>Speaker Brand</label>
@@ -247,7 +271,10 @@ const Add = () => {
                   <option value="others">Others</option>
                 </select>
               </div>
-              <span>(The phone number you provided during login will be added to your contact details.)</span>
+              <span className="small-text">
+                (The phone number you provided during login will be added to
+                your contact details.)
+              </span>
               <button
                 type="submit"
                 className="btn primary-700 mb-3"

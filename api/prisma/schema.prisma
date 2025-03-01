@@ -31,7 +31,7 @@ model Post {
   numberOfSeats    String
   mileage          String
   cost             String
-  numberOfSpeakers String
+  speakerType String
   speakerBrand     String
   city             String
   busType          BusType

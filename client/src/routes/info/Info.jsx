@@ -40,6 +40,21 @@ const Info = () => {
     }
   }, [data]);
 
+  function toTitleCase(str) {
+    return str
+      .split(" ") // Split by spaces
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize first letter
+      .join(" "); // Join back into a string
+  }
+
+  function toNormalText(str) {
+    return str
+      .toLowerCase()
+      .split("_") // Split by _
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize first letter
+      .join(" "); // Join back into a string
+  }
+
   const { currentUser, updateUser } = useContext(AuthContext);
   const [addingReview, setAddingReview] = useState(false);
   const reviewBox = useRef(null);
@@ -348,9 +363,7 @@ const Info = () => {
             <div className="carousel-inner">
               <div className="carousel-item active">
                 <img
-                  src={
-                    data.img1 ? data.img1 : noImage
-                  }
+                  src={data.img1 ? data.img1 : noImage}
                   loading="lazy"
                   className="d-block w-100"
                   alt="..."
@@ -358,9 +371,7 @@ const Info = () => {
               </div>
               <div className="carousel-item">
                 <img
-                  src={
-                    data.img2 ? data.img2 : noImage
-                  }
+                  src={data.img2 ? data.img2 : noImage}
                   loading="lazy"
                   className="d-block w-100"
                   alt="..."
@@ -368,9 +379,7 @@ const Info = () => {
               </div>
               <div className="carousel-item">
                 <img
-                  src={
-                    data.img3 ? data.img3 : noImage
-                  }
+                  src={data.img3 ? data.img3 : noImage}
                   loading="lazy"
                   className="d-block w-100"
                   alt="..."
@@ -378,9 +387,7 @@ const Info = () => {
               </div>
               <div className="carousel-item">
                 <img
-                  src={
-                    data.img4 ? data.img4 : noImage
-                  }
+                  src={data.img4 ? data.img4 : noImage}
                   loading="lazy"
                   className="d-block w-100"
                   alt="..."
@@ -388,9 +395,7 @@ const Info = () => {
               </div>
               <div className="carousel-item">
                 <img
-                  src={
-                    data.img5 ? data.img5 : noImage
-                  }
+                  src={data.img5 ? data.img5 : noImage}
                   loading="lazy"
                   className="d-block w-100"
                   alt="..."
@@ -478,7 +483,7 @@ const Info = () => {
                   className="btn w-100 btn-warning d-flex justify-content-center align-items-center"
                   onClick={(e) => {
                     e.preventDefault();
-                    window.location.href = `https://wa.me/${data.user.phone}`; // Replace with your phone number
+                    window.location.href = `https://wa.me/+91${data.user.phone}`; // Replace with your phone number
                   }}
                 >
                   <span>
@@ -510,7 +515,7 @@ const Info = () => {
             <div className="type  d-flex justify-content-between align-items-center">
               <div className="body-text mb-1 fw-medium mt-2">Bus type</div>
               <div className="price body-text">
-                <span>{data.busType}</span>
+                <span>{toNormalText(data.busType)}</span>
               </div>
             </div>
             <div className="type  d-flex justify-content-between align-items-center">
@@ -521,7 +526,7 @@ const Info = () => {
             </div>
             <div className="type  d-flex justify-content-between align-items-center">
               <div className="body-text mb-1 fw-medium mt-2">
-                Reclining Seats
+                Pushback Seats
               </div>
               <div className="price body-text">
                 <span>{data.recliningSeats ? "Yes" : "No"}</span>
@@ -543,12 +548,11 @@ const Info = () => {
               </div>
             </div>
             <div className="type  d-flex justify-content-between align-items-center">
-              <div className="body-text mb-1 fw-medium mt-2">
-                No. of speakers
-              </div>
+              <div className="body-text mb-1 fw-medium mt-2">Audio Type</div>
               <div className="price body-text">
                 <span>
-                  {data.numberOfSpeakers} ({data.speakerBrand})
+                  {toTitleCase(data.speakerType)} (
+                  {toTitleCase(data.speakerBrand)})
                 </span>
               </div>
             </div>

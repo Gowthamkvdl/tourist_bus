@@ -20,35 +20,28 @@ const Edit = () => {
     try {
       await apiRequest.delete("/post/" + post.postId); // Ensure the request completes
       deleteBtn.current.click(); // Close the modal programmatically
-      toast(
-        (t) => (
-          <DismissibleToast
-            message= "Bus Deleted"
-            toastProps={t}
-          />
-        ),
-        { icon: "🔔", duration: 5000, id:"Bus Deleted" }
-      );
+      toast((t) => <DismissibleToast message="Bus Deleted" toastProps={t} />, {
+        icon: "🔔",
+        duration: 5000,
+        id: "Bus Deleted",
+      });
       navigate("/profile");
     } catch (error) {
       console.error(error);
       toast(
         (t) => (
-          <DismissibleToast
-            message= "Failed to delete bus"
-            toastProps={t}
-          />
+          <DismissibleToast message="Failed to delete bus" toastProps={t} />
         ),
-        { icon: "🔔", duration: 5000, id:"Failed to delete bus" }
+        { icon: "🔔", duration: 5000, id: "Failed to delete bus" }
       );
     } finally {
       setDeleting(false);
     }
   };
-  
+
   const handleNavigate = (postId) => {
-    navigate(`/addImg/${postId}`)
-  }
+    navigate(`/addImg/${postId}`);
+  };
 
   const handleUpdate = async (e) => {
     e.preventDefault(); // Prevent the default form submission
@@ -65,7 +58,7 @@ const Edit = () => {
       recliningSeats: formData.get("seat") === "yes",
       usb: formData.get("usb") === "yes",
       tv: formData.get("tv") === "yes",
-      numberOfSpeakers: formData.get("speakers") || "0",
+      speakerType: formData.get("speakers") || "others",
       speakerBrand: formData.get("speakersBrand") || "others",
       city: currentUser.city, // Assuming currentUser has a `city` property
     };
@@ -81,22 +74,19 @@ const Edit = () => {
       toast(
         (t) => (
           <DismissibleToast
-            message= "Bus Updated Successfully!"
+            message="Bus Updated Successfully!"
             toastProps={t}
           />
         ),
-        { icon: "🔔", duration: 5000, id:"Bus Updated Successfully!" }
+        { icon: "🔔", duration: 5000, id: "Bus Updated Successfully!" }
       );
     } catch (error) {
       console.log(error);
       toast(
         (t) => (
-          <DismissibleToast
-            message= "Failed to update Bus"
-            toastProps={t}
-          />
+          <DismissibleToast message="Failed to update Bus" toastProps={t} />
         ),
-        { icon: "🔔", duration: 5000, id:"Failed to update Bus" }
+        { icon: "🔔", duration: 5000, id: "Failed to update Bus" }
       );
     } finally {
       setUpdating(false);
@@ -347,7 +337,7 @@ const Edit = () => {
               </div>
 
               <div className="d-flex justify-content-between">
-                <div className="name me-4">Reclining Seats</div>
+                <div className="name me-4">Pushback Seats</div>
                 <div className="btns d-flex">
                   <div className="form-check me-2">
                     <input
@@ -445,17 +435,68 @@ const Edit = () => {
               <div className="subtitle-text opacity-75 mt-3">
                 Entertainment Details
               </div>
-              <div class="form-floating">
-                <input
-                  type="number"
-                  class="form-control shadow-none"
-                  id="floatingSpeakers"
-                  placeholder="Speakers"
-                  name="speakers"
-                  max={100}
-                  defaultValue={post.numberOfSpeakers}
-                ></input>
-                <label for="floatingSpeakers">Number of speakers</label>
+              <div className="col-12 col-md-6">
+                <div className="">
+                  <label htmlFor="speakerType">Speaker Type</label>
+                  <select
+                    name="speakers"
+                    className="form-select shadow-none"
+                    id="speakerType"
+                  >
+                    <option value="">Select Speaker Type</option>
+                    <option
+                      value="stereo"
+                      selected={post.speakerType === "stereo"}
+                    >
+                      Stereo
+                    </option>
+                    <option
+                      value="dolby"
+                      selected={post.speakerType === "dolby"}
+                    >
+                      Dolby Audio
+                    </option>
+                    <option value="dts" selected={post.speakerType === "dts"}>
+                      DTS Surround
+                    </option>
+                    <option
+                      value="surround-5.1"
+                      selected={post.speakerType === "surround-5.1"}
+                    >
+                      5.1 Surround
+                    </option>
+                    <option
+                      value="surround-7.1"
+                      selected={post.speakerType === "surround-7.1"}
+                    >
+                      7.1 Surround
+                    </option>
+                    <option
+                      value="subwoofer"
+                      selected={post.speakerType === "subwoofer"}
+                    >
+                      With Subwoofer
+                    </option>
+                    <option
+                      value="party-mode"
+                      selected={post.speakerType === "party-mode"}
+                    >
+                      Party Mode (Disco & Loud)
+                    </option>
+                    <option
+                      value="pa-system"
+                      selected={post.speakerType === "pa-system"}
+                    >
+                      PA System (Microphone)
+                    </option>
+                    <option
+                      value="others"
+                      selected={post.speakerType === "others"}
+                    >
+                      Others
+                    </option>
+                  </select>
+                </div>
               </div>
               <div class="">
                 <label for="speakersBrand">Speaker Brand</label>
@@ -543,10 +584,20 @@ const Edit = () => {
                     Others
                   </option>
                 </select>
-              </div> 
-              <button type="button" onClick={() => handleNavigate(post.postId)} className="btn mt-2 btn-warning w-md-25 w-100" >Reupload Bus Images</button>
-              <button type="submit" className="btn primary-700 mb-3" disabled={updating}>
-                {updating ?  "Updating your Bus...":"Update My Bus"} 
+              </div>
+              <button
+                type="button"
+                onClick={() => handleNavigate(post.postId)}
+                className="btn mt-2 btn-warning w-md-25 w-100"
+              >
+                Reupload Bus Images
+              </button>
+              <button
+                type="submit"
+                className="btn primary-700 mb-3"
+                disabled={updating}
+              >
+                {updating ? "Updating your Bus..." : "Update My Bus"}
               </button>
             </div>
           </form>
