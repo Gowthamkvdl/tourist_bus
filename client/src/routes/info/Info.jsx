@@ -255,7 +255,7 @@ const Info = () => {
   return (
     <div>
       <div className="header mb-3 pt-md-2">
-        <div className="title-text text-center opacity-75 mt-3">
+        <div className="title-text text-center text-muted mt-3">
           <BackBtn />
           <span className="text-center">Bus Details</span>
           {currentUser && currentUser.id === data.userId ? (
@@ -294,7 +294,7 @@ const Info = () => {
                   starRatedColor="#FFD700"
                   starSpacing="1px"
                 />
-                <span className="fs-5 mb-0 opacity-75">
+                <span className="fs-5 mb-0 text-muted">
                   ({data.totalRating ? data.totalRating : 0})
                 </span>
               </div>
@@ -433,7 +433,7 @@ const Info = () => {
             <div className="title-text mb-1 fw-medium mt-2">Price</div>
             <div className="price title-text">
               <span>₹{data.cost}</span>
-              <span className="opacity-75 subtitle-text">/100km</span>
+              <span className="text-muted subtitle-text">/100km</span>
             </div>
           </div>
           <div className="contact  mt-3">
@@ -505,7 +505,11 @@ const Info = () => {
             <hr />
           </div>
           <div className="more ">
-            <div className="subtitle-text opacity-75">Specifications</div>
+            <div className="subtitle-text text-muted">Bus Description</div>
+            <div className="body-text mb-1 fw-medium mt-2 mb-3">
+              {data.description? data.description : "No Description Avaiable"}
+            </div>
+            <div className="subtitle-text text-muted">Specifications</div>
             <div className="type  d-flex justify-content-between align-items-center">
               <div className="body-text mb-1 fw-medium mt-2">No. of seats</div>
               <div className="price body-text">
@@ -540,7 +544,7 @@ const Info = () => {
                 <span>{data.usb ? "Yes" : "No"}</span>
               </div>
             </div>
-            <div className="subtitle-text opacity-75">Entertainment</div>
+            <div className="subtitle-text text-muted">Entertainment</div>
             <div className="type  d-flex justify-content-between align-items-center">
               <div className="body-text mb-1 fw-medium mt-2">TV</div>
               <div className="price body-text">
@@ -566,7 +570,7 @@ const Info = () => {
           <hr />
           <div className="reviews">
             <div className="headingAndStars d-flex justify-content-between">
-              <div className="subtitle-text opacity-75">Reviews</div>
+              <div className="subtitle-text text-muted">Reviews</div>
               <button
                 className="btn primary-700"
                 type="button"
@@ -650,7 +654,7 @@ const Info = () => {
                         <div className="nameAndReview ms-2">
                           <div className="name subtitle-text">
                             {review.name}
-                            <span className="small-text ms-2 opacity-75">
+                            <span className="small-text ms-2 text-muted">
                               {convertToAgo(review.createdAt)}
                             </span>
                             <div className="review body-text">

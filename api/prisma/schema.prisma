@@ -40,6 +40,7 @@ model Post {
   img3             String @default("")
   img4             String @default("")
   img5            String @default("")
+  description            String @default("")
   recliningSeats   Boolean      @default(false)
   ac               Boolean      @default(false)
   tv               Boolean      @default(false)

@@ -50,6 +50,7 @@ const Edit = () => {
     const data = {
       busName: formData.get("busName")?.trim() || "",
       busBrand: formData.get("busBrand")?.trim() || "",
+      description: formData.get("description")?.trim() || "",
       numberOfSeats: formData.get("seats") || "0",
       mileage: formData.get("mileage") || "0",
       cost: formData.get("cost") || "0",
@@ -215,6 +216,16 @@ const Edit = () => {
                   defaultValue={post.cost}
                 />
                 <label for="floatingCost">Cost (₹/100 km)</label>
+              </div>
+              <div className="form-floating">
+                <textarea
+                  name="description"
+                  className="form-control"
+                  id="busDescription"
+                  placeholder="Enter bus details"
+                  rows="20"
+                >{post.description}</textarea>
+                <label htmlFor="busDescription">Bus Description</label>
               </div>
               <div className="subtitle-text opacity-75 mt-3">Extra Details</div>
               <div className="">

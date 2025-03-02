@@ -33,6 +33,7 @@ const Add = () => {
       speakerType: formData.get("speakers") || "0",
       speakerBrand: formData.get("speakersBrand") || "others",
       city: currentUser.city,
+      description: formData.get("description") || "No Description Avaiable"
     };
 
     if (!data.busName || !data.busType) {
@@ -150,6 +151,17 @@ const Add = () => {
                 />
                 <label>Cost (₹/100 km)</label>
               </div>
+              <div className="form-floating">
+                <textarea
+                  name="description"
+                  className="form-control"
+                  id="busDescription"
+                  placeholder="Enter bus details"
+                  rows="20"
+                ></textarea>
+                <label htmlFor="busDescription">Bus Description</label>
+              </div>
+
               <div className="subtitle-text opacity-75 mt-3">Extra Details</div>
               <div className="">
                 <label>Bus Type</label>

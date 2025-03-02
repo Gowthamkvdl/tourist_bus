@@ -26,6 +26,8 @@ const Profile = () => {
   const [updating, setUpdating] = useState(false);
   const [unfinished, setUnfinished] = useState(false);
   const [buses, setBuses] = useState(false);
+  const [editClickLoading, setEditClickLoading] = useState(false);
+  const [finishClickLoading, setFinishClickLoading] = useState(false);
 
   // Fetch posts using React Query
   const { data, isLoading, error } = useQuery({
@@ -37,13 +39,22 @@ const Profile = () => {
   });
 
   const handleEditClick = (postId) => {
-    navigate(`/edit/${postId}`);
-    console.log(postId);
+    try {
+      setEditClickLoading(true);
+      navigate(`/edit/${postId}`);
+      console.log(postId);
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setEditClickLoading(false);
+    }
   };
 
   const handleFinishClick = (postId) => {
+    setFinishClickLoading(true);
     navigate(`/addImg/${postId}`);
     console.log(postId);
+    setFinishClickLoading(false);
   };
 
   const handleLogout = async () => {
@@ -131,7 +142,7 @@ const Profile = () => {
     <div className="pt-md-4 profile">
       <div className="profileInfo  mt-4 d-flex flex-column justify-content-center">
         <div className="profilePic bg-white text-center p-2 d-flex justify-content-center align-items-center m-auto">
-        {currentUser.name[0].toUpperCase()}
+          {currentUser.name[0].toUpperCase()}
         </div>
         <div className="name title-text text-center mt-2">
           <p className="mb-0">{currentUser.name}</p>
@@ -209,79 +220,80 @@ const Profile = () => {
         </div>
       </div>
       <div className="others box-shadow pb-5 bg-white mt-4">
-      <div className="cards row px-md-4 px-3">
-        {data?.postData?.filter((post) => !post.hasImage).length > 0 && (
-          <h1 className="title-text pt-3 pb-1 opacity-75">
-            Your Unfinished Buses Uploads
-          </h1>
-        )}
-        {isLoading ? (
-          // Show loading skeleton while fetching data
-          <CardSkeleton NoOfCards={0} />
-        ) : error ? (
-          // Show error message if API request fails
-          <p className="text-center">
-            <ErrorComponent />
-            {console.log(error)}
-          </p>
-        ) : data?.postData?.filter((post) => !post.hasImage).length > 0 ? (
-          // Render unfinished posts (hasImage === false)
-          data.postData
-            .filter((post) => !post.hasImage)
-            .map((post) => (
-              <div className="col-md-6" key={post.postId}>
-                <Card post={post} />
-                <button
-                  className="btn btn-info me-2 mb-4 d-flex justify-content-center align-items-center"
-                  onClick={() => handleFinishClick(post.postId)}
-                >
-                  <span className="material-symbols-outlined">check</span>
-                  <span>Finish Upload</span>
-                </button>
-              </div>
-            ))
-        ) : (
-          // Fallback message
-          data.postData.filter((post) => !post.hasImage).length > 0 && (
-            <p className="opacity-75">
-              No unfinished bus uploads yet. Start uploading to see them here!
+        <div className="cards row px-md-4 px-3">
+          {data?.postData?.filter((post) => !post.hasImage).length > 0 && (
+            <h1 className="title-text pt-3 pb-1 opacity-75">
+              Your Unfinished Buses Uploads
+            </h1>
+          )}
+          {isLoading ? (
+            // Show loading skeleton while fetching data
+            <CardSkeleton NoOfCards={0} />
+          ) : error ? (
+            // Show error message if API request fails
+            <p className="text-center">
+              <ErrorComponent />
+              {console.log(error)}
             </p>
-          )
-        )}
+          ) : data?.postData?.filter((post) => !post.hasImage).length > 0 ? (
+            // Render unfinished posts (hasImage === false)
+            data.postData
+              .filter((post) => !post.hasImage)
+              .map((post) => (
+                <div className="col-md-6" key={post.postId}>
+                  <Card post={post} />
+                  <button
+                    className="btn btn-info me-2 mb-4 d-flex justify-content-center align-items-center"
+                    onClick={() => handleFinishClick(post.postId)}
+                  >
+                    <span className="material-symbols-outlined">check</span>
+                    <span>
+                      {finishClickLoading ? "Loading..." : "Finish Upload"}
+                    </span>
+                  </button>
+                </div>
+              ))
+          ) : (
+            // Fallback message
+            data.postData.filter((post) => !post.hasImage).length > 0 && (
+              <p className="opacity-75">
+                No unfinished bus uploads yet. Start uploading to see them here!
+              </p>
+            )
+          )}
 
-
-        <h1 className="title-text pb-1 mt-3 opacity-75">Your Buses</h1>
-        {isLoading ? (
-          // Show loading skeleton while fetching data
-          <CardSkeleton NoOfCards={2} />
-        ) : error ? (
-          // Show error message if API request fails
-          <p className="text-center">
-            <ErrorComponent />
-            {console.log(error)}
-          </p>
-        ) : data?.postData?.filter((post) => post.hasImage).length > 0 ? (
-          // Render completed posts (hasImage === true)
-          data.postData
-            .filter((post) => post.hasImage)
-            .map((post) => (
-              <div className="col-md-6" key={post.postId}>
-                <Card post={post} />
-                <button
-                  className="btn btn-info me-2 mb-4 d-flex justify-content-center align-items-center"
-                  onClick={() => handleEditClick(post.postId)}
-                >
-                  <span className="material-symbols-outlined">edit</span>
-                  <span>Edit Bus</span>
-                </button>
-              </div>
-            ))
-        ) : (
-          // Fallback message
-          <p className="opacity-75">
-            You haven't posted any buses yet. Start uploading now!
-          </p>
-        )}
+          <h1 className="title-text pb-1 mt-3 opacity-75">Your Buses</h1>
+          {isLoading ? (
+            // Show loading skeleton while fetching data
+            <CardSkeleton NoOfCards={2} />
+          ) : error ? (
+            // Show error message if API request fails
+            <p className="text-center">
+              <ErrorComponent />
+              {console.log(error)}
+            </p>
+          ) : data?.postData?.filter((post) => post.hasImage).length > 0 ? (
+            // Render completed posts (hasImage === true)
+            data.postData
+              .filter((post) => post.hasImage)
+              .map((post) => (
+                <div className="col-md-6" key={post.postId}>
+                  <Card post={post} />
+                  <button
+                    className="btn btn-info me-2 mb-4 d-flex justify-content-center align-items-center"
+                    onClick={() => handleEditClick(post.postId)}
+                  >
+                    <span className="material-symbols-outlined">edit</span>
+                    <span>Edit Bus</span>
+                  </button>
+                </div>
+              ))
+          ) : (
+            // Fallback message
+            <p className="opacity-75">
+              You haven't posted any buses yet. Start uploading now!
+            </p>
+          )}
         </div>
       </div>
     </div>
