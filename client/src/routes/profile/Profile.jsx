@@ -26,8 +26,8 @@ const Profile = () => {
   const [updating, setUpdating] = useState(false);
   const [unfinished, setUnfinished] = useState(false);
   const [buses, setBuses] = useState(false);
-  const [editClickLoading, setEditClickLoading] = useState(false);
-  const [finishClickLoading, setFinishClickLoading] = useState(false);
+  const [editLoading, setEditLoading] = useState({});
+  const [finishLoading, setFinishLoading] = useState({});
 
   // Fetch posts using React Query
   const { data, isLoading, error } = useQuery({
@@ -39,24 +39,17 @@ const Profile = () => {
   });
 
   const handleEditClick = (postId) => {
-    try {
-      setEditClickLoading(true);
-      navigate(`/edit/${postId}`);
-      console.log(postId);
-    } catch (error) {
-      console.log(error)
-    } finally {
-      setEditClickLoading(false);
-    }
+    setEditLoading((prev) => ({ ...prev, [postId]: true })); // Set loading for this post
+  
+    navigate(`/edit/${postId}`); // Navigate
   };
-
+  
   const handleFinishClick = (postId) => {
-    setFinishClickLoading(true);
-    navigate(`/addImg/${postId}`);
-    console.log(postId);
-    setFinishClickLoading(false);
+    setFinishLoading((prev) => ({ ...prev, [postId]: true })); // Set loading for this post
+  
+    navigate(`/addImg/${postId}`); // Navigate
   };
-
+  
   const handleLogout = async () => {
     try {
       setLoading(true);
@@ -247,9 +240,9 @@ const Profile = () => {
                     onClick={() => handleFinishClick(post.postId)}
                   >
                     <span className="material-symbols-outlined">check</span>
-                    <span>
-                      {finishClickLoading ? "Loading..." : "Finish Upload"}
-                    </span>
+                    <div>
+                    {finishLoading[post.postId] ? "Loading..." : "Finish Upload"}
+                    </div>
                   </button>
                 </div>
               ))
@@ -284,7 +277,7 @@ const Profile = () => {
                     onClick={() => handleEditClick(post.postId)}
                   >
                     <span className="material-symbols-outlined">edit</span>
-                    <span>Edit Bus</span>
+                    <div>{editLoading[post.postId] ? "Loading..." : "Edit Bus"}</div>
                   </button>
                 </div>
               ))
