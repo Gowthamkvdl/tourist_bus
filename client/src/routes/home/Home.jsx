@@ -31,11 +31,100 @@ const Home = () => {
 
   // List of available cities
   const cities = [
-    "Ariyalur",
-    "Chengalpattu",
     "Chennai",
     "Coimbatore",
+    "Madurai",
+    "Tiruchirappalli",
+    "Salem",
+    "Tirunelveli",
+    "Erode",
+    "Vellore",
+    "Thoothukudi",
+    "Dindigul",
+    "Thanjavur",
+    "Ranipet",
+    "Sivakasi",
+    "Karur",
+    "Udhagamandalam (Ooty)",
+    "Kancheepuram",
+    "Nagercoil",
+    "Tiruvannamalai",
+    "Nagapattinam",
+    "Kumbakonam",
+    "Namakkal",
+    "Pudukkottai",
     "Cuddalore",
+    "Perambalur",
+    "Ariyalur",
+    "Tenkasi",
+    "Mayiladuthurai",
+    "Dharmapuri",
+    "Krishnagiri",
+    "Ramanathapuram",
+    "Viluppuram",
+    "Tirupattur",
+    "Virudhunagar",
+    "Tiruppur",
+    "Theni",
+    "Ambur",
+    "Arakkonam",
+    "Karaikudi",
+    "Pollachi",
+    "Gobichettipalayam",
+    "Tiruvallur",
+    "Udumalaipettai",
+    "Manapparai",
+    "Mettupalayam",
+    "Coonoor",
+    "Valparai",
+    "Thiruvarur",
+    "Sirkazhi",
+    "Vaniyambadi",
+    "Palani",
+    "Arani",
+    "Panruti",
+    "Pattukkottai",
+    "Kovilpatti",
+    "Srivilliputhur",
+    "Cheyyar",
+    "Rajapalayam",
+    "Gingee",
+    "Jayankondam",
+    "Chidambaram",
+    "Manamadurai",
+    "Denkanikottai",
+    "Lalgudi",
+    "Sathyamangalam",
+    "Mettur",
+    "Bodinayakanur",
+    "Hosur",
+    "Kallakurichi",
+    "Pennagaram",
+    "Harur",
+    "Sankarankovil",
+    "Tiruchendur",
+    "Kangeyam",
+    "Vedaranyam",
+    "Avadi",
+    "Melur",
+    "Periyakulam",
+    "Thiruthuraipoondi",
+    "Ponneri",
+    "Vadipatti",
+    "Neyveli",
+    "Ettayapuram",
+    "Keelakarai",
+    "Paramakudi",
+    "Bhuvanagiri",
+    "Tiruporur",
+    "Villupuram",
+    "Musiri",
+    "Tirukkoyilur",
+    "Uthiramerur",
+    "Sholingur",
+    "Kundrathur",
+    "Sirkali",
+    "Oddanchatram",
   ];
 
   // Function to update selected location from dropdown
@@ -111,7 +200,7 @@ const Home = () => {
               className="form-select select shadow-none b-none subtitle-text flex-grow-1"
             >
               <option value="">All Cities</option>
-              {cities.map((city) => (
+              {cities.sort().map((city) => (
                 <option key={city} value={city}>
                   {city}
                 </option>
@@ -125,8 +214,8 @@ const Home = () => {
               className="link"
               to={"/list?location=" + (location ? location : "")}
             >
-              <span className="material-symbols-outlined text-dark fs-1 rounded-5 p-2">
-                arrow_forward
+              <span class="material-symbols-outlined text-dark fs-1 rounded-5 p-2">
+                search
               </span>
             </Link>
           </div>
