@@ -116,7 +116,7 @@ export const getPost = async (req, res) => {
 };
 
 export const addPost = async (req, res) => {
-  const tokenUserId = req.userId;
+  const tokenUserId = req.userId;   
   const postData = req.body;
 
   try {
