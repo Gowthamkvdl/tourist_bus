@@ -33,7 +33,7 @@ const Add = () => {
       speakerType: formData.get("speakers") || "0",
       speakerBrand: formData.get("speakersBrand") || "others",
       city: currentUser.city,
-      description: formData.get("description") || "No Description Avaiable"
+      description: formData.get("description") || "No Description Avaiable",
     };
 
     if (!data.busName || !data.busType) {
@@ -161,8 +161,8 @@ const Add = () => {
                 ></textarea>
                 <label htmlFor="busDescription">Bus Description</label>
               </div>
-
-              <div className="subtitle-text opacity-75 mt-3">Extra Details</div>
+              <hr className="my-2" />
+              <div className="subtitle-text opacity-75 ">Extra Details</div>
               <div className="">
                 <label>Bus Type</label>
                 <select className="form-select" name="busType" required>
@@ -233,7 +233,8 @@ const Add = () => {
                   </div>
                 </div>
               ))}
-              <div className="subtitle-text opacity-75 mt-3">
+              <hr className="my-2" />
+              <div className="subtitle-text opacity-75">
                 Entertainment Details
               </div>
               {/* <div className="form-floating">
@@ -289,7 +290,7 @@ const Add = () => {
               </span>
               <button
                 type="submit"
-                className="btn primary-700 mb-3"
+                className="btn primary-700 mb-5 "
                 disabled={isLoading}
               >
                 {isLoading ? "Adding Info..." : "Next"}

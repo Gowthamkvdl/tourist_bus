@@ -225,7 +225,7 @@ const Home = () => {
       {/* Featured Buses Section */}
       <div className="others box-shadow pb-5 bg-white mt-4">
         <h1 className="title-text p-4 pb-2 opacity-75">Featured Buses</h1>
-        <div className="cards row px-md-4 px-3">
+        <div className="cards row px-md-4 px-3 mb-5">
           {isLoading ? (
             // Show loading skeleton while fetching data
             <CardSkeleton NoOfCards={6} />

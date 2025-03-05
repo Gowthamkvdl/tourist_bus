@@ -40,16 +40,16 @@ const Profile = () => {
 
   const handleEditClick = (postId) => {
     setEditLoading((prev) => ({ ...prev, [postId]: true })); // Set loading for this post
-  
+
     navigate(`/edit/${postId}`); // Navigate
   };
-  
+
   const handleFinishClick = (postId) => {
     setFinishLoading((prev) => ({ ...prev, [postId]: true })); // Set loading for this post
-  
+
     navigate(`/addImg/${postId}`); // Navigate
   };
-  
+
   const handleLogout = async () => {
     try {
       setLoading(true);
@@ -133,7 +133,7 @@ const Profile = () => {
 
   return (
     <div className="pt-md-4 profile">
-      <div className="profileInfo  mt-4 d-flex flex-column justify-content-center">
+      <div className="profileInfo  mt-5 d-flex flex-column justify-content-center">
         <div className="profilePic bg-white text-center p-2 d-flex justify-content-center align-items-center m-auto">
           {currentUser.name[0].toUpperCase()}
         </div>
@@ -213,7 +213,7 @@ const Profile = () => {
         </div>
       </div>
       <div className="others box-shadow pb-5 bg-white mt-4">
-        <div className="cards row px-md-4 px-3">
+        <div className="cards row px-md-4 px-3 pb-5">
           {data?.postData?.filter((post) => !post.hasImage).length > 0 && (
             <h1 className="title-text pt-3 pb-1 opacity-75">
               Your Unfinished Buses Uploads
@@ -241,7 +241,9 @@ const Profile = () => {
                   >
                     <span className="material-symbols-outlined">check</span>
                     <div>
-                    {finishLoading[post.postId] ? "Loading..." : "Finish Upload"}
+                      {finishLoading[post.postId]
+                        ? "Loading..."
+                        : "Finish Upload"}
                     </div>
                   </button>
                 </div>
@@ -254,7 +256,6 @@ const Profile = () => {
               </p>
             )
           )}
-
           <h1 className="title-text pb-1 mt-3 opacity-75">Your Buses</h1>
           {isLoading ? (
             // Show loading skeleton while fetching data
@@ -277,7 +278,9 @@ const Profile = () => {
                     onClick={() => handleEditClick(post.postId)}
                   >
                     <span className="material-symbols-outlined">edit</span>
-                    <div>{editLoading[post.postId] ? "Loading..." : "Edit Bus"}</div>
+                    <div>
+                      {editLoading[post.postId] ? "Loading..." : "Edit Bus"}
+                    </div>
                   </button>
                 </div>
               ))

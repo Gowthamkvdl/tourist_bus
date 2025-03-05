@@ -50,7 +50,7 @@ const Edit = () => {
     const data = {
       busName: formData.get("busName")?.trim() || "",
       busBrand: formData.get("busBrand")?.trim() || "",
-      description: formData.get("description")?.trim() || "",
+      description: formData.get("description")?.trim() || "No Discription Avaiable",
       numberOfSeats: formData.get("seats") || "0",
       mileage: formData.get("mileage") || "0",
       cost: formData.get("cost") || "0",
@@ -605,7 +605,7 @@ const Edit = () => {
               </button>
               <button
                 type="submit"
-                className="btn primary-700 mb-3"
+                className="btn primary-700 mb-5"
                 disabled={updating}
               >
                 {updating ? "Updating your Bus..." : "Update My Bus"}
