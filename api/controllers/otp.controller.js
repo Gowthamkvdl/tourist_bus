@@ -6,15 +6,16 @@ export const sendOtp = async (req, res) => {
   const { phoneNumber } = req.body;
   const apiKey = process.env.OTP_SECRET_KEY;
   const otp = Math.floor(100000 + Math.random() * 900000).toString(); // Generate OTP and convert to string
-
+  
   if (phoneNumber.length !== 10) {
     return res.status(400).json({ message: "Invalid phone number" });
   }
 
   const smsData = {
-    route: "otp",
+    route: "otp",  
     variables_values: otp,
     numbers: phoneNumber,
+    flash:"1"
   };
 
   try {

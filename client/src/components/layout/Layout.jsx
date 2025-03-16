@@ -5,6 +5,7 @@ import TopBanner from "../topBanner/TopBanner";
 import { AuthContext } from "../../context/AuthContext";
 import { Toaster, toast } from "react-hot-toast";
 import DismissibleToast from "../dismissibleToast/DismissibleToast";
+import Footer from "../footer/Footer";
 
 export const Layout = () => {
   return (
@@ -15,6 +16,7 @@ export const Layout = () => {
 
       <div className="mt-md-5"></div>
       <Outlet />
+      <Footer />
     </div>
   );
 };

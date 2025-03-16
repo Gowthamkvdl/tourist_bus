@@ -15,6 +15,8 @@ import {
 } from "./lib/loader";
 import AddImage from "./routes/addImg/AddImage";
 import Fav from "./routes/fav/Fav";
+import TermsAndConditions from "./routes/TermsAndCondition/TermsAndCondition";
+import PrivacyPolicy from "./routes/PrivacyPolicy/PrivacyPolicy";
 
 const App = () => {
   const router = createBrowserRouter([
@@ -25,6 +27,14 @@ const App = () => {
         {
           path: "/",
           element: <Home />,
+        },
+        {
+          path: "/terms",
+          element: <TermsAndConditions />,
+        },
+        {
+          path: "/privacy",
+          element: <PrivacyPolicy />,
         },
         {
           path: "/list",

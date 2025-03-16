@@ -19,11 +19,13 @@ import { useQuery } from "@tanstack/react-query";
 
 const Profile = () => {
   const navigate = useNavigate();
+  const deleteBtn = useRef();
   const { currentUser, updateUser } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const [userName, setUserName] = useState(currentUser.name);
   const [city, setCity] = useState(currentUser.city);
   const [updating, setUpdating] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [unfinished, setUnfinished] = useState(false);
   const [buses, setBuses] = useState(false);
   const [editLoading, setEditLoading] = useState({});
@@ -88,6 +90,33 @@ const Profile = () => {
   };
   const handleCityChange = (event) => {
     setCity(event.target.value);
+  };
+
+  const handleDelete = async () => {
+    setDeleting(true);
+    try {
+      await apiRequest.delete("/auth/" + currentUser.id); // Ensure the request completes
+      deleteBtn.current.click(); // Close the modal programmatically
+      toast(
+        (t) => <DismissibleToast message="Account Deleted" toastProps={t} />,
+        {
+          icon: "🔔",
+          duration: 5000,
+          id: "Bus Deleted",
+        }
+      );
+      handleLogout();
+    } catch (error) {
+      console.error(error);
+      toast(
+        (t) => (
+          <DismissibleToast message="Failed to delete account" toastProps={t} />
+        ),
+        { icon: "🔔", duration: 5000, id: "Failed to delete account" }
+      );
+    } finally {
+      setDeleting(false);
+    }
   };
 
   const handleUpdate = async (e) => {
@@ -178,7 +207,14 @@ const Profile = () => {
             />
             <div className=" d-flex mt-2 justify-content-end">
               <button
-                className="btn btn-primary"
+                className="btn btn-danger"
+                data-bs-toggle="modal"
+                data-bs-target="#deleteAccount"
+              >
+                {deleting ? "Deleting..." : "Delete Account"}
+              </button>
+              <button
+                className="btn btn-primary ms-2"
                 onClick={handleUpdate}
                 disabled={updating}
               >
@@ -187,12 +223,66 @@ const Profile = () => {
             </div>
           </div>
         </div>
-        <div className="d-flex profile-content w-100 mx-auto align-items-center justify-content-between mt-4">
+        <div
+          data-bs-toggle="collapse"
+          href="#collapseExample1"
+          role="button"
+          aria-expanded="false"
+          aria-controls="collapseExample"
+          className="d-flex profile-content w-100 mx-auto align-items-center justify-content-between mt-4"
+        >
           <div className="d-flex gap-1 align-items-center">
             <span class="material-symbols-outlined fs-1">call</span>
-            <span className="fs-4 fw-semibold">Call Us</span>
+            <span className="fs-4 fw-semibold">Contact Us</span>
           </div>
           <span class="material-symbols-outlined">arrow_forward_ios</span>
+        </div>
+        <div className="collapse" id="collapseExample1">
+          <div className="bg-white w-100 mx-auto my-3 p-4 rounded-3 shadow-sm border">
+            <h5 className="mb-3">Get in Touch</h5>
+
+            <div className="mb-2">
+              <i className="bi bi-envelope-fill text-danger"></i>{" "}
+              <strong>Email:</strong>{" "}
+              <a
+                href="mailto:gowthamkvdl@gmail.com"
+                className="text-dark text-decoration-none"
+              >
+                gowthamkvdl@gmail.com
+              </a>
+            </div>
+
+            <div className="mb-2">
+              <i className="bi bi-telephone-fill text-success"></i>{" "}
+              <strong>Phone:</strong>{" "}
+              <a
+                href="tel:+917010399378"
+                className="text-dark text-decoration-none"
+              >
+                +91 70103 99378
+              </a>
+            </div>
+
+            <div className="mb-2">
+              <i className="bi bi-geo-alt-fill text-warning"></i>{" "}
+              <strong>Address:</strong> <br />
+              54 C/1, OPR Plot, Panruti Main Road, <br />
+              <strong>
+                Vadalur, Cuddalore District, Tamil Nadu - 607303 🇮🇳
+              </strong>
+            </div>
+
+            <div className="text-center mt-3">
+              <a
+                href="https://www.google.com/maps?q=54+C/1+OPR+plot+panruti+main+road,+Vadalur"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-primary btn-sm"
+              >
+                View on Google Maps
+              </a>
+            </div>
+          </div>
         </div>
         <div className="d-flex profile-content w-100 mx-auto align-items-center justify-content-between mt-4">
           <div className="d-flex gap-1 align-items-center">
@@ -290,6 +380,49 @@ const Profile = () => {
               You haven't posted any buses yet. Start uploading now!
             </p>
           )}
+        </div>
+      </div>
+      <div
+        class="modal fade"
+        id="deleteAccount"
+        tabindex="-1"
+        aria-labelledby="deleteLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="deleteLabel">
+                Are you sure?
+              </h1>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              Do you want to delete your account ("{currentUser.name}")
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+                ref={deleteBtn}
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                onClick={handleDelete}
+                class="btn btn-danger"
+              >
+                {deleting ? "Deleting..." : "Delete"}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

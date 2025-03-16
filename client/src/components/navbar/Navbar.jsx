@@ -22,6 +22,7 @@ const Navbar = () => {
   const [sending, setSending] = useState(false);
   const [checking, setChecking] = useState(false);
   const [creating, setCreating] = useState(false);
+  const [accepted, setAccepted] = useState(true);
   const [error, setError] = useState(false);
   const phoneInput = useRef(null);
 
@@ -109,22 +110,20 @@ const Navbar = () => {
         phoneNumber: formattedPhone,
       });
       console.log(response);
-      toast((t) => (
-        <DismissibleToast
-          message="OTP sent successfully"
-          toastProps={t}
-        />
-      ),
-      { icon: "🔔", duration: 5000, id:"OTP sent successfully" })
+      toast(
+        (t) => (
+          <DismissibleToast message="OTP sent successfully" toastProps={t} />
+        ),
+        { icon: "🔔", duration: 5000, id: "OTP sent successfully" }
+      );
     } catch (error) {
       console.log(error);
-      toast((t) => (
-        <DismissibleToast
-          message="Something went wrong!"
-          toastProps={t}
-        />
-      ),
-      { icon: "🔔", duration: 5000, id:"Something went wrong!" })
+      toast(
+        (t) => (
+          <DismissibleToast message="Something went wrong!" toastProps={t} />
+        ),
+        { icon: "🔔", duration: 5000, id: "Something went wrong!" }
+      );
       setOtpSent(true);
     } finally {
       setSending(false);
@@ -148,15 +147,15 @@ const Navbar = () => {
       // Check the response structure
       console.log("Response data:", response.data);
 
-      toast((t) => (
-        <DismissibleToast
-          message="OTP verified successfully"
-          toastProps={t}
-        />
-      ),
-      { icon: "🔔", duration: 5000, id:"OTP verified successfully" })
-
-
+      toast(
+        (t) => (
+          <DismissibleToast
+            message="OTP verified successfully"
+            toastProps={t}
+          />
+        ),
+        { icon: "🔔", duration: 5000, id: "OTP verified successfully" }
+      );
 
       const newUser = response.data.newUser;
       console.log(newUser);
@@ -185,16 +184,22 @@ const Navbar = () => {
       }
     } catch (error) {
       console.log("Error:", error);
-      
+
       toast(
         (t) => (
           <DismissibleToast
-            message= {error?.response?.data?.message ||
-              "An error occurred during OTP verification"}
+            message={
+              error?.response?.data?.message ||
+              "An error occurred during OTP verification"
+            }
             toastProps={t}
           />
         ),
-        { icon: "🔔", duration: 5000, id:"An error occurred during OTP verification" }
+        {
+          icon: "🔔",
+          duration: 5000,
+          id: "An error occurred during OTP verification",
+        }
       );
     } finally {
       setChecking(false);
@@ -216,13 +221,8 @@ const Navbar = () => {
       });
 
       toast(
-        (t) => (
-          <DismissibleToast
-            message= {"Account created"}
-            toastProps={t}
-          />
-        ),
-        { icon: "🔔", duration: 5000, id:"Account created" }
+        (t) => <DismissibleToast message={"Account created"} toastProps={t} />,
+        { icon: "🔔", duration: 5000, id: "Account created" }
       );
       if (response.data.user) {
         // Set user data including category in localStorage
@@ -247,11 +247,15 @@ const Navbar = () => {
       toast(
         (t) => (
           <DismissibleToast
-            message= "Oops! Something went wrong while creating your account"
+            message="Oops! Something went wrong while creating your account"
             toastProps={t}
           />
         ),
-        { icon: "🔔", duration: 5000, id:"Oops! Something went wrong while creating your account" }
+        {
+          icon: "🔔",
+          duration: 5000,
+          id: "Oops! Something went wrong while creating your account",
+        }
       );
     } finally {
       setCreating(false);
@@ -261,7 +265,6 @@ const Navbar = () => {
   const handlePhoneChange = (event) => {
     setPhone(event.target.value);
   };
-
 
   return (
     <div>
@@ -276,7 +279,12 @@ const Navbar = () => {
           >
             <ul className="navbar-nav">
               <li className="nav-item ">
-                <Link className={`nav-link shadow-none d-flex flex-column align-items-center mb-0 pb-0 ${isActive("/")}`} to="/">
+                <Link
+                  className={`nav-link shadow-none d-flex flex-column align-items-center mb-0 pb-0 ${isActive(
+                    "/"
+                  )}`}
+                  to="/"
+                >
                   <span className="material-symbols-outlined d-md-none mt-1 title-text">
                     home
                   </span>
@@ -284,7 +292,12 @@ const Navbar = () => {
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className={`nav-link shadow-none d-flex flex-column align-items-center mb-0 pb-0 ${isActive("/list")}`} to="/list?limit=5">
+                <Link
+                  className={`nav-link shadow-none d-flex flex-column align-items-center mb-0 pb-0 ${isActive(
+                    "/list"
+                  )}`}
+                  to="/list?limit=5"
+                >
                   <span className="material-symbols-outlined d-md-none mt-1 title-text">
                     search
                   </span>
@@ -292,7 +305,12 @@ const Navbar = () => {
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className={`nav-link shadow-none d-flex flex-column align-items-center mb-0 pb-0 mb-md-2 ${isActive("/fav")}`} to="/fav">
+                <Link
+                  className={`nav-link shadow-none d-flex flex-column align-items-center mb-0 pb-0 mb-md-2 ${isActive(
+                    "/fav"
+                  )}`}
+                  to="/fav"
+                >
                   <span className="material-symbols-outlined d-md-none mt-1 title-text">
                     favorite
                   </span>
@@ -300,7 +318,12 @@ const Navbar = () => {
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className={`nav-link shadow-none d-flex flex-column align-items-center mb-0 pb-0 ${isActive("/add")}`} to="/add">
+                <Link
+                  className={`nav-link shadow-none d-flex flex-column align-items-center mb-0 pb-0 ${isActive(
+                    "/add"
+                  )}`}
+                  to="/add"
+                >
                   <span className="material-symbols-outlined d-md-none mt-1 title-text">
                     add_circle
                   </span>
@@ -310,7 +333,9 @@ const Navbar = () => {
               <li className="nav-item d-md-none">
                 <button
                   onClick={onClickProfileBtn}
-                  className={`nav-link shadow-none d-flex flex-column align-items-center  rounded-0 btn ${isActive("/profile")}`}
+                  className={`nav-link shadow-none d-flex flex-column align-items-center  rounded-0 btn ${isActive(
+                    "/profile"
+                  )}`}
                 >
                   <span className="material-symbols-outlined d-md-none mt-1 title-text">
                     person
@@ -370,7 +395,7 @@ const Navbar = () => {
                       <input
                         type="text"
                         className={`form-control fs-5 shadow-none ${
-                          error ? "" : "mb-3"
+                          error ? "" : "mb-2"
                         } `}
                         id="floatingNumber"
                         placeholder="Phone Number"
@@ -381,16 +406,42 @@ const Navbar = () => {
                       <label htmlFor="floatingNumber">Phone Number</label>
                     </div>
                     {error && (
-                      <span className="small-text mb-3 text-danger">
+                      <span className="small-text mb-2 text-danger">
                         {error}
                       </span>
                     )}
+                    <div
+                      className={`d-flex  align-items-start ${
+                        otpSent ? "d-none" : "d-block"
+                      } gap-2 mb-2`}
+                    >
+                      <input
+                        type="checkbox"
+                        id="termsCheckbox"
+                        className="form-check-input mt-1"
+                        defaultChecked={accepted}
+                        onChange={() => setAccepted(!accepted)}
+                        required
+                      />
+                      <label htmlFor="termsCheckbox" className="text-muted">
+                        I agree to the{" "}
+                        <a
+                          href="/terms"
+                          target="_blank"
+                          className="text-primary fw-bold"
+                        >
+                          Terms & Conditions
+                        </a>
+                        .
+                      </label>
+                    </div>
+
                     <button
                       className={`btn text-white fs-5 primary-600 ${
                         otpSent ? "d-none" : "d-block"
-                      }`}
+                      } `}
                       onClick={handleSendOtp}
-                      disabled={sending}
+                      disabled={!accepted || sending}
                     >
                       Send OTP
                     </button>
@@ -402,7 +453,7 @@ const Navbar = () => {
                         <OtpInput
                           value={otp}
                           onChange={(otp) => setOtp(otp)}
-                          numInputs={4}
+                          numInputs={6}
                           renderInput={(props) => (
                             <input
                               {...props}

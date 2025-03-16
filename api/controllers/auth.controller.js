@@ -94,3 +94,33 @@ export const updateUser = async (req, res) => {
     res.status(500).json({ message: "Failed to update User!" });
   }
 };
+
+export const deleteUser = async (req, res) => {
+  const tokenUserId = req.userId;
+  const userId = req.params.id;
+  console.log(userId);
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        id:userId,
+      },
+    });
+    console.log(user);
+
+    if (user.id !== tokenUserId) {
+      res.status(403).json({ message: "Not Authorized!" });
+    }
+
+    await prisma.user.delete({
+      where: {
+        id: userId,
+      },
+    });
+
+    res.status(200).json({ message: "User Deleted!" });
+  } catch (error) {
+    console.log(error);
+    res.status(401).json({ message: "Failed to Delete User" });
+  }
+}
