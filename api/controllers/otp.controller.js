@@ -64,7 +64,7 @@ export const verifyOtp = async (req, res) => {
     const otpExists = await prisma.otp.findFirst({
       where: {
         phone: phoneNumber,
-        // otp: otp,
+        otp: otp,
         expiresAt: {
           gte: new Date(), // Ensure OTP is not expired
         },
@@ -130,6 +130,7 @@ export const verifyOtp = async (req, res) => {
     res.status(200).json({
       message: "OTP verified successfully",
       newUser: true,
+      
     });
   } catch (error) {
     console.log(error);

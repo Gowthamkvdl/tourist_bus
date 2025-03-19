@@ -26,13 +26,15 @@ export function AuthLayout() {
 
   if (!currentUser) {
     // Show the toast message before redirecting
-    toast((t) => (
-      <DismissibleToast
-        message="Please login to access that page"
-        toastProps={t}
-      />
-    ),
-    { icon: "🔔", duration: 5000, id:"Please login to access that page" })
+    toast(
+      (t) => (
+        <DismissibleToast
+          message="Please login to access that page"
+          toastProps={t}
+        />
+      ),
+      { icon: "🔔", duration: 5000, id: "Please login to access that page" }
+    );
     return <Navigate to="/" />;
   }
 
@@ -42,6 +44,7 @@ export function AuthLayout() {
       <Navbar />
       <div className="mt-md-5"></div>
       <Outlet />
+      <Footer />
     </div>
   );
 }

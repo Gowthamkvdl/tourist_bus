@@ -116,15 +116,18 @@ const Navbar = () => {
         ),
         { icon: "🔔", duration: 5000, id: "OTP sent successfully" }
       );
+      setOtpSent(true);
     } catch (error) {
       console.log(error);
+
       toast(
         (t) => (
           <DismissibleToast message="Something went wrong!" toastProps={t} />
         ),
         { icon: "🔔", duration: 5000, id: "Something went wrong!" }
       );
-      setOtpSent(true);
+
+      setOtpSent(false);
     } finally {
       setSending(false);
       setError(false);
