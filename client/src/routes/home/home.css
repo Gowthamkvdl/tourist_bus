@@ -1,10 +1,5 @@
 body {
-  background: linear-gradient(
-    to bottom,
-    var(--primary-300) 0%,
-    var(--primary-700) 100%
-  ) !important;
-  background-repeat: no-repeat;
+  background-color: #E3F2FD !important; 
 }
 
 .selection {

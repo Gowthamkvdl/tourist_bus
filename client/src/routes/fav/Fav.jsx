@@ -17,13 +17,23 @@ const Fav = () => {
 
   return (
     <div>
-      <div className="header pt-md-1"> 
+      <div className="header pt-md-1">
         {/* Favorites Section */}
         <div className="city mt-4 d-flex justify-content-center align-items-center gap-1">
           <div className="locationIcon">
-            <span className="material-symbols-outlined fs-2 bg-secondary rounded-5 text-white p-2">
-              favorite
-            </span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="40"
+              height="40"
+              fill="currentColor"
+              class="bi bi-heart fs-1 bg-secondary rounded-5 text-white p-1"
+              viewBox="0 0 16 16"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"
+              />
+            </svg>
           </div>
           <span className="title-text">Favorites</span>
         </div>
