@@ -14,7 +14,7 @@ export const Layout = () => {
 
       <Navbar />
 
-      <div className="mt-md-5"></div>
+      <div className="mt-md-5 mb-md-5"></div>
       <Outlet />
       <Footer />
     </div>
@@ -42,7 +42,7 @@ export function AuthLayout() {
     <div className="container">
       <Toaster position="top-center" reverseOrder={false} />
       <Navbar />
-      <div className="mt-md-5"></div>
+      <div className="mt-md-5 pb-md-4"></div> 
       <Outlet />
       <Footer />
     </div>

@@ -271,7 +271,9 @@ const Navbar = () => {
 
   return (
     <div>
-      <nav className="navbar mt-md-2 container navbar-expand d-flex align-items-center justify-content-md-between justify-content-center bg-body-white">
+      <nav
+        className="navbar mt-md-2 container navbar-expand d-flex align-items-center justify-content-md-between justify-content-center bg-body-white"
+      >
         <div className="touristBus d-none d-md-block sidePart">
           <h1 className="title-text">Tourist Bus</h1>
         </div>

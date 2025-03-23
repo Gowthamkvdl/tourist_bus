@@ -161,7 +161,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="pt-md-4 profile">
+    <div className="profile">
       <div className="profileInfo  mt-5 d-flex flex-column justify-content-center">
         <div className="profilePic bg-white text-center p-2 d-flex justify-content-center align-items-center m-auto">
           {currentUser.name[0].toUpperCase()}
@@ -327,6 +327,51 @@ const Profile = () => {
               >
                 View on Google Maps
               </a>
+            </div>
+          </div>
+        </div>
+        <div
+          data-bs-toggle="collapse"
+          href="#collapseExample2"
+          role="button"
+          aria-expanded="false"
+          aria-controls="collapseExample"
+          className="d-flex profile-content w-100 mx-auto align-items-center justify-content-between mt-4"
+        >
+          <div className="d-flex gap-1 align-items-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="30"
+              height="30"
+              fill="currentColor"
+              class="bi bi-translate"
+              viewBox="0 0 16 16"
+            >
+              <path d="M4.545 6.714 4.11 8H3l1.862-5h1.284L8 8H6.833l-.435-1.286zm1.634-.736L5.5 3.956h-.049l-.679 2.022z" />
+              <path d="M0 2a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v3h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-3H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zm7.138 9.995q.289.451.63.846c-.748.575-1.673 1.001-2.768 1.292.178.217.451.635.555.867 1.125-.359 2.08-.844 2.886-1.494.777.665 1.739 1.165 2.93 1.472.133-.254.414-.673.629-.89-1.125-.253-2.057-.694-2.82-1.284.681-.747 1.222-1.651 1.621-2.757H14V8h-3v1.047h.765c-.318.844-.74 1.546-1.272 2.13a6 6 0 0 1-.415-.492 2 2 0 0 1-.94.31" />
+            </svg>
+            <span className="fs-4 fw-semibold">Change language</span>
+          </div>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="26"
+            height="26"
+            fill="currentColor"
+            class="bi bi-chevron-right"
+            viewBox="0 0 16 16"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"
+            />
+          </svg>
+        </div>
+        <div className="collapse" id="collapseExample2">
+          <div className="bg-white w-100 mx-auto my-3 p-4 rounded-3 shadow-sm border">
+            {/* Google Translate Widget */}
+            <div className="">
+              <h5 className="fw-bold">Select Language</h5>
+              <div id="google_translate_element"></div>
             </div>
           </div>
         </div>

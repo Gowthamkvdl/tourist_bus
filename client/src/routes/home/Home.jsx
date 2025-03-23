@@ -150,7 +150,7 @@ const Home = () => {
   };
 
   return (
-    <div className="home pt-md-2">
+    <div className="home pt-md-4">
       {/* Header Section */}
       <div className="header d-flex justify-content-between align-items-center my-4">
         <div className="title">

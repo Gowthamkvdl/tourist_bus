@@ -1,7 +1,7 @@
 /* Default: fixed at the bottom (for mobile devices) */
 .navbar {
   position: fixed !important;
-  bottom: 0 !important;
+  bottom: 0px !important;
   z-index: 10;
   width: 100%;
   height: 60px;
@@ -11,12 +11,12 @@
 /* Media query for larger screens: fixed at the top */
 @media (min-width: 768px) {
   .navbar {
-    top: 0 !important;
+    top: 25px;
     bottom: auto; /* Remove bottom fixation */
     z-index: 10;
   }
   .nav-text{
-    font-size: 20px;
+    font-size: 25px; 
   }
   .nav-link.active {
     border-bottom: 2px solid black !important;

@@ -9,7 +9,7 @@ const AddImage = () => {
 
   return (
     <div>
-      <div className="py-3 py-md-0"></div>
+      <div className="py-3 py-md-2"></div>
       <BackBtn />
       <div className="py-3"></div>
       <div className="header pt-md-2">

@@ -232,7 +232,7 @@ const List = () => {
 
   return (
     <div>
-      <div className="header pt-md-1">
+      <div className="header pt-md-4">
         {/* Location Selection Section */}
         <div className="city mt-4 d-flex justify-content-center align-items-center gap-1">
           <div className="locationIcon">
