@@ -38,10 +38,11 @@ const Footer = () => {
           <div className="col-md-3 mb-3">
             <h5 className="fw-bold">Quick Links</h5>
             <ul className="list-unstyled">
+              <li><a href="/profile" className="text-dark text-decoration-none">Profile</a></li>
+              <li><a href="/fav" className="text-dark text-decoration-none">Favorites</a></li>
               <li><a href="/about" className="text-dark text-decoration-none">About Us</a></li>
               <li><a href="/terms" className="text-dark text-decoration-none">Terms & Conditions</a></li>
               <li><a href="/privacy" className="text-dark text-decoration-none">Privacy Policy</a></li>
-              <li><a href="/contact" className="text-dark text-decoration-none">Contact Us</a></li>
             </ul>
           </div>
 
@@ -49,9 +50,8 @@ const Footer = () => {
           <div className="col-md-3 mb-3">
             <h5 className="fw-bold">Our Services</h5>
             <ul className="list-unstyled">
-              <li><a href="/buses" className="text-dark text-decoration-none">View Buses</a></li>
-              <li><a href="/list-your-bus" className="text-dark text-decoration-none">List Your Bus</a></li>
-              <li><a href="/faq" className="text-dark text-decoration-none">FAQs</a></li>
+              <li><a href="/list?limit=5" className="text-dark text-decoration-none">View Buses</a></li>
+              <li><a href="/add" className="text-dark text-decoration-none">List Your Bus</a></li>
             </ul>
           </div>
 
@@ -65,12 +65,6 @@ const Footer = () => {
             <p className="mb-1">
               <a href="mailto:gowthamkvdl@gmail.com" className="text-dark text-decoration-none">gowthamkvdl@gmail.com</a>
             </p>
-
-            {/* Google Translate Widget */}
-            <div className="mt-3">
-              <h5 className="fw-bold">Select Language</h5>
-              <div id="google_translate_element"></div>
-            </div>
           </div>
         </div>
 

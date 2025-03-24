@@ -254,7 +254,7 @@ const Info = () => {
 
   return (
     <div>
-      <div className="header mb-3 pt-md-4">
+      <div className="header mb-3 pt-md-5">
         <div className="title-text text-center text-muted mt-3">
           <BackBtn />
           <span className="text-center">Bus Details</span>
