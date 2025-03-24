@@ -260,11 +260,13 @@ const Home = () => {
             </p>
           ) : data?.postData.length > 0 ? (
             // Render posts if available
-            data?.postData.map((post) => (
-              <div className="col-md-6" key={post.postId}>
-                <Card post={post} />
-              </div>
-            ))
+            data?.postData
+              .filter((post) => post.hasImage)
+              .map((post) => (
+                <div className="col-md-6" key={post.postId}>
+                  <Card post={post} />
+                </div>
+              ))
           ) : (
             // Display fallback if no posts are found
             <p className="text-center">No posts available.</p>
