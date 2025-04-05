@@ -46,7 +46,8 @@ model Post {
   tv               Boolean      @default(false)
   usb              Boolean      @default(false)
   wifi             Boolean      @default(false)
-  hasImage             Boolean      @default(false)
+  hasImage         Boolean      @default(false)
+  verified         Boolean      @default(false)
   starRating       StarRating[]
   reviews          Reviews[]
   averageRating    Float?       @default(0.0)
