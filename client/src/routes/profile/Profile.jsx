@@ -369,10 +369,12 @@ const Profile = () => {
         <div className="collapse" id="collapseExample2">
           <div className="bg-white w-100 mx-auto my-3 p-4 rounded-3 shadow-sm border">
             {/* Google Translate Widget */}
-            <div className="">
-              <h5 className="fw-bold">Select Language</h5>
-              <div id="google_translate_element"></div>
-            </div>
+            {currentUser && (
+              <div className="">
+                <h5 className="fw-bold">Select Language</h5>
+                <div id="google_translate_element"></div>
+              </div>
+            )}
           </div>
         </div>
         <div className="d-flex profile-content w-100 mx-auto align-items-center justify-content-between mt-4">

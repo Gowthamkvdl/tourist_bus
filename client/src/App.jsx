@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom"; // Ensure you import from 'react-router-dom'
 import { Layout, AuthLayout } from "./components/layout/Layout";
 import Home from "./routes/home/Home";
@@ -20,6 +20,7 @@ import PrivacyPolicy from "./routes/PrivacyPolicy/PrivacyPolicy";
 import About from "./routes/about/About";
 
 const App = () => {
+
   const router = createBrowserRouter([
     {
       path: "/",
