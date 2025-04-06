@@ -269,6 +269,38 @@ const Info = () => {
           ) : null}
         </div>
       </div>
+      {data.verificationStatus === "rejected" && (
+        <div className="remark my-3 bg-warning rounded p-md-3 p-2">
+          <span className="fw-medium fs-4">We're sorry!</span>
+          <br /> Your bus couldn't be
+          approved because it doesn't meet our guidelines.
+          <br />
+          <span className="fw-medium">Reason:</span> {data.remark}
+          <br />
+          <div className="mb-2"></div>
+          ✅ Please review the reason above, make the necessary corrections, and
+          try re-uploading your bus as a new submission.
+          <br />✅ If you believe this was a mistake or need help, feel free to
+          contact our support team.
+        </div>
+      )}
+
+      {data.verificationStatus === "pending" && (
+        <div className="remark my-3 bg-info text-dark rounded p-md-3 p-2">
+          <span className="fw-medium fs-4 " >Your bus is under review.</span>
+          <br />
+          🕒 Our team is currently verifying the details and documents you
+          provided.
+          <br />
+          ✅ This process typically takes a short while. You’ll be notified once
+          the review is complete.
+          <br />
+          📩 Please check your profile for updates.
+          <br />
+          <div className="mt-2">Thank you for your patience!</div>
+        </div>
+      )}
+
       <div className="others box-shadow pt-1 pb-5 bg-white ">
         <div className="busname mt-3 d-flex justify-content-between align-items-center">
           <span className="material-symbols-outlined mt-1 fs-1 ps-3 text-white title-text">
@@ -283,17 +315,17 @@ const Info = () => {
             <div className="nameAndRating d-flex flex-column justify-content-center align-items-center">
               <span className="title-text">{data.busName}</span>
               <div className="location subtitle-text mb-1 d-flex justify-content-center  align-items-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                fill="black"
-                className="bi bi-geo-alt"
-                viewBox="0 0 16 16"
-              >
-                <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A32 32 0 0 1 8 14.58a32 32 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10" />
-                <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4m0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
-              </svg>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  fill="black"
+                  className="bi bi-geo-alt"
+                  viewBox="0 0 16 16"
+                >
+                  <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A32 32 0 0 1 8 14.58a32 32 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10" />
+                  <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4m0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                </svg>
                 <span>{data.city}</span>
               </div>
               <div className="stars d-flex justify-content-center align-items-center">
@@ -517,7 +549,7 @@ const Info = () => {
           <div className="more ">
             <div className="subtitle-text text-muted">Bus Description</div>
             <div className="body-text mb-1 fw-medium mt-2 mb-3">
-              {data.description? data.description : "No Description Avaiable"}
+              {data.description ? data.description : "No Description Avaiable"}
             </div>
             <div className="subtitle-text text-muted">Specifications</div>
             <div className="type  d-flex justify-content-between align-items-center">

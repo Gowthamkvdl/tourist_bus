@@ -46,7 +46,7 @@ const Upload = ({ postId }) => {
           }
         })
       );
-   
+
       if (urls.includes(null)) {
         toast.error("Some images failed to upload. Please try again.", {
           id: "uploading",
@@ -64,7 +64,7 @@ const Upload = ({ postId }) => {
       if (post) {
         toast.success("All images uploaded successfully!", { id: "uploading" });
         fileUploadRef.current.clear();
-        navigate(`/info/${postId}`);
+        navigate(`/submit`);
       }
     } catch (error) {
       console.error("Upload error:", error);
@@ -117,14 +117,18 @@ const Upload = ({ postId }) => {
       />
 
       {/* Custom Upload Button */}
-      <div className="p-mt-2">
+      <div className="p-2 pt-0">
         <button
           type="button"
           className="btn btn-success w-100 mt-3"
           onClick={handleUpload}
           disabled={selectedFiles?.length !== maxFiles} // Disable until exactly 5 images are selected
         >
-          Upload {selectedFiles?.length ? selectedFiles?.length : "0"}/{maxFiles}
+          {selectedFiles?.length === maxFiles
+            ? "Submit for Verification"
+            : `Upload ${maxFiles - (selectedFiles?.length || 0)} more image${
+                maxFiles - (selectedFiles?.length || 0) > 1 ? "s" : ""
+              } to proceed`}
         </button>
       </div>
 

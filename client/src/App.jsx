@@ -18,6 +18,7 @@ import Fav from "./routes/fav/Fav";
 import TermsAndConditions from "./routes/TermsAndCondition/TermsAndCondition";
 import PrivacyPolicy from "./routes/PrivacyPolicy/PrivacyPolicy";
 import About from "./routes/about/About";
+import Submit from "./routes/submit/Submit";
 
 const App = () => {
 
@@ -61,6 +62,10 @@ const App = () => {
         {
           path: "/fav",
           element: <Fav />,
+        },
+        {
+          path: "/submit",
+          element: <Submit />,
         },
         {
           path: "/profile",

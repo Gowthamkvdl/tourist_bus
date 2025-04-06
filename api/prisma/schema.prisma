@@ -40,6 +40,7 @@ model Post {
   img3             String @default("")
   img4             String @default("")
   img5            String @default("")
+  remark          String @default("")  
   description            String
   recliningSeats   Boolean      @default(false)
   ac               Boolean      @default(false)
@@ -47,7 +48,7 @@ model Post {
   usb              Boolean      @default(false)
   wifi             Boolean      @default(false)
   hasImage         Boolean      @default(false)
-  verified         Boolean      @default(false)
+  verificationStatus         Status @default(pending)
   starRating       StarRating[]
   reviews          Reviews[]
   averageRating    Float?       @default(0.0)
@@ -112,6 +113,13 @@ enum BusType {
   DOUBLE_DECKER
   CHARTER_PARTY
 }
+
+enum Status {
+  accepted
+  rejected
+  pending
+}
+
 
 // enum BusType {
 //   "Standard Seating Bus"

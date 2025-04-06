@@ -4,7 +4,7 @@ import bus from "../../assets/bus.png";
 import { Link, useNavigate } from "react-router-dom";
 import noImage from "../../assets/noImage.jpg";
 
-const Card = ({ post }) => {
+const Card = ({ post, label }) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
@@ -17,6 +17,7 @@ const Card = ({ post }) => {
 
   return (
     <div className="busCard rounded-4 box-shadow mb-3 p-3 overflow-hidden">
+      {label && <div className={`ribbon bg-${label === "pending" ? "warning":"danger"} text-${label === "pending" ? "dark":"light"} text-center ps-4`}>{label.toUpperCase()}</div>}
       <div className="upperSection">
         <div className="details row">
           <div className="col-6 d-flex flex-column">

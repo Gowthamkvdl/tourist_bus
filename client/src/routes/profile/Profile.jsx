@@ -40,6 +40,8 @@ const Profile = () => {
     },
   });
 
+  console.log(data);
+
   const handleEditClick = (postId) => {
     setEditLoading((prev) => ({ ...prev, [postId]: true })); // Set loading for this post
 
@@ -423,8 +425,47 @@ const Profile = () => {
           </svg>
         </div>
       </div>
+
       <div className="others box-shadow pb-5 bg-white mt-4">
         <div className="cards row px-md-4 px-3 pb-5">
+          <h1 className="title-text pb-1 mt-3 opacity-75">
+            Buses under verification process
+          </h1>
+          {isLoading ? (
+            // Show loading skeleton while fetching data
+            <CardSkeleton NoOfCards={2} />
+          ) : error ? (
+            // Show error message if API request fails
+            <p className="text-center">
+              <ErrorComponent />
+              {console.log(error)}
+            </p>
+          ) : data?.postData?.filter(
+              (post) =>
+                post.verificationStatus !== "accepted" && post.hasImage !== false 
+            ).length > 0 ? (
+            // Render completed posts (hasImage === true)
+            data.postData
+              .filter(
+                (post) =>
+                  post.verificationStatus !== "accepted" &&
+                  post.hasImage !== false
+              )
+              .map((post) => (
+                <div className="col-md-6" key={post.postId}>
+                  <Card post={post} label={post.verificationStatus} />
+                  {/* <button className="btn btn-info me-2 mb-4 d-flex justify-content-center align-items-center">
+                    {`Status: ${post.verificationStatus}`}
+                  </button> */}
+                </div>
+              ))
+          ) : (
+            // Fallback message
+            <p className="opacity-75">
+              You haven't submited any buses to verify yet. Start uploading now!
+            </p>
+          )}
+
           {data?.postData?.filter((post) => !post.hasImage).length > 0 && (
             <h1 className="title-text pt-3 pb-1 opacity-75">
               Your Unfinished Buses Uploads
@@ -476,6 +517,7 @@ const Profile = () => {
               </p>
             )
           )}
+
           <h1 className="title-text pb-1 mt-3 opacity-75">Your Buses</h1>
           {isLoading ? (
             // Show loading skeleton while fetching data
@@ -486,10 +528,11 @@ const Profile = () => {
               <ErrorComponent />
               {console.log(error)}
             </p>
-          ) : data?.postData?.filter((post) => post.hasImage).length > 0 ? (
+          ) : data?.postData?.filter((post) => post.hasImage && post.verificationStatus === "accepted")
+              .length > 0 ? (
             // Render completed posts (hasImage === true)
             data.postData
-              .filter((post) => post.hasImage)
+              .filter((post) => post.hasImage && post.verificationStatus === "accepted")
               .map((post) => (
                 <div className="col-md-6" key={post.postId}>
                   <Card post={post} />
