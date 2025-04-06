@@ -270,7 +270,7 @@ const Info = () => {
         </div>
       </div>
       {data.verificationStatus === "rejected" && (
-        <div className="remark my-3 bg-warning rounded p-md-3 p-2">
+        <div className="remark my-4 bg-warning rounded p-md-3 p-2">
           <span className="fw-medium fs-4">We're sorry!</span>
           <br /> Your bus couldn't be
           approved because it doesn't meet our guidelines.
@@ -286,7 +286,7 @@ const Info = () => {
       )}
 
       {data.verificationStatus === "pending" && (
-        <div className="remark my-3 bg-info text-dark rounded p-md-3 p-2">
+        <div className="remark my-4 bg-info text-dark rounded p-md-3 p-2">
           <span className="fw-medium fs-4 " >Your bus is under review.</span>
           <br />
           🕒 Our team is currently verifying the details and documents you
