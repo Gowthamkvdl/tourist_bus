@@ -23,6 +23,9 @@ const Info = () => {
     },
     enabled: !!id,
   });
+
+  console.log(data);
+
   const queryClient = useQueryClient();
 
   // ✅ Initialize state with safe defaults
@@ -58,6 +61,8 @@ const Info = () => {
   const { currentUser, updateUser } = useContext(AuthContext);
   const [addingReview, setAddingReview] = useState(false);
   const reviewBox = useRef(null);
+  const verificationStatus = useRef(null);
+  const disableStatus = useRef(null);
   const navigate = useNavigate();
   const [loadingEdit, setLoadingEdit] = useState(false);
 
@@ -245,6 +250,86 @@ const Info = () => {
     }
   };
 
+  const handleVerificationChange = async () => {
+    console.log(verificationStatus.current.value);
+
+    try {
+      const updateStatus = await apiRequest.put(`admin/verify/${data.postId}`, {
+        verificationStatus: verificationStatus.current.value,
+        remark: "",
+      });
+      toast(
+        (t) => (
+          <DismissibleToast
+            message="Verification status updated successfully"
+            toastProps={t}
+          />
+        ),
+        {
+          icon: "🔔",
+          duration: 5000,
+          id: "Verification status updated successfully",
+        }
+      );
+    } catch (error) {
+      console.error(error);
+      toast(
+        (t) => (
+          <DismissibleToast
+            message="Failed to update verification status"
+            toastProps={t}
+          />
+        ),
+        {
+          icon: "🔔",
+          duration: 5000,
+          id: "Failed to update verification status",
+        }
+      );
+    }
+  };
+
+  const handleDisableChange = async () => {
+    console.log(disableStatus.current.value);
+
+    try {
+      const updateStatus = await apiRequest.put(
+        `admin/disable/${data.postId}`,
+        {
+          status: disableStatus.current.value === "true" ? true : false,
+        }
+      );
+      toast(
+        (t) => (
+          <DismissibleToast
+            message="Disable status updated successfully"
+            toastProps={t}
+          />
+        ),
+        {
+          icon: "🔔",
+          duration: 5000,
+          id: "Disable status updated successfully",
+        }
+      );
+    } catch (error) {
+      console.error(error);
+      toast(
+        (t) => (
+          <DismissibleToast
+            message="Failed to update Disable status"
+            toastProps={t}
+          />
+        ),
+        {
+          icon: "🔔",
+          duration: 5000,
+          id: "Failed to update Disable status",
+        }
+      );
+    }
+  };
+
   const handleNavigation = (postId) => {
     setLoadingEdit(true);
     navigate(`/edit/${postId}`, {
@@ -269,11 +354,75 @@ const Info = () => {
           ) : null}
         </div>
       </div>
-      {data.verificationStatus === "rejected" && (
-        <div className="remark my-4 bg-warning rounded p-md-3 p-2">
+      {currentUser.admin && (
+        <div className="admin my-4 secondary-800 text-white rounded-4 p-md-3 p-3">
+          <span className="fw-medium fs-4">Admin Controls</span>
+          <div className="row d-flex mt-3 align-items-center">
+            <div className="col-12 col-md-4 mb-3 mb-md-1">
+              <label htmlFor="" className="mb-1">
+                Verification Status
+              </label>
+              <select
+                name=""
+                onChange={handleVerificationChange}
+                ref={verificationStatus}
+                className="form-select w-100"
+                id=""
+              >
+                <option
+                  value="accepted"
+                  selected={data.verificationStatus === "accepted"}
+                >
+                  Accepted
+                </option>
+                <option
+                  value="rejected"
+                  selected={data.verificationStatus === "rejected"}
+                >
+                  Rejected
+                </option>
+                <option
+                  value="pending"
+                  selected={data.verificationStatus === "pending"}
+                >
+                  Pending
+                </option>
+              </select>
+            </div>
+            <div className="col-12 col-md-4 mb-3 mb-md-1">
+              <label htmlFor="" className="mb-1">
+                Disable Status
+              </label>
+              <select
+                name=""
+                onChange={handleDisableChange}
+                ref={disableStatus}
+                className="form-select"
+                id=""
+              >
+                <option value={true} selected={data.disabled === true}>
+                  True
+                </option>
+                <option value={false} selected={data.disabled === false}>
+                  False
+                </option>
+              </select>
+            </div>
+            <div className="col-12 col-md-4 mb-3 mb-md-1 d-flex flex-column">
+              <label htmlFor="" className="mb-1">
+                Delete Bus
+              </label>
+              <button className="btn btn-light">Delete</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {data.verificationStatus === "rejected" && !currentUser.admin && (
+        <div className="remark my-4 bg-warning rounded-4 p-md-3 p-2">
           <span className="fw-medium fs-4">We're sorry!</span>
-          <br /> Your bus couldn't be
-          approved because it doesn't meet our guidelines.
+          <br /> Your bus couldn't be approved because it doesn't meet our
+          guidelines.
           <br />
           <span className="fw-medium">Reason:</span> {data.remark}
           <br />
@@ -285,9 +434,9 @@ const Info = () => {
         </div>
       )}
 
-      {data.verificationStatus === "pending" && (
-        <div className="remark my-4 bg-info text-dark rounded p-md-3 p-2">
-          <span className="fw-medium fs-4 " >Your bus is under review.</span>
+      {data.verificationStatus === "pending" && !currentUser.admin && (
+        <div className="remark my-4 bg-info text-dark rounded-4 p-md-3 p-2">
+          <span className="fw-medium fs-4 ">Your bus is under review.</span>
           <br />
           🕒 Our team is currently verifying the details and documents you
           provided.

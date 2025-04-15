@@ -19,6 +19,7 @@ model User {
   phone      String       @unique
   city       String
   isBanned   Boolean      @default(false)
+  admin   Boolean      @default(false)
   savedPosts SavedPosts[]
   Post       Post[]
   createdAt  DateTime     @default(now())
@@ -48,7 +49,8 @@ model Post {
   usb              Boolean      @default(false)
   wifi             Boolean      @default(false)
   hasImage         Boolean      @default(false)
-  verificationStatus         Status @default(pending)
+  disabled         Boolean      @default(false)
+  verificationStatus         Status? @default(pending)
   starRating       StarRating[]
   reviews          Reviews[]
   averageRating    Float?       @default(0.0)

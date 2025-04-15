@@ -261,8 +261,7 @@ const Home = () => {
           ) : data?.postData.length > 0 ? (
             // Render posts if available
             data?.postData
-              // .filter((post) => post.hasImage && post.verificationStatus === "accepted")
-              .filter((post) => post.hasImage)
+              .filter((post) => post.hasImage && post.verificationStatus === "accepted" && post.disabled === false)
               .map((post) => (
                 <div className="col-md-6" key={post.postId}>
                   <Card post={post} />

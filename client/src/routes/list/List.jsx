@@ -205,11 +205,18 @@ const List = () => {
     }
     console.log(postResponse.data);
     if (postData.length > 0) {
-      return postData.map((post) => (
-        <div className="col-md-6">
-          <Card post={post} key={post.postId} />
-        </div>
-      ));
+      return postData
+        .filter(
+          (post) =>
+            post.hasImage &&
+            post.verificationStatus === "accepted" &&
+            post.disabled === false
+        )
+        .map((post) => (
+          <div className="col-md-6">
+            <Card post={post} key={post.postId} />
+          </div>
+        ));
     } else {
       setTotalPost(0);
       setIsLoadingMore(false);

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom"; // Ensure you import from 'react-router-dom'
-import { Layout, AuthLayout } from "./components/layout/Layout";
+import { Layout, AuthLayout, AdminLayout } from "./components/layout/Layout";
 import Home from "./routes/home/Home";
 import Profile from "./routes/profile/Profile";
 import List from "./routes/list/List";
@@ -19,9 +19,11 @@ import TermsAndConditions from "./routes/TermsAndCondition/TermsAndCondition";
 import PrivacyPolicy from "./routes/PrivacyPolicy/PrivacyPolicy";
 import About from "./routes/about/About";
 import Submit from "./routes/submit/Submit";
+import AdminVerify from "./routes/AdminVerify/AdminVerify";
+import AdminHome from "./routes/AdminHome/AdminHome";
+import AdminUsers from "./routes/AdminUsers/AdminUsers";
 
 const App = () => {
-
   const router = createBrowserRouter([
     {
       path: "/",
@@ -46,7 +48,7 @@ const App = () => {
         {
           path: "/list",
           element: <List />,
-          loader: listPageLoader
+          loader: listPageLoader,
         },
         {
           path: "/info/:id",
@@ -84,6 +86,24 @@ const App = () => {
           path: "/addImg/:id",
           element: <AddImage />,
           loader: addImageLoader,
+        },
+      ],
+    },
+    {
+      path: "/admin",   
+      element: <AdminLayout />,
+      children: [
+        {
+          path: "",
+          element: <AdminHome />,
+        },
+        {
+          path: "verify",
+          element: <AdminVerify />,
+        },
+        {
+          path: "users",
+          element: <AdminUsers />,
         },
       ],
     },

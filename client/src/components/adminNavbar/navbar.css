@@ -1,0 +1,61 @@
+/* Default: fixed at the bottom (for mobile devices) */
+.navbar {
+  position: fixed !important;
+  bottom: 0px !important;
+  z-index: 10;
+  width: 100%;
+  height: 60px;
+  transition: all 0.3s ease !important;
+}
+
+/* Media query for larger screens: fixed at the top */
+@media (min-width: 768px) {
+  .navbar {
+    top: 25px;
+    bottom: auto; /* Remove bottom fixation */
+    z-index: 10;
+  }
+  .nav-text{
+    font-size: 25px; 
+  }
+  .nav-link.active {
+    border-bottom: 2px solid black !important;
+    margin-bottom: 4px;
+  }
+}
+
+@media (max-width: 768px) {
+  .nav-link.active {
+    border-top: 3px solid black !important;
+  }
+}
+
+.link {
+  text-decoration: none !important;
+}
+
+.collapseClass {
+  background-color: #1aa7ffde !important;
+}
+
+.nav-text{
+  font-size: 18px;
+}
+
+
+.mt-80 {
+  margin-top: 80px !important;
+}
+
+.modal-body {
+  border: none !important;
+  outline: none !important;
+}
+
+.login-img {
+  height: 60px !important;
+}
+
+.trust-img {
+  height: 85px !important;
+}

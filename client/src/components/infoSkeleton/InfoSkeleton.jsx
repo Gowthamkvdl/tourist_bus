@@ -6,7 +6,7 @@ import BackBtn from "../backBtn/BackBtn";
 const InfoSkeleton = () => {
   return (
     <div>
-      <div className="header mb-3 pt-md-2">
+      <div className="header mb-3 pt-md-5">
         <div className="title-text text-center opacity-75 mt-3">
           <BackBtn />
           <span className="text-center">Bus Details</span>

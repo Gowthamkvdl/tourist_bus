@@ -6,16 +6,16 @@ export const sendOtp = async (req, res) => {
   const { phoneNumber } = req.body;
   const apiKey = process.env.OTP_SECRET_KEY;
   const otp = Math.floor(100000 + Math.random() * 900000).toString(); // Generate OTP and convert to string
-  
+
   if (phoneNumber.length !== 10) {
     return res.status(400).json({ message: "Invalid phone number" });
   }
 
   const smsData = {
-    route: "otp",  
+    route: "otp",
     variables_values: otp,
     numbers: phoneNumber,
-    flash:"1"
+    flash: "1",
   };
 
   try {
@@ -50,13 +50,12 @@ export const sendOtp = async (req, res) => {
         .json({ message: "Something went wrong while sending OTP" });
     }
   } catch (error) {
-    console.error("Error sending SMS: ", error);
-    res.status(500).json({ message: "Internal server error" });
+    console.error("Error sending SMS: ", error.code);
+    res.status(500).json({ message: "Internal server error", code: "ERR_BAD_REQUEST" });
   }
-};    
+};
 
 export const verifyOtp = async (req, res) => {
-  
   const { phoneNumber, otp } = req.body;
 
   try {
@@ -91,7 +90,16 @@ export const verifyOtp = async (req, res) => {
 
     userExists = await prisma.user.findUnique({
       where: { phone: phoneNumber },
-    });   
+      select: {
+        id: true,
+        name: true,
+        phone: true,
+        city: true,
+        isBanned: true,
+        admin: true,
+        createdAt: true,
+      },
+    });
 
     // If user exists, check if they are banned
     if (userExists && userExists.isBanned) {
@@ -103,6 +111,7 @@ export const verifyOtp = async (req, res) => {
     }
 
     if (userExists) {
+      console.log("Sending user object:", userExists);
       // Generate a cookie token and send it to the user
       const tokenDuration = 1000 * 60 * 60 * 24 * 7; // 1 week
 
@@ -115,7 +124,7 @@ export const verifyOtp = async (req, res) => {
       return res
         .cookie("token", token, {
           httpOnly: false,
-          secure: true,
+          secure: false,
           sameSite: "None",
           maxAge: tokenDuration,
         })
@@ -130,11 +139,9 @@ export const verifyOtp = async (req, res) => {
     res.status(200).json({
       message: "OTP verified successfully",
       newUser: true,
-      
     });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
-

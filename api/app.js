@@ -9,6 +9,7 @@ import authRoute from "./routes/auth.route.js";
 import otpRoute from "./routes/otp.route.js";
 import postRoute from "./routes/post.route.js";
 import reviewRoute from "./routes/review.route.js";
+import adminRoute from "./routes/admin.route.js";
 
 const PORT = 3000;
 const app = express();
@@ -44,6 +45,7 @@ app.use("/api/auth", authRoute);
 app.use("/api/otp", otpRoute);
 app.use("/api/post", postRoute);
 app.use("/api/review", reviewRoute);
+app.use("/api/admin", adminRoute);
 
 // ✅ Debugging logs
 app.use((req, res, next) => {

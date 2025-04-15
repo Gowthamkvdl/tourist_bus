@@ -1,0 +1,12 @@
+.profilePic{
+    border-radius: 50%;
+    font-size: 40px;
+    font-weight: 600;
+    background-color: var(--neutral-300);    
+}
+
+.vl{
+    height: 80px;
+    border-left: 2px solid rgb(158, 154, 212);
+    color: black;
+}
