@@ -88,9 +88,9 @@ const UserCard = ({ user }) => {
     <div className="busCard rounded-4 box-shadow mb-3 p-3 overflow-hidden">
       <div className="d-flex align-items-center flex-wrap justify-content-between">
         <div className="userContent d-flex gap-3 align-items-center">
-          <div className="profilePic text-center p-2 d-flex justify-content-center align-items-center">
+          {/* <div className="profilePic text-center p-2 d-flex justify-content-center align-items-center">
             {user.name[0].toUpperCase()}
-          </div>
+          </div> */}
           <div className="namePhoneCity">
             <div className="phone fw-medium">{user.phone}</div>
             <div className="name">{user.name}</div>
