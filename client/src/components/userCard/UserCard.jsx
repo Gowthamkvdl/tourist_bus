@@ -143,12 +143,12 @@ const UserCard = ({ user }) => {
             </div>
           </div>
         </div>
-        <div className="functionBtns mt-3 d-flex align-items-center">
+        <div className="functionBtns d-flex align-items-center">
           <div className="contact">
             <div className="d-flex flex-column">
               <div className="col-6">
                 <button
-                  className="btn w-100 px-5 mb-1 primary-600 d-flex justify-content-center align-items-center"
+                  className="btn w-100 px-4 mb-1 primary-600 d-flex justify-content-center align-items-center"
                   onClick={(e) => {
                     e.preventDefault();
                     if (data.user?.phone) {
@@ -187,7 +187,7 @@ const UserCard = ({ user }) => {
               </div>
               <div className="col-6">
                 <button
-                  className="btn w-100 px-5 btn-warning d-flex justify-content-center align-items-center"
+                  className="btn px-4 w-100 btn-warning d-flex justify-content-center align-items-center"
                   onClick={(e) => {
                     e.preventDefault();
                     window.location.href = `https://wa.me/+91${user.phone}`; // Replace with your phone number
