@@ -34,6 +34,8 @@ const Info = () => {
   const [review, setReview] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [requesting, setRequesting] = useState(false);
+  const deleteBtn = useRef(null);
+  const [deleting, setDeleting] = useState(false);
 
   // ✅ Update state after data loads
   React.useEffect(() => {
@@ -337,6 +339,30 @@ const Info = () => {
     });
   };
 
+  const handleDelete = async () => {
+    setDeleting(true);
+    try {
+      await apiRequest.delete("/post/" + post.postId); // Ensure the request completes
+      deleteBtn.current.click(); // Close the modal programmatically
+      toast((t) => <DismissibleToast message="Bus Deleted" toastProps={t} />, {
+        icon: "🔔",
+        duration: 5000,
+        id: "Bus Deleted",
+      });
+      navigate("/profile");
+    } catch (error) {
+      console.error(error);
+      toast(
+        (t) => (
+          <DismissibleToast message="Failed to delete bus" toastProps={t} />
+        ),
+        { icon: "🔔", duration: 5000, id: "Failed to delete bus" }
+      );
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   return (
     <div>
       <div className="header mb-3 pt-md-5">
@@ -358,7 +384,7 @@ const Info = () => {
         <div className="admin my-4 secondary-800 text-white rounded-4 p-md-3 p-3">
           <span className="fw-medium fs-4">Admin Controls</span>
           <div className="row d-flex mt-3 align-items-center">
-            <div className="col-12 col-md-4 mb-3 mb-md-1">
+            <div className="col-12 col-md-6 mb-3 mb-md-1">
               <label htmlFor="" className="mb-1">
                 Verification Status
               </label>
@@ -389,7 +415,7 @@ const Info = () => {
                 </option>
               </select>
             </div>
-            <div className="col-12 col-md-4 mb-3 mb-md-1">
+            <div className="col-12 col-md-6 mb-3 mb-md-1">
               <label htmlFor="" className="mb-1">
                 Disable Status
               </label>
@@ -408,16 +434,59 @@ const Info = () => {
                 </option>
               </select>
             </div>
-            <div className="col-12 col-md-4 mb-3 mb-md-1 d-flex flex-column">
-              <label htmlFor="" className="mb-1">
-                Delete Bus
+            <div className="col-12 mt-1">
+              <label htmlFor="" className="mb-1"> 
+                Remark
               </label>
-              <button className="btn btn-light">Delete</button>
+              <textarea name="" id="" placeholder="Add your remark or reason for rejection" className="form-control" rows="3"></textarea>
+              <button className="btn-info btn float-end mt-2">Save Remark</button>
             </div>
           </div>
         </div>
       )}
-
+      <div
+        class="modal fade"
+        id="delete"
+        tabindex="-1"
+        aria-labelledby="deleteLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="deleteLabel">
+                Are you sure?
+              </h1>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              Do you want to delete this bus ({data.busName})
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+                ref={deleteBtn}
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                onClick={handleDelete}
+                class="btn btn-danger"
+              >
+                {deleting ? "Deleting..." : "Delete"}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
       {data.verificationStatus === "rejected" && !currentUser.admin && (
         <div className="remark my-4 bg-warning rounded-4 p-md-3 p-2">
           <span className="fw-medium fs-4">We're sorry!</span>

@@ -17,7 +17,19 @@ const Card = ({ post, label }) => {
 
   return (
     <div className="busCard rounded-4 box-shadow mb-3 p-3 overflow-hidden">
-      {label && <div className={`ribbon fw-medium bg-${label === "pending" ? "warning":"danger"} text-${label === "pending" ? "dark":"light"} text-center ps-4`}>{label.toUpperCase()}</div>}
+      {label && (
+        <div
+          className={`ribbon fw-medium bg-${
+            label === "pending" ? "warning" : ""
+          } bg-${label === "rejected" ? "danger" : ""} bg-${
+            label === "accepted" ? "info" : ""
+          } text-${label === "pending" ? "dark" : ""} text-${
+            label === "accepted" ? "dark" : ""
+          } text-${label === "rejected" ? "light" : ""} text-center ps-4`}
+        >
+          {label.toUpperCase()}
+        </div>
+      )}
       <div className="upperSection">
         <div className="details row">
           <div className="col-6 d-flex flex-column">

@@ -7,7 +7,7 @@ import CardSkeleton from "../../components/cardSkeleton/CardSkeleton";
 const AdminBuses = () => {
   // Fetch posts using React Query
   const { data, isLoading, error } = useQuery({
-    queryKey: ["adminVerify"], // Unique key for caching
+    queryKey: ["adminBuses"], // Unique key for caching
     queryFn: async () => {
       const response = await apiRequest.get(`/post/posts`);
       return response.data; // Ensure correct data extraction
