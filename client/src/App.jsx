@@ -22,6 +22,7 @@ import Submit from "./routes/submit/Submit";
 import AdminVerify from "./routes/AdminVerify/AdminVerify";
 import AdminHome from "./routes/AdminHome/AdminHome";
 import AdminUsers from "./routes/AdminUsers/AdminUsers";
+import AdminBuses from "./routes/AdminBuses/AdminBuses";
 
 const App = () => {
   const router = createBrowserRouter([
@@ -104,6 +105,10 @@ const App = () => {
         {
           path: "users",
           element: <AdminUsers />,
+        },
+        {
+          path: "buses",
+          element: <AdminBuses />,
         },
       ],
     },

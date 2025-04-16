@@ -345,9 +345,9 @@ const AdminNavbar = () => {
               <li className="nav-item">
                 <Link
                   className={`nav-link shadow-none d-flex flex-column align-items-center mb-0 pb-0 ${isActive(
-                    "/list"
+                    "/admin/buses"
                   )}`}
-                  to="/list?limit=5"
+                  to="/admin/buses"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

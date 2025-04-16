@@ -18,14 +18,14 @@ const UserCard = ({ user }) => {
       toast(
         (t) => (
           <DismissibleToast
-            message="Admin status updated successfully"
+            message={`Admin status updated successfully (Status: ${adminStatus.current.checked})`}
             toastProps={t}
           />
         ),
         {
           icon: "🔔",
           duration: 5000,
-          id: "Admin status updated successfully",
+          id: "Admin status",
         }
       );
     } catch (error) {
@@ -40,7 +40,7 @@ const UserCard = ({ user }) => {
         {
           icon: "🔔",
           duration: 5000,
-          id: "Failed to update admin status",
+          id: "Admin status",
         }
       );
     }
@@ -56,14 +56,14 @@ const UserCard = ({ user }) => {
       toast(
         (t) => (
           <DismissibleToast
-            message="Ban status updated successfully"
+            message={`Ban status updated successfully (Status: ${banStatus.current.checked})`}
             toastProps={t}
           />
         ),
         {
           icon: "🔔",
           duration: 5000,
-          id: "Ban status updated successfully",
+          id: "Ban status",
         }
       );
     } catch (error) {
@@ -78,7 +78,7 @@ const UserCard = ({ user }) => {
         {
           icon: "🔔",
           duration: 5000,
-          id: "Failed to update Ban status",
+          id: "Ban status",
         }
       );
     }
@@ -118,7 +118,7 @@ const UserCard = ({ user }) => {
           <div className="vl"></div>
           <div className="posts d-flex gap-3 align-items-center">
             <div className="">
-              <div className="total">Buses: {user.Post.length}</div>
+              <div className="total">Total: {user.Post.length}</div>
               <div className="Pending ">
                 Pending:{" "}
                 <span className="text-warning">
@@ -209,8 +209,9 @@ const UserCard = ({ user }) => {
               </div>
             </div>
           </div>
-          <div className="actions">
-            <div className="mb-3 form-check">
+          <div className="vl"></div>
+          <div className="ms-3 actions">
+            <div className=" form-check">
               <input
                 onChange={handleAdminChange}
                 ref={adminStatus}
