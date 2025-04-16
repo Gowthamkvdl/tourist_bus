@@ -118,7 +118,7 @@ const UserCard = ({ user }) => {
           <div className="vl"></div>
           <div className="posts d-flex gap-3 align-items-center">
             <div className="">
-              <div className="total">Total Buses: {user.Post.length}</div>
+              <div className="total">Buses: {user.Post.length}</div>
               <div className="Pending ">
                 Pending:{" "}
                 <span className="text-warning">
