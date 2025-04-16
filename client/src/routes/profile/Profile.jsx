@@ -428,9 +428,15 @@ const Profile = () => {
 
       <div className="others box-shadow pb-5 bg-white mt-4">
         <div className="cards row px-md-4 px-3 pb-5">
-          <h1 className="title-text pb-1 mt-3 opacity-75">
-            Buses under verification process
-          </h1>
+          {data?.postData?.filter(
+            (post) =>
+              post.verificationStatus === "rejected" ||
+              post.verificationStatus === "pending"
+          ).length > 0 && (
+            <h1 className="title-text pt-3 pb-1 opacity-75">
+              Your Buses Under Verification Process
+            </h1>
+          )}
           {isLoading ? (
             // Show loading skeleton while fetching data
             <CardSkeleton NoOfCards={2} />
@@ -442,7 +448,8 @@ const Profile = () => {
             </p>
           ) : data?.postData?.filter(
               (post) =>
-                post.verificationStatus !== "accepted" && post.hasImage !== false 
+                post.verificationStatus !== "accepted" &&
+                post.hasImage !== false
             ).length > 0 ? (
             // Render completed posts (hasImage === true)
             data.postData
@@ -460,10 +467,16 @@ const Profile = () => {
                 </div>
               ))
           ) : (
+            null
             // Fallback message
-            <p className="opacity-75">
-              You haven't submited any buses to verify yet. Start uploading now!
-            </p>
+            // data?.postData?.filter(
+            //   (post) => !post.verificationStatus === "accepted"
+            // ).length > 0 && (
+            //   <p className="opacity-75">
+            //     You haven't submited any buses to verify yet. Start uploading
+            //     now!
+            //   </p>
+            // )
           )}
 
           {data?.postData?.filter((post) => !post.hasImage).length > 0 && (
@@ -511,11 +524,12 @@ const Profile = () => {
               ))
           ) : (
             // Fallback message
-            data.postData.filter((post) => !post.hasImage).length > 0 && (
-              <p className="opacity-75">
-                No unfinished bus uploads yet. Start uploading to see them here!
-              </p>
-            )
+            null
+            // data.postData.filter((post) => !post.hasImage).length > 0 && (
+            //   <p className="opacity-75">
+            //     No unfinished bus uploads yet. Start uploading to see them here!
+            //   </p>
+            // )
           )}
 
           <h1 className="title-text pb-1 mt-3 opacity-75">Your Buses</h1>
@@ -528,11 +542,15 @@ const Profile = () => {
               <ErrorComponent />
               {console.log(error)}
             </p>
-          ) : data?.postData?.filter((post) => post.hasImage && post.verificationStatus === "accepted")
-              .length > 0 ? (
+          ) : data?.postData?.filter(
+              (post) => post.hasImage && post.verificationStatus === "accepted"
+            ).length > 0 ? (
             // Render completed posts (hasImage === true)
             data.postData
-              .filter((post) => post.hasImage && post.verificationStatus === "accepted")
+              .filter(
+                (post) =>
+                  post.hasImage && post.verificationStatus === "accepted"
+              )
               .map((post) => (
                 <div className="col-md-6" key={post.postId}>
                   <Card post={post} />

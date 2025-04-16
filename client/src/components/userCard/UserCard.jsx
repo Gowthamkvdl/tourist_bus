@@ -1,7 +1,89 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import "./userCard.css";
+import DismissibleToast from "../../components/dismissibleToast/DismissibleToast";
+import toast from "react-hot-toast";
+import apiRequest from "../../lib/apiRequest";
 
 const UserCard = ({ user }) => {
+  const adminStatus = useRef(null);
+  const banStatus = useRef(null);
+
+  const handleAdminChange = async () => {
+    console.log(adminStatus.current.checked);
+
+    try {
+      const updateStatus = await apiRequest.put(`admin/makeadmin/${user.id}`, {
+        adminStatus: adminStatus.current.checked === true ? true : false,
+      });
+      toast(
+        (t) => (
+          <DismissibleToast
+            message="Admin status updated successfully"
+            toastProps={t}
+          />
+        ),
+        {
+          icon: "🔔",
+          duration: 5000,
+          id: "Admin status updated successfully",
+        }
+      );
+    } catch (error) {
+      console.error(error);
+      toast(
+        (t) => (
+          <DismissibleToast
+            message="Failed to update admin status"
+            toastProps={t}
+          />
+        ),
+        {
+          icon: "🔔",
+          duration: 5000,
+          id: "Failed to update admin status",
+        }
+      );
+    }
+  };
+
+  const handleBanChange = async () => {
+    console.log(banStatus.current.checked);
+
+    try {
+      const updateStatus = await apiRequest.put(`admin/banuser/${user.id}`, {
+        banStatus: banStatus.current.checked === true ? true : false,
+      });
+      toast(
+        (t) => (
+          <DismissibleToast
+            message="Ban status updated successfully"
+            toastProps={t}
+          />
+        ),
+        {
+          icon: "🔔",
+          duration: 5000,
+          id: "Ban status updated successfully",
+        }
+      );
+    } catch (error) {
+      console.error(error);
+      toast(
+        (t) => (
+          <DismissibleToast
+            message="Failed to update Ban status"
+            toastProps={t}
+          />
+        ),
+        {
+          icon: "🔔",
+          duration: 5000,
+          id: "Failed to update Ban status",
+        }
+      );
+    }
+  };
+
   return (
     <div className="busCard rounded-4 box-shadow mb-3 p-3 overflow-hidden">
       <div className="d-flex align-items-center flex-wrap justify-content-between">
@@ -10,8 +92,8 @@ const UserCard = ({ user }) => {
             {user.name[0].toUpperCase()}
           </div>
           <div className="namePhoneCity">
-            <div className="phone fs-5 fw-medium">+91 {user.phone}</div>
-            <div className="name">Name: {user.name}</div>
+            <div className="phone fw-medium">{user.phone}</div>
+            <div className="name">{user.name}</div>
             <div className="city d-flex align-items-center">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -37,8 +119,27 @@ const UserCard = ({ user }) => {
           <div className="posts d-flex gap-3 align-items-center">
             <div className="">
               <div className="total">Total Buses: {user.Post.length}</div>
-              <div className="Pending ">Pending: <span className="text-warning" >{user.Post.filter((post)=>post.verificationStatus ==="pending").length}</span></div>
-              <div className="Rejected ">Rejected: <span className="text-danger"> {user.Post.filter((post)=>post.verificationStatus ==="rejected").length}</span></div> 
+              <div className="Pending ">
+                Pending:{" "}
+                <span className="text-warning">
+                  {
+                    user.Post.filter(
+                      (post) => post.verificationStatus === "pending"
+                    ).length
+                  }
+                </span>
+              </div>
+              <div className="Rejected ">
+                Rejected:{" "}
+                <span className="text-danger">
+                  {" "}
+                  {
+                    user.Post.filter(
+                      (post) => post.verificationStatus === "rejected"
+                    ).length
+                  }
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -111,9 +212,11 @@ const UserCard = ({ user }) => {
           <div className="actions">
             <div className="mb-3 form-check">
               <input
+                onChange={handleAdminChange}
+                ref={adminStatus}
                 type="checkbox"
                 className="form-check-input"
-                defaultChecked={user.admin}  
+                defaultChecked={user.admin}
               ></input>
               <label className="form-check-label" for="">
                 Make Admin
@@ -122,6 +225,8 @@ const UserCard = ({ user }) => {
             <div className=" form-check">
               <input
                 type="checkbox"
+                onChange={handleBanChange}
+                ref={banStatus}
                 className="form-check-input"
                 defaultChecked={user.isBanned}
               ></input>

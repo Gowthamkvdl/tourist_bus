@@ -124,7 +124,7 @@ export const verifyOtp = async (req, res) => {
       return res
         .cookie("token", token, {
           httpOnly: false,
-          secure: false,
+          secure: true,
           sameSite: "None",
           maxAge: tokenDuration,
         })

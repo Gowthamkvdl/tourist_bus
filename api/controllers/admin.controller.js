@@ -79,12 +79,16 @@ export const makeAdmin = async (req, res) => {
   const userId = req.params.id;
   const adminStatus = req.body.adminStatus;
 
+  console.log(adminStatus)
+
   try {
     const user = await prisma.user.findUnique({
       where: {
         id: tokenUserId,
       },
     });
+
+    console.log(user)
 
     if (!user.admin) {
       res.status(403).json({ message: "Not Authorized!" });

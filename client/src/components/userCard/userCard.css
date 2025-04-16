@@ -1,7 +1,9 @@
 .profilePic{
     border-radius: 50%;
-    font-size: 40px;
+    font-size: 35px;
     font-weight: 600;
+    height: 60px;
+    width: 60px;
     background-color: var(--neutral-300);    
 }
 
