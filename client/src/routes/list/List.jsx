@@ -208,7 +208,7 @@ const List = () => {
       return postData
         .filter(
           (post) =>
-            post.hasImage 
+            post.hasImage && post.verificationStatus === "accepted"
         )
         .map((post) => (
           <div className="col-md-6">

@@ -74,6 +74,33 @@ export const banUser = async (req, res) => {
   }
 };
 
+
+export const addRemark = async (req, res) => {
+  const postId = req.params.id;
+  const remark = req.body.remark;
+
+  try {
+
+    const updatedPost = await prisma.post.update({
+      where: { postId: postId },
+      data: {
+        remark : remark
+      },
+    });
+    console.log(updatedPost)
+    console.log("Remark updated successfully");
+    return res.status(200).json({
+      message: "Remark updated successfully.",
+      updatedPost,
+    });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(401)
+      .json({ message: "Failed to update remark" });
+  }
+};
+
 export const makeAdmin = async (req, res) => {
   const tokenUserId = req.userId;
   const userId = req.params.id;

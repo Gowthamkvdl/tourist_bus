@@ -74,7 +74,7 @@ export const getPost = async (req, res) => {
       },
       include: {
         user: true,
-        reviews: true, 
+        reviews: true,
       },
     });
 
@@ -115,8 +115,46 @@ export const getPost = async (req, res) => {
   }
 };
 
+export const postView = async (req, res) => {
+  const userId = req.userId;
+  const postId = req.body.postId;
+
+  try {
+    const alreadyViewed = await prisma.postView.findUnique({
+      where: {
+        userId_postId: {
+          userId,
+          postId,
+        },
+      },
+    });
+
+    if (!alreadyViewed) {
+      await prisma.postView.create({
+        data: {
+          userId,
+          postId,
+        },
+      });
+
+      await prisma.post.update({
+        where: { postId },
+        data: {
+          views: {
+            increment: 1,
+          },
+        },
+      });
+    }
+    res.status(200).json({ message: "View added successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(401).json({ message: "Failed to Add view" });
+  }
+};
+
 export const addPost = async (req, res) => {
-  const tokenUserId = req.userId;   
+  const tokenUserId = req.userId;
   const postData = req.body;
 
   try {

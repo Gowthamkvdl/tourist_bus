@@ -12,54 +12,57 @@ datasource db {
   provider = "mongodb"
   url      = env("DATABASE_URL")
 }
-
 model User {
-  id         String       @id @default(auto()) @map("_id") @db.ObjectId
-  name       String
-  phone      String       @unique
-  city       String
-  isBanned   Boolean      @default(false)
-  admin   Boolean      @default(false)
-  savedPosts SavedPosts[]
-  Post       Post[]
-  createdAt  DateTime     @default(now())
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  phone       String     @unique
+  city        String
+  isBanned    Boolean    @default(false)
+  admin       Boolean    @default(false)
+  savedPosts  SavedPosts[]
+  Post        Post[]
+  postViews   PostView[]
+  createdAt   DateTime   @default(now())
 }
 
 model Post {
-  postId           String       @id @default(auto()) @map("_id") @db.ObjectId
-  busName          String
-  busBrand         String
-  numberOfSeats    String
-  mileage          String
-  cost             String
-  speakerType String
-  speakerBrand     String
-  city             String
-  busType          BusType
-  img1             String @default("")
-  img2             String @default("")
-  img3             String @default("")
-  img4             String @default("")
-  img5            String @default("")
-  remark          String @default("")  
-  description            String
-  recliningSeats   Boolean      @default(false)
-  ac               Boolean      @default(false)
-  tv               Boolean      @default(false)
-  usb              Boolean      @default(false)
-  wifi             Boolean      @default(false)
-  hasImage         Boolean      @default(false)
-  disabled         Boolean      @default(false)
-  verificationStatus         Status? @default(pending)
-  starRating       StarRating[]
-  reviews          Reviews[]
-  averageRating    Float?       @default(0.0)
-  totalRating      Int          @default(0)
-  userId           String       @db.ObjectId
-  savedPosts       SavedPosts[]
-  user             User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt        DateTime     @default(now())
+  postId             String     @id @default(auto()) @map("_id") @db.ObjectId
+  busName            String
+  busBrand           String
+  numberOfSeats      String
+  mileage            String
+  cost               String
+  speakerType        String
+  speakerBrand       String
+  city               String
+  busType            BusType
+  img1               String     @default("")
+  img2               String     @default("")
+  img3               String     @default("")
+  img4               String     @default("")
+  img5               String     @default("")
+  remark             String     @default("")  
+  description        String
+  recliningSeats     Boolean    @default(false)
+  ac                 Boolean    @default(false)
+  tv                 Boolean    @default(false)
+  usb                Boolean    @default(false)
+  wifi               Boolean    @default(false)
+  hasImage           Boolean    @default(false)
+  disabled           Boolean    @default(false)
+  verificationStatus Status?    @default(pending)
+  starRating         StarRating[]
+  reviews            Reviews[]
+  averageRating      Float?     @default(0.0)
+  totalRating        Int        @default(0)
+  views              Int        @default(0) // 👈 track views
+  postViews          PostView[]
+  userId             String     @db.ObjectId
+  savedPosts         SavedPosts[]
+  user               User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt          DateTime   @default(now())
 }
+
 
 model Reviews {
   reviewId  String   @id @default(auto()) @map("_id") @db.ObjectId
@@ -98,6 +101,18 @@ model SavedPosts {
 
   @@unique([userId, postId])
 }
+
+model PostView {
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+  user    User     @relation(fields: [userId], references: [id])
+  userId  String   @db.ObjectId
+  post    Post     @relation(fields: [postId], references: [postId])
+  postId  String   @db.ObjectId
+  viewedAt DateTime @default(now())
+
+  @@unique([userId, postId]) // Prevents duplicate views by same user
+}
+
 
 enum BusType {
   STANDARD_SEATING

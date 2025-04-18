@@ -439,7 +439,7 @@ const Profile = () => {
           )}
           {isLoading ? (
             // Show loading skeleton while fetching data
-            <CardSkeleton NoOfCards={2} />
+            null
           ) : error ? (
             // Show error message if API request fails
             <p className="text-center">

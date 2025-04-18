@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import "./info.css";
 import BackBtn from "../../components/backBtn/BackBtn";
 import DisplayStarRating from "react-star-ratings";
@@ -33,16 +33,32 @@ const Info = () => {
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState(null);
   const [reviews, setReviews] = useState([]);
+  const [remarkUpdating, setRemarkUpdating] = useState(false);
   const [requesting, setRequesting] = useState(false);
   const deleteBtn = useRef(null);
   const [deleting, setDeleting] = useState(false);
 
   // ✅ Update state after data loads
-  React.useEffect(() => {
+  useEffect(() => {
     if (data) {
       setFav(data.isSaved || false);
       setReviews(data.reviews || []);
     }
+  }, [data]);
+
+  useEffect(() => {
+    const addView = async () => {
+      try {
+        await apiRequest.put(`post/view/${data.postId}`, {
+          postId: data.postId,
+        });
+        console.log("View added");
+      } catch (error) {
+        console.error("Error adding view:", error);
+      }
+    };
+
+    addView();
   }, [data]);
 
   function toTitleCase(str) {
@@ -65,6 +81,7 @@ const Info = () => {
   const reviewBox = useRef(null);
   const verificationStatus = useRef(null);
   const disableStatus = useRef(null);
+  const remarkRef = useRef(null);
   const navigate = useNavigate();
   const [loadingEdit, setLoadingEdit] = useState(false);
 
@@ -332,6 +349,45 @@ const Info = () => {
     }
   };
 
+  const handleAddRemark = async () => {
+    console.log(remarkRef.current.value);
+
+    try {
+      setRemarkUpdating(true);
+
+      const updateStatus = await apiRequest.put(`admin/remark/${data.postId}`, {
+        remark: remarkRef.current.value,
+      });
+      toast(
+        (t) => (
+          <DismissibleToast
+            message="Remark updated successfully"
+            toastProps={t}
+          />
+        ),
+        {
+          icon: "🔔",
+          duration: 5000,
+          id: "Remark updated successfully",
+        }
+      );
+    } catch (error) {
+      console.error(error);
+      toast(
+        (t) => (
+          <DismissibleToast message="Failed to update Remark" toastProps={t} />
+        ),
+        {
+          icon: "🔔",
+          duration: 5000,
+          id: "Failed to update Remark",
+        }
+      );
+    } finally {
+      setRemarkUpdating(false);
+    }
+  };
+
   const handleNavigation = (postId) => {
     setLoadingEdit(true);
     navigate(`/edit/${postId}`, {
@@ -339,33 +395,9 @@ const Info = () => {
     });
   };
 
-  const handleDelete = async () => {
-    setDeleting(true);
-    try {
-      await apiRequest.delete("/post/" + post.postId); // Ensure the request completes
-      deleteBtn.current.click(); // Close the modal programmatically
-      toast((t) => <DismissibleToast message="Bus Deleted" toastProps={t} />, {
-        icon: "🔔",
-        duration: 5000,
-        id: "Bus Deleted",
-      });
-      navigate("/profile");
-    } catch (error) {
-      console.error(error);
-      toast(
-        (t) => (
-          <DismissibleToast message="Failed to delete bus" toastProps={t} />
-        ),
-        { icon: "🔔", duration: 5000, id: "Failed to delete bus" }
-      );
-    } finally {
-      setDeleting(false);
-    }
-  };
-
   return (
     <div>
-      <div className="header mb-3 pt-md-5">
+      <div className="header mb-3 pt-md-3">
         <div className="title-text text-center text-muted mt-3">
           <BackBtn />
           <span className="text-center">Bus Details</span>
@@ -435,58 +467,30 @@ const Info = () => {
               </select>
             </div>
             <div className="col-12 mt-1">
-              <label htmlFor="" className="mb-1"> 
+              <label htmlFor="" className="mb-1" ref={remarkRef}>
                 Remark
               </label>
-              <textarea name="" id="" placeholder="Add your remark or reason for rejection" className="form-control" rows="3"></textarea>
-              <button className="btn-info btn float-end mt-2">Save Remark</button>
+              <textarea
+                ref={remarkRef}
+                name=""
+                id=""
+                placeholder="Add your remark or reason for rejection"
+                className="form-control"
+                rows="3"
+              >
+                {data.remark}
+              </textarea>
+              <button
+                className="btn-info btn float-end mt-2"
+                onClick={handleAddRemark}
+              >
+                {remarkUpdating ? "Updating..." : "Update Remark"}
+              </button>
             </div>
           </div>
         </div>
       )}
-      <div
-        class="modal fade"
-        id="delete"
-        tabindex="-1"
-        aria-labelledby="deleteLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="deleteLabel">
-                Are you sure?
-              </h1>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div class="modal-body">
-              Do you want to delete this bus ({data.busName})
-            </div>
-            <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-secondary"
-                data-bs-dismiss="modal"
-                ref={deleteBtn}
-              >
-                Close
-              </button>
-              <button
-                type="button"
-                onClick={handleDelete}
-                class="btn btn-danger"
-              >
-                {deleting ? "Deleting..." : "Delete"}
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+
       {data.verificationStatus === "rejected" && !currentUser.admin && (
         <div className="remark my-4 bg-warning rounded-4 p-md-3 p-2">
           <span className="fw-medium fs-4">We're sorry!</span>

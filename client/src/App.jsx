@@ -51,11 +51,7 @@ const App = () => {
           element: <List />,
           loader: listPageLoader,
         },
-        {
-          path: "/info/:id",
-          element: <Info />,
-          loader: infoPageLoader,
-        },
+        
       ],
     },
     {
@@ -69,6 +65,11 @@ const App = () => {
         {
           path: "/submit",
           element: <Submit />,
+        },
+        {
+          path: "/info/:id",
+          element: <Info />,
+          loader: infoPageLoader,
         },
         {
           path: "/profile",
