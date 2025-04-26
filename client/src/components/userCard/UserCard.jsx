@@ -151,7 +151,7 @@ const UserCard = ({ user }) => {
                   className="btn w-100 px-4 mb-1 primary-600 d-flex justify-content-center align-items-center"
                   onClick={(e) => {
                     e.preventDefault();
-                    if (data.user?.phone) {
+                    if (user?.phone) {
                       window.location.href = `tel:${user.phone}`;
                     } else {
                       toast(

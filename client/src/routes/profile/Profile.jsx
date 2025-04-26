@@ -54,6 +54,10 @@ const Profile = () => {
     navigate(`/addImg/${postId}`); // Navigate
   };
 
+  const handleAdmin = () => {
+    navigate(`/admin`); // Navigate
+  };
+
   const handleLogout = async () => {
     try {
       setLoading(true);
@@ -379,7 +383,10 @@ const Profile = () => {
             )}
           </div>
         </div>
-        <div className="d-flex profile-content w-100 mx-auto align-items-center justify-content-between mt-4">
+        <div
+          onClick={handleLogout}
+          className="d-flex profile-content w-100 mx-auto align-items-center justify-content-between mt-4"
+        >
           <div className="d-flex gap-1 align-items-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -398,10 +405,7 @@ const Profile = () => {
                 d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"
               />
             </svg>
-            <span
-              className="fs-4 fw-semibold d-flex justify-content-center"
-              onClick={handleLogout}
-            >
+            <span className="fs-4 fw-semibold d-flex justify-content-center">
               Logout{" "}
               <span>
                 {loading && (
@@ -424,6 +428,51 @@ const Profile = () => {
             />
           </svg>
         </div>
+        {currentUser.admin && (
+          <div
+            onClick={handleAdmin}
+            className="d-flex profile-content w-100 mx-auto align-items-center justify-content-between mt-4"
+          >
+            <div className="d-flex gap-1 align-items-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="30"
+                height="30"
+                fill="currentColor"
+                class="bi bi-person"
+                viewBox="0 0 16 16"
+              >
+                <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z" />
+              </svg>
+              <span className="fs-4 fw-semibold d-flex justify-content-center">
+                Admin Panel{" "}
+                <span>
+                  {loading && (
+                    <img
+                      src={rollingLoading}
+                      className="ms-1"
+                      alt=""
+                      srcset=""
+                    />
+                  )}
+                </span>
+              </span>
+            </div>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="26"
+              height="26"
+              fill="currentColor"
+              class="bi bi-chevron-right"
+              viewBox="0 0 16 16"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"
+              />
+            </svg>
+          </div>
+        )}
       </div>
 
       <div className="others box-shadow pb-5 bg-white mt-4">
@@ -431,50 +480,49 @@ const Profile = () => {
           {data?.postData?.filter(
             (post) =>
               post.verificationStatus === "rejected" ||
-              post.verificationStatus === "pending" &&
-              post.hasImage === true 
+              (post.verificationStatus === "pending" && post.hasImage === true)
           ).length > 0 && (
             <h1 className="title-text pt-3 pb-1 opacity-75">
               Your Buses Under Verification Process
             </h1>
           )}
-          {isLoading ? // Show loading skeleton while fetching data
-          null : error ? (
-            // Show error message if API request fails
-            <p className="text-center">
-              <ErrorComponent />
-              {console.log(error)}
-            </p>
-          ) : data?.postData?.filter(
-              (post) =>
-                post.verificationStatus !== "accepted" &&
-                post.hasImage !== false
-            ).length > 0 ? (
-            // Render completed posts (hasImage === true)
-            data.postData
-              .filter(
+          {
+            isLoading ? null : error ? ( // Show loading skeleton while fetching data
+              // Show error message if API request fails
+              <p className="text-center">
+                <ErrorComponent />
+                {console.log(error)}
+              </p>
+            ) : data?.postData?.filter(
                 (post) =>
                   post.verificationStatus !== "accepted" &&
                   post.hasImage !== false
-              )
-              .map((post) => (
-                <div className="col-md-6" key={post.postId}>
-                  <Card post={post} label={post.verificationStatus} />
-                  {/* <button className="btn btn-info me-2 mb-4 d-flex justify-content-center align-items-center">
+              ).length > 0 ? (
+              // Render completed posts (hasImage === true)
+              data.postData
+                .filter(
+                  (post) =>
+                    post.verificationStatus !== "accepted" &&
+                    post.hasImage !== false
+                )
+                .map((post) => (
+                  <div className="col-md-6" key={post.postId}>
+                    <Card post={post} label={post.verificationStatus} />
+                    {/* <button className="btn btn-info me-2 mb-4 d-flex justify-content-center align-items-center">
                     {`Status: ${post.verificationStatus}`}
                   </button> */}
-                </div>
-              ))
-          ) : null
-          // Fallback message
-          // data?.postData?.filter(
-          //   (post) => !post.verificationStatus === "accepted"
-          // ).length > 0 && (
-          //   <p className="opacity-75">
-          //     You haven't submited any buses to verify yet. Start uploading
-          //     now!
-          //   </p>
-          // )
+                  </div>
+                ))
+            ) : null
+            // Fallback message
+            // data?.postData?.filter(
+            //   (post) => !post.verificationStatus === "accepted"
+            // ).length > 0 && (
+            //   <p className="opacity-75">
+            //     You haven't submited any buses to verify yet. Start uploading
+            //     now!
+            //   </p>
+            // )
           }
 
           {data?.postData?.filter((post) => !post.hasImage).length > 0 && (
@@ -482,51 +530,52 @@ const Profile = () => {
               Your Unfinished Buses Uploads
             </h1>
           )}
-          {isLoading ? (
-            // Show loading skeleton while fetching data
-            <CardSkeleton NoOfCards={0} />
-          ) : error ? (
-            // Show error message if API request fails
-            <p className="text-center">
-              <ErrorComponent />
-              {console.log(error)}
-            </p>
-          ) : data?.postData?.filter((post) => !post.hasImage).length > 0 ? (
-            // Render unfinished posts (hasImage === false)
-            data.postData
-              .filter((post) => !post.hasImage)
-              .map((post) => (
-                <div className="col-md-6" key={post.postId}>
-                  <Card post={post} />
-                  <button
-                    className="btn btn-info me-2 mb-4 d-flex justify-content-center align-items-center"
-                    onClick={() => handleFinishClick(post.postId)}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="26"
-                      height="26"
-                      fill="currentColor"
-                      class="bi bi-check"
-                      viewBox="0 0 16 16"
+          {
+            isLoading ? (
+              // Show loading skeleton while fetching data
+              <CardSkeleton NoOfCards={0} />
+            ) : error ? (
+              // Show error message if API request fails
+              <p className="text-center">
+                <ErrorComponent />
+                {console.log(error)}
+              </p>
+            ) : data?.postData?.filter((post) => !post.hasImage).length > 0 ? (
+              // Render unfinished posts (hasImage === false)
+              data.postData
+                .filter((post) => !post.hasImage)
+                .map((post) => (
+                  <div className="col-md-6" key={post.postId}>
+                    <Card post={post} />
+                    <button
+                      className="btn btn-info me-2 mb-4 d-flex justify-content-center align-items-center"
+                      onClick={() => handleFinishClick(post.postId)}
                     >
-                      <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z" />
-                    </svg>
-                    <div>
-                      {finishLoading[post.postId]
-                        ? "Loading..."
-                        : "Finish Upload"}
-                    </div>
-                  </button>
-                </div>
-              ))
-          ) : // Fallback message
-          null
-          // data.postData.filter((post) => !post.hasImage).length > 0 && (
-          //   <p className="opacity-75">
-          //     No unfinished bus uploads yet. Start uploading to see them here!
-          //   </p>
-          // )
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="26"
+                        height="26"
+                        fill="currentColor"
+                        class="bi bi-check"
+                        viewBox="0 0 16 16"
+                      >
+                        <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z" />
+                      </svg>
+                      <div>
+                        {finishLoading[post.postId]
+                          ? "Loading..."
+                          : "Finish Upload"}
+                      </div>
+                    </button>
+                  </div>
+                ))
+            ) : // Fallback message
+            null
+            // data.postData.filter((post) => !post.hasImage).length > 0 && (
+            //   <p className="opacity-75">
+            //     No unfinished bus uploads yet. Start uploading to see them here!
+            //   </p>
+            // )
           }
 
           <h1 className="title-text pb-1 mt-3 opacity-75">Your Buses</h1>
