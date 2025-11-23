@@ -1,38 +1,34 @@
-🔑 Core Features:
+🚌 Tourist Bus Finder – Tamil Nadu
+
+A simple and fast platform to discover tourist buses across Tamil Nadu. Built for both travelers and bus owners, with a lightweight UI and a scalable backend.
+
+🔑 Core Features
 
 ✔ Bus Listing Page – Name, capacity, route, AC/Non-AC, price, images
-✔ City-based Search & Filter – Find buses instantly
+✔ City-based Search & Filters – Find buses instantly
 ✔ Owner Submission Form – Quick onboarding for operators
-✔ WhatsApp CTA – Direct bus-owner contact 📲
+✔ WhatsApp CTA – Direct contact with bus owners 📲
 ✔ Admin Approval System – Only verified buses go live
 ✔ Ratings & Reviews System – Build trust with real feedback
 
-
-⚡ Small but Powerful Add-ons:
+⚡ Small but Powerful Add-ons
 
 🔐 OTP Login – No passwords, no friction
-💰 Ad Monetization – A sustainable revenue stream
-📱 Mobile-first UI – Because most users are on phones
+💰 Ad Monetization – Sustainable revenue stream
+📱 Mobile-first UI – Optimized for phone users
 🖥️ Owner Dashboard – Manage listings with ease
 🔒 Secure Data Storage – Powered by MongoDB + Node.js
 🚀 Scalable Design – Ready to grow as demand grows
 
-
-🛠️ Tech Stack:
+🛠️ Tech Stack
 
 ✨ Frontend: React.js + Bootstrap (responsive, mobile-first UI)
 ✨ Backend: Node.js + Express.js
 ✨ Database: MongoDB (document-based, scalable storage)
-✨ ORM: Prisma (for schema modeling & database management)
+✨ ORM: Prisma (schema modeling & DB management)
 ✨ Authentication: OTP-based passwordless login
 ✨ Hosting: Render (client + API hosting)
 
+🕸️ Live Project
 
-🎯 Business Model:
-
-💸 Bus Owners: ₹49 per listing
-💸 Users: Free to explore & connect
-💸 Revenue: Listing fees + ads
-
-
-🕸️ Live Project link: touristbus.onrender.com
+🔗 Website: https://touristbus.onrender.com
