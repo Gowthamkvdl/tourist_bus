@@ -3,9 +3,9 @@
 A simple and fast platform to discover tourist buses across Tamil Nadu. Built for both travelers and bus owners, with a lightweight UI and a scalable backend.
 
 
-```
-🔑 Core Features
 
+🔑 Core Features
+```
 ✔ Bus Listing Page – Name, capacity, route, AC/Non-AC, price, images
 
 ✔ City-based Search & Filters – Find buses instantly
@@ -19,9 +19,9 @@ A simple and fast platform to discover tourist buses across Tamil Nadu. Built fo
 ✔ Ratings & Reviews System – Build trust with real feedback
 ```
 
-```
-⚡ Small but Powerful Add-ons
 
+⚡ Small but Powerful Add-ons
+```
 🔐 OTP Login – No passwords, no friction
 
 💰 Ad Monetization – Sustainable revenue stream
@@ -35,9 +35,9 @@ A simple and fast platform to discover tourist buses across Tamil Nadu. Built fo
 🚀 Scalable Design – Ready to grow as demand grows
 ```
 
-```
-🛠️ Tech Stack
 
+🛠️ Tech Stack
+```
 ✨ Frontend: React.js + Bootstrap (responsive, mobile-first UI)
 
 ✨ Backend: Node.js + Express.js
