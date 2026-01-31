@@ -15,7 +15,7 @@ export const sendOtp = async (req, res) => {
     route: "otp",
     variables_values: otp,
     numbers: phoneNumber,
-    flash: "1",
+    flash: "0",
   };
 
   try {
