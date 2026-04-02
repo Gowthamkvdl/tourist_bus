@@ -9,11 +9,11 @@ const AdminBuses = () => {
 
   // Fetch posts using React Query
   const { data, isLoading, error } = useQuery({
-    queryKey: ["adminBuses"],
+    queryKey: ["adminPosts"],
     queryFn: async () => {
-      const response = await apiRequest.get(`/post/posts`);
+      const response = await apiRequest.get(`/admin/posts`);
       return response.data;
-    },
+    },  
     staleTime: 1000 * 10,
     cacheTime: 1000 * 60,
   });

@@ -2,7 +2,10 @@ import prisma from "../lib/prisma.js";
 import jwt from "jsonwebtoken";
 
 export const getPosts = async (req, res) => {
-  const limit = parseInt(req.query.limit) || 999;
+  const limit = parseInt(req.query.limit) || 6;
+  const page = parseInt(req.query.page) || 1;
+  const skip = (page - 1) * limit;
+
   const {
     location,
     busType,
@@ -16,58 +19,94 @@ export const getPosts = async (req, res) => {
     averageRating,
   } = req.query;
 
-  const currentDate = new Date();
-  currentDate.setHours(0, 0, 0, 0);
-  const currentDateString = currentDate.toISOString();
+  const whereClause = {
+    hasImage: true,
+    verificationStatus: "accepted",
+    disabled: false,
+    city: location ? { contains: location, mode: "insensitive" } : undefined,
+    busType: busType ? { equals: busType } : undefined,
+    recliningSeats: recliningSeats ? recliningSeats === "true" : undefined,
+    ac: ac ? ac === "true" : undefined,
+    wifi: wifi ? wifi === "true" : undefined,
+    tv: tv ? tv === "true" : undefined,
+    usb: usb ? usb === "true" : undefined,
+    averageRating: averageRating ? { gt: parseFloat(averageRating) } : undefined,
+  };
+
+  // ✅ Build orderBy dynamically to avoid passing undefined
+  const orderBy = [];
+  if (seats) orderBy.push({ numberOfSeats: seats === "HTL" ? "desc" : "asc" });
+  if (price) orderBy.push({ cost: price === "HTL" ? "desc" : "asc" });
+  if (orderBy.length === 0) orderBy.push({ createdAt: "desc" }); // ✅ default sort
 
   try {
-    const posts = await prisma.post.findMany({
-      where: {
-        city: location
-          ? { contains: location, mode: "insensitive" }
-          : undefined,
-        busType: busType ? { equals: busType } : undefined,
-        recliningSeats: recliningSeats ? recliningSeats === "true" : undefined,
-        ac: ac ? ac === "true" : undefined,
-        wifi: wifi ? wifi === "true" : undefined,
-        tv: tv ? tv === "true" : undefined,
-        usb: usb ? usb === "true" : undefined,
-        averageRating: averageRating
-          ? { gt: parseFloat(averageRating) }
-          : undefined,
-      },
-      orderBy: [
-        {
-          numberOfSeats: seats ? (seats === "HTL" ? "desc" : "asc") : undefined,
-        },
-        { cost: price ? (price === "HTL" ? "desc" : "asc") : undefined },
-      ],
-      include: {
-        user: {
-          select: {
-            name: true,
-            phone: true, // Assuming the `User` model contains these fields
+    const [posts, totalCount] = await prisma.$transaction([
+      prisma.post.findMany({
+        where: whereClause,
+        orderBy,
+        include: {
+          user: {
+            select: {
+              name: true,
+              phone: true,
+            },
           },
+          savedPosts: true,
         },
-        savedPosts: true, // Include saved posts for future processing
-      },
-      take: limit,
-    });
+        take: limit,
+        skip,
+      }),
+      prisma.post.count({ where: whereClause }),
+    ]);
 
-    // Optionally format the data (e.g., compute a total count or enrich posts)
-    console.log(posts);
+    const totalPages = Math.ceil(totalCount / limit);
+
+    res.status(200).json({
+      postData: posts,
+      total: totalCount,
+      totalPages,
+      currentPage: page,
+      hasNextPage: page < totalPages,
+      hasPrevPage: page > 1,
+    });
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+    res.status(500).json({ message: "Failed to get posts" });
+  }
+};
+export const getHomePosts = async (req, res) => {
+  try {
+    const posts = await prisma.post.findMany({
+      orderBy: {
+        views: "desc",
+      },
+      take: 6,
+    });
     res.status(200).json({ postData: posts, total: posts.length });
   } catch (error) {
     console.error("Error fetching posts:", error);
     res.status(500).json({ message: "Failed to get posts" });
   }
 };
-
 export const getPost = async (req, res) => {
   const paramPostId = req.params.id;
 
+    // // Step 1: get all postIds that actually exist
+    // const existingPosts = await prisma.post.findMany({
+    //   select: { postId: true },
+    // });
+    // const existingPostIds = existingPosts.map((p) => p.postId);
+
+    // // Step 2: delete SavedPosts whose postId isn't in that list
+    // await prisma.savedPosts.deleteMany({
+    //   where: {
+    //     postId: {
+    //       notIn: existingPostIds,
+    //     },
+    //   },
+    // });
+
   try {
-    // Fetch the post and include user and reviews
     const post = await prisma.post.findUnique({
       where: {
         postId: paramPostId,
@@ -84,12 +123,44 @@ export const getPost = async (req, res) => {
 
     const token = req.cookies?.token;
 
-    // Default response data
     let isSaved = false;
+    // ✅ Create a mutable copy of the post
+    let postData = { ...post };
 
     if (token) {
       try {
         const user = jwt.verify(token, process.env.JWT_SECRET_KEY);
+
+        const alreadyViewed = await prisma.postView.findUnique({
+          where: {
+            userId_postId: {
+              userId: user.id,
+              postId: paramPostId,
+            },
+          },
+        });
+
+        if (!alreadyViewed) {
+          await prisma.postView.create({
+            data: {
+              userId: user.id,
+              postId: paramPostId,
+            },
+          });
+
+          await prisma.post.update({
+            where: { postId: paramPostId },
+            data: {
+              views: {
+                increment: 1,
+              },
+            },
+          });
+
+          // ✅ Mutate the copy, not the original prisma object
+          postData.views += 1;
+        }
+
         const saved = await prisma.savedPosts.findUnique({
           where: {
             userId_postId: {
@@ -98,15 +169,16 @@ export const getPost = async (req, res) => {
             },
           },
         });
-        isSaved = !!saved; // Boolean value
+        isSaved = !!saved;
+
       } catch (err) {
         console.error("Token verification failed:", err.message);
         return res.status(401).json({ message: "Invalid or expired token" });
       }
     }
 
-    // Return post data with isSaved and reviews
-    return res.status(200).json({ ...post, isSaved });
+    // ✅ Return the mutable copy with isSaved
+    return res.status(200).json({ ...postData, isSaved });
   } catch (error) {
     console.error("Error fetching post:", error);
     return res
@@ -114,6 +186,7 @@ export const getPost = async (req, res) => {
       .json({ message: "Failed to fetch post", error: error.message });
   }
 };
+
 
 export const postView = async (req, res) => {
   const userId = req.userId;
@@ -161,10 +234,13 @@ export const addPost = async (req, res) => {
     const newPost = await prisma.post.create({
       data: {
         ...postData,
+        // ✅ Ensure Int fields are parsed correctly
+        numberOfSeats: parseInt(postData.numberOfSeats),
+        mileage: parseInt(postData.mileage),
+        cost: parseInt(postData.cost),
         userId: tokenUserId,
       },
     });
-
     res.status(200).json(newPost);
   } catch (error) {
     console.log(error);
@@ -178,22 +254,20 @@ export const updatePost = async (req, res) => {
   const { ...newPostData } = req.body;
 
   try {
-    const post = await prisma.post.findUnique({
-      where: {
-        postId: paramPostId,
-      },
-    });
+    const post = await prisma.post.findUnique({ where: { postId: paramPostId } });
 
     if (post.userId !== tokenUserId) {
-      res.status(403).json({ message: "Not Authorized!" });
+      return res.status(403).json({ message: "Not Authorized!" });
     }
 
     const updatedPost = await prisma.post.update({
-      where: {
-        postId: paramPostId,
-      },
+      where: { postId: paramPostId },
       data: {
         ...newPostData,
+        // ✅ Ensure Int fields are parsed correctly
+        numberOfSeats: parseInt(newPostData.numberOfSeats),
+        mileage: parseInt(newPostData.mileage),
+        cost: parseInt(newPostData.cost),
       },
     });
 

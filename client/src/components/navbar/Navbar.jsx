@@ -322,7 +322,7 @@ const Navbar = () => {
                   className={`nav-link shadow-none d-flex flex-column align-items-center mb-0 pb-0 ${isActive(
                     "/list"
                   )}`}
-                  to="/list?limit=5"
+                  to="/list?limit=6"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

@@ -11,6 +11,7 @@ const AdminUsers = () => {
     queryKey: ["adminUsers"],
     queryFn: async () => {
       const response = await apiRequest.get(`/admin/users`);
+      console.log("users response:", response); // ← check shape
       return response.data;
     },
     staleTime: 1000 * 10,
@@ -19,20 +20,20 @@ const AdminUsers = () => {
 
   // Filter users by name or phone
   const filteredUsers = useMemo(() => {
-    if (!data) return [];
+  if (!data || !Array.isArray(data)) return []; // ← guard against non-array
 
-    if (search.trim() === "") return data;
+  if (search.trim() === "") return data;
 
-    const isPhone = /^\d+$/.test(search.trim());
+  const isPhone = /^\d+$/.test(search.trim());
 
-    return data.filter((user) => {
-      if (isPhone) {
-        return user.phone?.includes(search.trim());
-      } else {
-        return user.name?.toLowerCase().includes(search.trim().toLowerCase());
-      }
-    });
-  }, [data, search]);
+  return data?.filter((user) => {
+    if (isPhone) {
+      return user.phone?.includes(search.trim());
+    } else {
+      return user.name?.toLowerCase().includes(search.trim().toLowerCase());
+    }
+  });
+}, [data, search]);
 
   return (
     <div className="">

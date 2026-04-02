@@ -4,6 +4,7 @@ import {
   addPost,
   addPostRating,
   deletePost,
+  getHomePosts,
   getPost,
   getPosts,
   getSavedPosts,
@@ -22,6 +23,7 @@ router.post("/fav", verifyToken, savePost);
 router.get("/fav", verifyToken, getSavedPosts);
 router.get("/profile", verifyToken, profilePosts);
 router.get("/posts", getPosts);
+router.get("/homePosts", getHomePosts);
 router.post("/add-images/:id", verifyToken, addImages);
 router.get("/:id", getPost);
 router.put("/view/:id", verifyToken, postView)

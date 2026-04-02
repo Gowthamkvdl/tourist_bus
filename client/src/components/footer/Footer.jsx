@@ -2,26 +2,26 @@ import React, { useContext, useEffect } from "react";
 import { AuthContext } from "../../context/AuthContext";
 
 const Footer = () => {
-  useEffect(() => {
-    // Load Google Translate script dynamically
-    const script = document.createElement("script");
-    script.type = "text/javascript";
-    script.src =
-      "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
-    document.body.appendChild(script);
+  // useEffect(() => {
+  //   // Load Google Translate script dynamically
+  //   const script = document.createElement("script");
+  //   script.type = "text/javascript";
+  //   script.src =
+  //     "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+  //   document.body.appendChild(script);
 
-    // Define Google Translate function globally
-    window.googleTranslateElementInit = () => {
-      new window.google.translate.TranslateElement(
-        {
-          pageLanguage: "en",
-          includedLanguages: "ta,te,kn,ml,hi", // Tamil, Telugu, Kannada, Malayalam, Hindi
-          layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
-        },
-        "google_translate_element"
-      );
-    };
-  }, []);
+  //   // Define Google Translate function globally
+  //   window.googleTranslateElementInit = () => {
+  //     new window.google.translate.TranslateElement(
+  //       {
+  //         pageLanguage: "en",
+  //         includedLanguages: "ta,te,kn,ml,hi", // Tamil, Telugu, Kannada, Malayalam, Hindi
+  //         layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
+  //       },
+  //       "google_translate_element"
+  //     );
+  //   };
+  // }, []);
 
   const {currentUser} = useContext(AuthContext)
 
@@ -31,7 +31,7 @@ const Footer = () => {
       <div className="container">
         <div className="row">
           {/* Company Info */}
-          <div className="col-md-3 mb-3">
+          {/* <div className="col-md-3 mb-3">
             <h5 className="fw-bold">Tourist Bus</h5>
             <p className="text-muted">
               Your trusted platform for finding the best tourist buses in Tamil
@@ -41,7 +41,7 @@ const Footer = () => {
               <h5 className="fw-bold">Select Language</h5>
               <div id="google_translate_element"></div>
             </div>}
-          </div>
+          </div> */}
 
           {/* Quick Links */}
           <div className="col-md-3 mb-3">

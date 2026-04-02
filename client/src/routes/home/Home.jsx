@@ -13,7 +13,7 @@ const Home = () => {
   const { data, isLoading, error } = useQuery({
     queryKey: ["homePosts"], // Unique key for caching
     queryFn: async () => {
-      const response = await apiRequest.get(`/post/posts`);
+      const response = await apiRequest.get(`/post/homePosts`);
       return response.data; // Ensure correct data extraction
     },
     staleTime: 0, // Disable caching for debugging
@@ -248,7 +248,7 @@ const Home = () => {
 
       {/* Featured Buses Section */}
       <div className="others box-shadow pb-5 bg-white mt-4">
-        <h1 className="title-text p-4 pb-2 opacity-75">Featured Buses</h1>
+        <h1 className="title-text p-4 pb-2 opacity-75">Popular Buses</h1>
         <div className="cards row px-md-4 px-3 mb-5">
           {isLoading ? (
             // Show loading skeleton while fetching data

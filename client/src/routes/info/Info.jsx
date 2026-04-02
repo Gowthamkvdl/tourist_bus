@@ -10,7 +10,7 @@ import { AuthContext } from "../../context/AuthContext";
 import apiRequest from "../../lib/apiRequest.js";
 import InfoSkeleton from "../../components/infoSkeleton/InfoSkeleton";
 import DismissibleToast from "../../components/dismissibleToast/DismissibleToast";
-import { QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import noImage from "../../assets/noImage.jpg";
 
 const Info = () => {
@@ -24,21 +24,23 @@ const Info = () => {
     enabled: !!id,
   });
 
-  console.log(data);
-
   const queryClient = useQueryClient();
-
-  // ✅ Initialize state with safe defaults
   const [fav, setFav] = useState(false);
   const [rating, setRating] = useState(0);
-  const [review, setReview] = useState(null);
+  const [review, setReview] = useState("");
   const [reviews, setReviews] = useState([]);
   const [remarkUpdating, setRemarkUpdating] = useState(false);
   const [requesting, setRequesting] = useState(false);
-  const deleteBtn = useRef(null);
-  const [deleting, setDeleting] = useState(false);
+  const [addingReview, setAddingReview] = useState(false);
+  const [loadingEdit, setLoadingEdit] = useState(false);
 
-  // ✅ Update state after data loads
+  const reviewBox = useRef(null);
+  const verificationStatus = useRef(null);
+  const disableStatus = useRef(null);
+  const remarkRef = useRef(null);
+  const navigate = useNavigate();
+  const { currentUser } = useContext(AuthContext);
+
   useEffect(() => {
     if (data) {
       setFav(data.isSaved || false);
@@ -47,342 +49,112 @@ const Info = () => {
   }, [data]);
 
   useEffect(() => {
+    if (!data) return;
     const addView = async () => {
       try {
-        await apiRequest.put(`post/view/${data.postId}`, {
-          postId: data.postId,
-        });
-        console.log("View added");
+        await apiRequest.put(`post/view/${data.postId}`, { postId: data.postId });
       } catch (error) {
         console.error("Error adding view:", error);
       }
     };
-
     addView();
   }, [data]);
 
-  function toTitleCase(str) {
-    return str
-      .split(" ") // Split by spaces
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize first letter
-      .join(" "); // Join back into a string
-  }
+  const toTitleCase = (str) =>
+    str?.split(" ").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ") || "";
 
-  function toNormalText(str) {
-    return str
-      .toLowerCase()
-      .split("_") // Split by _
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize first letter
-      .join(" "); // Join back into a string
-  }
+  const toNormalText = (str) =>
+    str?.toLowerCase().split("_").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ") || "";
 
-  const { currentUser, updateUser } = useContext(AuthContext);
-  const [addingReview, setAddingReview] = useState(false);
-  const reviewBox = useRef(null);
-  const verificationStatus = useRef(null);
-  const disableStatus = useRef(null);
-  const remarkRef = useRef(null);
-  const navigate = useNavigate();
-  const [loadingEdit, setLoadingEdit] = useState(false);
+  const convertToAgo = (timestamp) => format(new Date(timestamp));
 
   if (isLoading) return <InfoSkeleton />;
   if (error) return <p>Error: {error.message}</p>;
 
   const handleAddFav = async () => {
     if (!currentUser) {
-      toast(
-        (t) => (
-          <DismissibleToast
-            message="Login to add to your Favorites!"
-            toastProps={t}
-          />
-        ),
-        { icon: "🔔", duration: 5000 }
-      );
+      return toast((t) => <DismissibleToast message="Login to add to your Favorites!" toastProps={t} />, { icon: "🔔", duration: 5000 });
     }
     try {
-      // Toggle the favorite state optimistically
-      setFav((prevFav) => !prevFav);
-
-      // Send API request to add or remove favorite
-      const response = await apiRequest.post("/post/fav", {
-        postId: data.postId,
-        userId: currentUser.id,
-      });
-      console.log(response);
-
+      setFav((prev) => !prev);
+      const response = await apiRequest.post("/post/fav", { postId: data.postId, userId: currentUser.id });
       if (response.data) {
-        // Show a success message based on the updated state
-        toast(
-          (t) => (
-            <DismissibleToast
-              message={fav ? "Removed from favorites" : "Added to favorites"}
-              toastProps={t}
-            />
-          ),
-          { icon: "🔔", duration: 5000, id: "fav" }
-        );
+        toast((t) => <DismissibleToast message={fav ? "Removed from favorites" : "Added to favorites"} toastProps={t} />, { icon: "🔔", duration: 5000, id: "fav" });
       } else {
-        // If API response indicates failure, revert the favorite state
-        setFav((prevFav) => !prevFav);
-        toast(
-          (t) => (
-            <DismissibleToast
-              message="Failed to update favorites"
-              toastProps={t}
-            />
-          ),
-          { icon: "🔔", duration: 5000, id: "Failed to update favorites" }
-        );
+        setFav((prev) => !prev);
       }
-    } catch (error) {
-      console.error("Error updating favorite:", error);
-
-      // Revert the favorite state in case of an error
-      setFav((prevFav) => !prevFav);
-      if (currentUser) {
-        toast(
-          (t) => (
-            <DismissibleToast
-              message="An error occurred while updating favorites"
-              toastProps={t}
-            />
-          ),
-          {
-            icon: "🔔",
-            duration: 5000,
-            id: "An error occurred while updating favorites",
-          }
-        );
-      }
+    } catch {
+      setFav((prev) => !prev);
     }
-  };
-
-  const convertToAgo = (timestamp) => {
-    // Ensure timestamp is a valid date string or Date object
-    const date = new Date(timestamp);
-
-    // Use timeago.js to get the relative time
-    return format(date);
-  };
-
-  const handleEditClick = (postId) => {
-    navigate(`/edit/${postId}`);
-    console.log(postId);
   };
 
   const handleReviewtoggle = () => {
-    if (!currentUser) {
-      toast(
-        (t) => (
-          <DismissibleToast
-            message="Login to add your review!"
-            toastProps={t}
-          />
-        ),
-        { icon: "🔔", duration: 5000 }
-      );
-    }
+    if (!currentUser)
+      toast((t) => <DismissibleToast message="Login to add your review!" toastProps={t} />, { icon: "🔔", duration: 5000 });
   };
 
   const addReview = async (e) => {
     e.preventDefault();
-    if (!data) return; // ✅ Ensure `data` is available
-
-    const userId = currentUser?.id;
-    const name = currentUser?.name;
+    if (!data) return;
     setAddingReview(true);
 
-    // ✅ Validate Review & Rating
     if (!review) {
       setAddingReview(false);
-      return toast(
-        (t) => (
-          <DismissibleToast message="Review cannot be empty" toastProps={t} />
-        ),
-        { icon: "🔔", duration: 5000, id: "Review cannot be empty" }
-      );
+      return toast((t) => <DismissibleToast message="Review cannot be empty" toastProps={t} />, { icon: "🔔", duration: 5000 });
     }
-
     if (rating === 0) {
       setAddingReview(false);
-      return toast(
-        (t) => (
-          <DismissibleToast message="Please provide a rating" toastProps={t} />
-        ),
-        { icon: "🔔", duration: 5000, id: "Please provide a rating" }
-      );
+      return toast((t) => <DismissibleToast message="Please provide a rating" toastProps={t} />, { icon: "🔔", duration: 5000 });
     }
 
     try {
-      // ✅ Send Review
-      const newReview = await apiRequest.post("/review", {
-        review,
-        userId,
-        name,
-        postId: id,
-      });
-
-      // ✅ Send Rating
-      const updatedRating = await apiRequest.post("/post/rating", {
-        starCount: rating,
-        post: data,
-      });
-      setRequesting(true);
-      toast(
-        (t) => (
-          <DismissibleToast
-            message="Review added successfully"
-            toastProps={t}
-          />
-        ),
-        { icon: "🔔", duration: 5000, id: "Review added successfully" }
-      );
-      if (requesting) {
-        console.log(updatedRating.averageRating);
-        console.log(updatedRating.totalRatings);
-
-        // ✅ Update React Query Cache Instead of `setData`
-        queryClient.setQueryData(["post", id], (oldData) => ({
-          ...oldData,
-          starCount: updatedRating.averageRating,
-          totalRating: updatedRating.totalRatings,
-          reviews: [...(oldData?.reviews || []), newReview],
-        }));
-      }
+      await apiRequest.post("/review", { review, userId: currentUser?.id, name: currentUser?.name, postId: id });
+      await apiRequest.post("/post/rating", { starCount: rating, post: data });
+      toast((t) => <DismissibleToast message="Review added successfully" toastProps={t} />, { icon: "🔔", duration: 5000 });
       queryClient.invalidateQueries(["post", id]);
-    } catch (error) {
-      console.error(error);
-      toast(
-        (t) => (
-          <DismissibleToast message="Failed to add review" toastProps={t} />
-        ),
-        { icon: "🔔", duration: 5000, id: "Failed to add review" }
-      );
+    } catch {
+      toast((t) => <DismissibleToast message="Failed to add review" toastProps={t} />, { icon: "🔔", duration: 5000 });
     } finally {
-      // ✅ Reset Form
       setReview("");
       setRating(0);
-      if (reviewBox.current) reviewBox.current.value = ""; // ✅ Reset input value
       setAddingReview(false);
-      setRequesting(false);
+
+      // ✅ Close the Bootstrap collapse
+      const collapseEl = document.getElementById("collapseExample");
+      if (collapseEl) {
+        const bsCollapse = window.bootstrap.Collapse.getInstance(collapseEl);
+        if (bsCollapse) {
+          bsCollapse.hide();
+        }
+      }
     }
   };
 
   const handleVerificationChange = async () => {
-    console.log(verificationStatus.current.value);
-
     try {
-      const updateStatus = await apiRequest.put(`admin/verify/${data.postId}`, {
-        verificationStatus: verificationStatus.current.value,
-        remark: "",
-      });
-      toast(
-        (t) => (
-          <DismissibleToast
-            message="Verification status updated successfully"
-            toastProps={t}
-          />
-        ),
-        {
-          icon: "🔔",
-          duration: 5000,
-          id: "Verification status updated successfully",
-        }
-      );
-    } catch (error) {
-      console.error(error);
-      toast(
-        (t) => (
-          <DismissibleToast
-            message="Failed to update verification status"
-            toastProps={t}
-          />
-        ),
-        {
-          icon: "🔔",
-          duration: 5000,
-          id: "Failed to update verification status",
-        }
-      );
+      await apiRequest.put(`admin/verify/${data.postId}`, { verificationStatus: verificationStatus.current.value, remark: "" });
+      toast((t) => <DismissibleToast message="Verification status updated" toastProps={t} />, { icon: "🔔", duration: 5000 });
+    } catch {
+      toast((t) => <DismissibleToast message="Failed to update verification status" toastProps={t} />, { icon: "🔔", duration: 5000 });
     }
   };
 
   const handleDisableChange = async () => {
-    console.log(disableStatus.current.value);
-
     try {
-      const updateStatus = await apiRequest.put(
-        `admin/disable/${data.postId}`,
-        {
-          status: disableStatus.current.value === "true" ? true : false,
-        }
-      );
-      toast(
-        (t) => (
-          <DismissibleToast
-            message="Disable status updated successfully"
-            toastProps={t}
-          />
-        ),
-        {
-          icon: "🔔",
-          duration: 5000,
-          id: "Disable status updated successfully",
-        }
-      );
-    } catch (error) {
-      console.error(error);
-      toast(
-        (t) => (
-          <DismissibleToast
-            message="Failed to update Disable status"
-            toastProps={t}
-          />
-        ),
-        {
-          icon: "🔔",
-          duration: 5000,
-          id: "Failed to update Disable status",
-        }
-      );
+      await apiRequest.put(`admin/disable/${data.postId}`, { status: disableStatus.current.value === "true" });
+      toast((t) => <DismissibleToast message="Disable status updated" toastProps={t} />, { icon: "🔔", duration: 5000 });
+    } catch {
+      toast((t) => <DismissibleToast message="Failed to update disable status" toastProps={t} />, { icon: "🔔", duration: 5000 });
     }
   };
 
   const handleAddRemark = async () => {
-    console.log(remarkRef.current.value);
-
     try {
       setRemarkUpdating(true);
-
-      const updateStatus = await apiRequest.put(`admin/remark/${data.postId}`, {
-        remark: remarkRef.current.value,
-      });
-      toast(
-        (t) => (
-          <DismissibleToast
-            message="Remark updated successfully"
-            toastProps={t}
-          />
-        ),
-        {
-          icon: "🔔",
-          duration: 5000,
-          id: "Remark updated successfully",
-        }
-      );
-    } catch (error) {
-      console.error(error);
-      toast(
-        (t) => (
-          <DismissibleToast message="Failed to update Remark" toastProps={t} />
-        ),
-        {
-          icon: "🔔",
-          duration: 5000,
-          id: "Failed to update Remark",
-        }
-      );
+      await apiRequest.put(`admin/remark/${data.postId}`, { remark: remarkRef.current.value });
+      toast((t) => <DismissibleToast message="Remark updated" toastProps={t} />, { icon: "🔔", duration: 5000 });
+    } catch {
+      toast((t) => <DismissibleToast message="Failed to update remark" toastProps={t} />, { icon: "🔔", duration: 5000 });
     } finally {
       setRemarkUpdating(false);
     }
@@ -390,100 +162,96 @@ const Info = () => {
 
   const handleNavigation = (postId) => {
     setLoadingEdit(true);
-    navigate(`/edit/${postId}`, {
-      state: { from: location.pathname },
-    });
+    navigate(`/edit/${postId}`, { state: { from: location.pathname } });
   };
 
+  // ── Helpers ──────────────────────────────────────────────────────
+  const SpecRow = ({ label, value }) => (
+    <div className="d-flex justify-content-between align-items-center py-2 border-bottom">
+      <span className="small text-muted">{label}</span>
+      <span className="small fw-semibold">{value}</span>
+    </div>
+  );
+
+  const AmenityBadge = ({ active, label }) => (
+    <span className={`badge rounded-pill px-3 py-2 me-2 mb-2 ${active ? "bg-success" : "bg-light text-secondary border"}`}>
+      {label}
+    </span>
+  );
+
   return (
-    <div>
-      <div className="header mb-3 pt-md-3">
-        <div className="title-text text-center text-muted mt-3">
+    <div className="info-page">
+
+      {/* ── Top Bar ──────────────────────────────────────────────── */}
+      <div className="header pt-md-3 mb-3">
+        <div className="d-flex justify-content-between align-items-center px-3 pt-3">
           <BackBtn />
-          <span className="text-center">Bus Details</span>
-          {currentUser && currentUser.id === data.userId ? (
+          <span className="title-text fs-5">Bus Details</span>
+          {currentUser?.id === data.userId ? (
             <button
-              className="btn btn-warning me-2 float-end"
+              className="btn btn-warning btn-sm px-3"
               onClick={() => handleNavigation(data.postId)}
               disabled={loadingEdit}
             >
               {loadingEdit ? "Loading..." : "Edit"}
             </button>
-          ) : null}
+          ) : (
+            <div style={{ width: 60 }} />
+          )}
         </div>
       </div>
-      {currentUser.admin && (
-        <div className="admin my-4 secondary-800 text-white rounded-4 p-md-3 p-3">
-          <span className="fw-medium fs-4">Admin Controls</span>
-          <div className="row d-flex mt-3 align-items-center">
-            <div className="col-12 col-md-6 mb-3 mb-md-1">
-              <label htmlFor="" className="mb-1">
-                Verification Status
-              </label>
-              <select
-                name=""
-                onChange={handleVerificationChange}
-                ref={verificationStatus}
-                className="form-select w-100"
-                id=""
-              >
-                <option
-                  value="accepted"
-                  selected={data.verificationStatus === "accepted"}
-                >
-                  Accepted
-                </option>
-                <option
-                  value="rejected"
-                  selected={data.verificationStatus === "rejected"}
-                >
-                  Rejected
-                </option>
-                <option
-                  value="pending"
-                  selected={data.verificationStatus === "pending"}
-                >
-                  Pending
-                </option>
+
+      {/* ── Status Banners ───────────────────────────────────────── */}
+      {data.verificationStatus === "rejected" && !currentUser?.admin && (
+        <div className="mx-3 my-3 p-3 bg-warning rounded-4">
+          <div className="fw-bold mb-1">Listing Not Approved</div>
+          <div className="small mb-1">
+            Your bus couldn't be approved because it doesn't meet our guidelines.
+          </div>
+          <div className="small mb-1">
+            <span className="fw-semibold">Reason:</span> {data.remark}
+          </div>
+          <div className="small opacity-75">
+            Please review, make corrections, and re-submit. Contact support if you need help.
+          </div>
+        </div>
+      )}
+
+      {data.verificationStatus === "pending" && !currentUser?.admin && (
+        <div className="mx-3 my-3 p-3 bg-info text-dark rounded-4">
+          <div className="fw-bold mb-1">Under Review</div>
+          <div className="small">
+            Our team is verifying your listing. You'll be notified once complete. Thank you for your patience!
+          </div>
+        </div>
+      )}
+
+      {/* ── Admin Controls ───────────────────────────────────────── */}
+      {currentUser?.admin && (
+        <div className="mx-3 my-3 p-3 secondary-800 text-white rounded-4">
+          <div className="fw-bold fs-5 mb-3">Admin Controls</div>
+          <div className="row g-3">
+            <div className="col-12 col-md-6">
+              <label className="form-label small fw-semibold">Verification Status</label>
+              <select onChange={handleVerificationChange} ref={verificationStatus} className="form-select form-select-sm shadow-none">
+                <option value="accepted" selected={data.verificationStatus === "accepted"}>Accepted</option>
+                <option value="rejected" selected={data.verificationStatus === "rejected"}>Rejected</option>
+                <option value="pending" selected={data.verificationStatus === "pending"}>Pending</option>
               </select>
             </div>
-            <div className="col-12 col-md-6 mb-3 mb-md-1">
-              <label htmlFor="" className="mb-1">
-                Disable Status
-              </label>
-              <select
-                name=""
-                onChange={handleDisableChange}
-                ref={disableStatus}
-                className="form-select"
-                id=""
-              >
-                <option value={true} selected={data.disabled === true}>
-                  True
-                </option>
-                <option value={false} selected={data.disabled === false}>
-                  False
-                </option>
+            <div className="col-12 col-md-6">
+              <label className="form-label small fw-semibold">Disable Status</label>
+              <select onChange={handleDisableChange} ref={disableStatus} className="form-select form-select-sm shadow-none">
+                <option value={true} selected={data.disabled === true}>Disabled</option>
+                <option value={false} selected={data.disabled === false}>Active</option>
               </select>
             </div>
-            <div className="col-12 mt-1">
-              <label htmlFor="" className="mb-1" ref={remarkRef}>
-                Remark
-              </label>
-              <textarea
-                ref={remarkRef}
-                name=""
-                id=""
-                placeholder="Add your remark or reason for rejection"
-                className="form-control"
-                rows="3"
-              >
+            <div className="col-12">
+              <label className="form-label small fw-semibold">Remark / Reason</label>
+              <textarea ref={remarkRef} className="form-control form-control-sm shadow-none" rows="3" placeholder="Add rejection reason or remark">
                 {data.remark}
               </textarea>
-              <button
-                className="btn-info btn float-end mt-2"
-                onClick={handleAddRemark}
-              >
+              <button className="btn btn-info btn-sm float-end mt-2" onClick={handleAddRemark} disabled={remarkUpdating}>
                 {remarkUpdating ? "Updating..." : "Update Remark"}
               </button>
             </div>
@@ -491,449 +259,251 @@ const Info = () => {
         </div>
       )}
 
-      {data.verificationStatus === "rejected" && !currentUser.admin && (
-        <div className="remark my-4 bg-warning rounded-4 p-md-3 p-2">
-          <span className="fw-medium fs-4">We're sorry!</span>
-          <br /> Your bus couldn't be approved because it doesn't meet our
-          guidelines.
-          <br />
-          <span className="fw-medium">Reason:</span> {data.remark}
-          <br />
-          <div className="mb-2"></div>
-          ✅ Please review the reason above, make the necessary corrections, and
-          try re-uploading your bus as a new submission.
-          <br />✅ If you believe this was a mistake or need help, feel free to
-          contact our support team.
-        </div>
-      )}
+      <div className="others box-shadow bg-white">
 
-      {data.verificationStatus === "pending" && !currentUser.admin && (
-        <div className="remark my-4 bg-info text-dark rounded-4 p-md-3 p-2">
-          <span className="fw-medium fs-4 ">Your bus is under review.</span>
-          <br />
-          🕒 Our team is currently verifying the details and documents you
-          provided.
-          <br />
-          ✅ This process typically takes a short while. You’ll be notified once
-          the review is complete.
-          <br />
-          📩 Please check your profile for updates.
-          <br />
-          <div className="mt-2">Thank you for your patience!</div>
-        </div>
-      )}
+        {/* ── Image Left + Key Details Right ───────────────────── */}
+        <div className="row g-0">
 
-      <div className="others box-shadow pt-1 pb-5 bg-white ">
-        <div className="busname mt-3 d-flex justify-content-between align-items-center">
-          <span className="material-symbols-outlined mt-1 fs-1 ps-3 text-white title-text">
-            favorite
-          </span>
-          <div className="d-flex mx-auto justify-content-center align-items-center gap-1">
-            {/* <div className="locationIcon my-auto">
-              <span className="material-symbols-outlined fs-1 bg-secondary rounded-5 text-white p-2">
-                directions_bus
-              </span> 
-            </div> */}
-            <div className="nameAndRating d-flex flex-column justify-content-center align-items-center">
-              <span className="title-text">{data.busName}</span>
-              <div className="location subtitle-text mb-1 d-flex justify-content-center  align-items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  fill="black"
-                  className="bi bi-geo-alt"
-                  viewBox="0 0 16 16"
-                >
-                  <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A32 32 0 0 1 8 14.58a32 32 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10" />
-                  <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4m0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+          {/* Left — Carousel */}
+          <div className="col-12 col-md-6">
+            <div
+              id="carouselExampleIndicators"
+              className="carousel slide h-100 m-4 pt-2"
+              data-bs-ride="carousel"
+            >
+              <div className="carousel-indicators">
+                {[0, 1, 2, 3, 4].map((i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    data-bs-target="#carouselExampleIndicators"
+                    data-bs-slide-to={i}
+                    className={i === 0 ? "active" : ""}
+                    aria-label={`Slide ${i + 1}`}
+                  />
+                ))}
+              </div>
+              <div className="carousel-inner h-100">
+                {[data.img1, data.img2, data.img3, data.img4, data.img5].map((img, i) => (
+                  <div key={i} className={`carousel-item h-100 ${i === 0 ? "active" : ""}`}>
+                    <img
+                      src={img || noImage}
+                      loading="lazy"
+                      className="d-block w-100"
+                      style={{ objectFit: "fit", height: 380 }}
+                      alt={`Bus image ${i + 1}`}
+                    />
+                  </div>
+                ))}
+              </div>
+              <button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                <span className="carousel-control-prev-icon" />
+              </button>
+              <button className="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                <span className="carousel-control-next-icon" />
+              </button>
+            </div>
+          </div>
+
+          {/* Right — Bus Name, Location, Rating, Price, CTAs */}
+          <div className="col-12 col-md-6 d-flex flex-column justify-content-between p-4">
+
+            {/* Name + Location + Fav */}
+            <div className="d-flex justify-content-between align-items-start mb-3">
+              <div>
+                <h5 className="title-text mb-1">{data.busName}</h5>
+                <div className="d-flex align-items-center gap-1 text-muted mb-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" className="bi bi-geo-alt" viewBox="0 0 16 16">
+                    <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A32 32 0 0 1 8 14.58a32 32 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10" />
+                    <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4m0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                  </svg>
+                  <span className="small">{data.city}</span>
+                </div>
+                <div className="d-flex align-items-center gap-2">
+                  <DisplayStarRating
+                    rating={data.averageRating || 0}
+                    numberOfStars={5}
+                    starDimension="18px"
+                    starRatedColor="#FFD700"
+                    starSpacing="1px"
+                  />
+                  <span className="small text-muted">({data.totalRating || 0})</span>
+                </div>
+              </div>
+              <button className="btn btn-light border rounded-circle p-2" onClick={handleAddFav}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill={fav ? "red" : "currentColor"} className={`bi bi-heart${fav ? "-fill" : ""}`} viewBox="0 0 16 16">
+                  {fav
+                    ? <path fillRule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314" />
+                    : <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15" />
+                  }
                 </svg>
-                <span>{data.city}</span>
-              </div>
-              <div className="stars d-flex justify-content-center align-items-center">
-                <DisplayStarRating
-                  rating={data.averageRating ? data.averageRating : 0}
-                  numberOfStars={5}
-                  starDimension="25px"
-                  starRatedColor="#FFD700"
-                  starSpacing="1px"
-                />
-                <span className="fs-5 mb-0 text-muted">
-                  ({data.totalRating ? data.totalRating : 0})
-                </span>
-              </div>
+              </button>
             </div>
+
+            {/* Key Specs */}
+            <div className="mb-3">
+              <SpecRow label="Bus Type" value={toNormalText(data.busType)} />
+              <SpecRow label="No. of Seats" value={data.numberOfSeats} />
+              <SpecRow label="AC / Non-AC" value={data.ac ? "AC" : "Non-AC"} />
+              <SpecRow label="Pushback Seats" value={data.recliningSeats ? "Yes" : "No"} />
+              <SpecRow label="USB Charging" value={data.usb ? "Yes" : "No"} />
+              <SpecRow label="Wi-Fi" value={data.wifi ? "Yes" : "No"} />
+              <SpecRow label="TV" value={data.tv ? "Yes" : "No"} />
+            </div>
+
+            {/* Price */}
+            <div className="mb-3">
+              <div className="small text-muted">Price per 100km</div>
+              <div className="title-text fs-3 fw-bold">₹{data.cost}</div>
+            </div>
+
+            {/* CTAs */}
+            <div className="d-flex gap-2">
+              <button
+                className="btn primary-600 flex-fill d-flex justify-content-center align-items-center gap-2"
+                onClick={() => data.user?.phone && (window.location.href = `tel:${data.user.phone}`)}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor" className="bi bi-telephone text-white" viewBox="0 0 16 16">
+                  <path d="M3.654 1.328a.678.678 0 0 0-1.015-.063L1.605 2.3c-.483.484-.661 1.169-.45 1.77a17.6 17.6 0 0 0 4.168 6.608 17.6 17.6 0 0 0 6.608 4.168c.601.211 1.286.033 1.77-.45l1.034-1.034a.678.678 0 0 0-.063-1.015l-2.307-1.794a.68.68 0 0 0-.58-.122l-2.19.547a1.75 1.75 0 0 1-1.657-.459L5.482 8.062a1.75 1.75 0 0 1-.46-1.657l.548-2.19a.68.68 0 0 0-.122-.58zM1.884.511a1.745 1.745 0 0 1 2.612.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.68.68 0 0 0 .178.643l2.457 2.457a.68.68 0 0 0 .644.178l2.189-.547a1.75 1.75 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.6 18.6 0 0 1-7.01-4.42 18.6 18.6 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877z" />
+                </svg>
+                <span className="text-white small">Call</span>
+              </button>
+              <button
+                className="btn btn-warning flex-fill d-flex justify-content-center align-items-center gap-2"
+                onClick={() => (window.location.href = `https://wa.me/+91${data.user.phone}`)}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor" className="bi bi-whatsapp" viewBox="0 0 16 16">
+                  <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232" />
+                </svg>
+                <span className="small">WhatsApp</span>
+              </button>
+            </div>
+
           </div>
-          <button className="btn btn-transperant" onClick={handleAddFav}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="25"
-              height="25"
-              fill={fav ? "red" : "currentColor"}
-              className={`bi bi-heart${fav ? "-fill" : ""} me-2`}
-              viewBox="0 0 16 16"
-            >
-              {fav ? (
-                <path
-                  fillRule="evenodd"
-                  d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"
-                />
-              ) : (
-                <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15" />
-              )}
-            </svg>
-          </button>
         </div>
 
-        <div className="imgs mx-3 w-md-75 my-3 rounded-3">
-          <div
-            id="carouselExampleIndicators"
-            className="carousel box-shadow slide"
-          >
-            <div className="carousel-indicators">
-              <button
-                type="button"
-                data-bs-target="#carouselExampleIndicators"
-                data-bs-slide-to="0"
-                className="active"
-                aria-current="true"
-                aria-label="Slide 1"
-              ></button>
-              <button
-                type="button"
-                data-bs-target="#carouselExampleIndicators"
-                data-bs-slide-to="1"
-                aria-label="Slide 2"
-              ></button>
-              <button
-                type="button"
-                data-bs-target="#carouselExampleIndicators"
-                data-bs-slide-to="2"
-                aria-label="Slide 3"
-              ></button>
-              <button
-                type="button"
-                data-bs-target="#carouselExampleIndicators"
-                data-bs-slide-to="3"
-                aria-label="Slide 4"
-              ></button>
-              <button
-                type="button"
-                data-bs-target="#carouselExampleIndicators"
-                data-bs-slide-to="4"
-                aria-label="Slide 5"
-              ></button>
+        {/* ── Below the fold ────────────────────────────────────── */}
+        <div className="px-3 px-md-4 pt-4">
+
+          {/* Description */}
+          {data.description && (
+            <div className="mb-4">
+              <div className="subtitle-text text-muted mb-2">About this Bus</div>
+              <p className="body-text mb-0">{data.description}</p>
             </div>
-            <div className="carousel-inner">
-              <div className="carousel-item active">
-                <img
-                  src={data.img1 ? data.img1 : noImage}
-                  loading="lazy"
-                  className="d-block w-100"
-                  alt="..."
-                />
-              </div>
-              <div className="carousel-item">
-                <img
-                  src={data.img2 ? data.img2 : noImage}
-                  loading="lazy"
-                  className="d-block w-100"
-                  alt="..."
-                />
-              </div>
-              <div className="carousel-item">
-                <img
-                  src={data.img3 ? data.img3 : noImage}
-                  loading="lazy"
-                  className="d-block w-100"
-                  alt="..."
-                />
-              </div>
-              <div className="carousel-item">
-                <img
-                  src={data.img4 ? data.img4 : noImage}
-                  loading="lazy"
-                  className="d-block w-100"
-                  alt="..."
-                />
-              </div>
-              <div className="carousel-item">
-                <img
-                  src={data.img5 ? data.img5 : noImage}
-                  loading="lazy"
-                  className="d-block w-100"
-                  alt="..."
-                />
-              </div>
-            </div>
-            <button
-              className="carousel-control-prev"
-              type="button"
-              data-bs-target="#carouselExampleIndicators"
-              data-bs-slide="prev"
-            >
-              <span
-                className="carousel-control-prev-icon"
-                aria-hidden="true"
-              ></span>
-              <span className="visually-hidden">Previous</span>
-            </button>
-            <button
-              className="carousel-control-next"
-              type="button"
-              data-bs-target="#carouselExampleIndicators"
-              data-bs-slide="next"
-            >
-              <span
-                className="carousel-control-next-icon"
-                aria-hidden="true"
-              ></span>
-              <span className="visually-hidden">Next</span>
-            </button>
-          </div>
-        </div>
-        <div className="details mx-md-4 px-4">
-          <div className="Price  d-flex justify-content-between align-items-center">
-            <div className="title-text mb-1 fw-medium mt-2">Price</div>
-            <div className="price title-text">
-              <span>₹{data.cost}</span>
-              <span className="text-muted subtitle-text">/100km</span>
+          )}
+
+          {/* Amenities */}
+          <div className="mb-4">
+            <div className="subtitle-text text-muted mb-2">Amenities</div>
+            <div className="d-flex flex-wrap">
+              <AmenityBadge active={data.ac} label="AC" />
+              <AmenityBadge active={data.wifi} label="Wi-Fi" />
+              <AmenityBadge active={data.tv} label="TV" />
+              <AmenityBadge active={data.usb} label="USB Charging" />
+              <AmenityBadge active={data.recliningSeats} label="Pushback Seats" />
             </div>
           </div>
-          <div className="contact  mt-3">
-            <div className="row">
-              <div className="col-6">
-                <button
-                  className="btn w-100 primary-600 d-flex justify-content-center align-items-center"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (data.user?.phone) {
-                      window.location.href = `tel:${data.user.phone}`;
-                    } else {
-                      toast(
-                        (t) => (
-                          <DismissibleToast
-                            message="Phone number not available"
-                            toastProps={t}
-                          />
-                        ),
-                        {
-                          icon: "🔔",
-                          duration: 5000,
-                          id: "Phone number not available",
-                        }
-                      );
-                    }
-                    // Replace with your phone number
-                  }}
-                >
-                  <span>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="23"
-                      height="23"
-                      fill="currentColor"
-                      class="bi bi-telephone text-white me-1"
-                      viewBox="0 0 16 16"
-                    >
-                      <path d="M3.654 1.328a.678.678 0 0 0-1.015-.063L1.605 2.3c-.483.484-.661 1.169-.45 1.77a17.6 17.6 0 0 0 4.168 6.608 17.6 17.6 0 0 0 6.608 4.168c.601.211 1.286.033 1.77-.45l1.034-1.034a.678.678 0 0 0-.063-1.015l-2.307-1.794a.68.68 0 0 0-.58-.122l-2.19.547a1.75 1.75 0 0 1-1.657-.459L5.482 8.062a1.75 1.75 0 0 1-.46-1.657l.548-2.19a.68.68 0 0 0-.122-.58zM1.884.511a1.745 1.745 0 0 1 2.612.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.68.68 0 0 0 .178.643l2.457 2.457a.68.68 0 0 0 .644.178l2.189-.547a1.75 1.75 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.6 18.6 0 0 1-7.01-4.42 18.6 18.6 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877z" />
-                    </svg>
-                  </span>
-                  <span className="subtitle-text text-white">Call</span>
-                </button>
-              </div>
-              <div className="col-6">
-                <button
-                  className="btn w-100 btn-warning d-flex justify-content-center align-items-center"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    window.location.href = `https://wa.me/+91${data.user.phone}`; // Replace with your phone number
-                  }}
-                >
-                  <span>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="23"
-                      height="23"
-                      fill="currentColor"
-                      class="bi bi-whatsapp text-dark me-1"
-                      viewBox="0 0 16 16"
-                    >
-                      <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232" />
-                    </svg>
-                  </span>
-                  <span className="subtitle-text text-dark">Whatsapp</span>
-                </button>
-              </div>
-            </div>
-            <hr />
+
+          {/* Entertainment */}
+          <div className="mb-4">
+            <div className="subtitle-text text-muted mb-2">Entertainment</div>
+            <SpecRow label="Audio System" value={`${toTitleCase(data.speakerType)} (${toTitleCase(data.speakerBrand)})`} />
+            <SpecRow label="TV / Display" value={data.tv ? "Available" : "Not Available"} />
+            <SpecRow label="Wi-Fi" value={data.wifi ? "Available" : "Not Available"} />
           </div>
-          <div className="more ">
-            <div className="subtitle-text text-muted">Bus Description</div>
-            <div className="body-text mb-1 fw-medium mt-2 mb-3">
-              {data.description ? data.description : "No Description Avaiable"}
-            </div>
-            <div className="subtitle-text text-muted">Specifications</div>
-            <div className="type  d-flex justify-content-between align-items-center">
-              <div className="body-text mb-1 fw-medium mt-2">No. of seats</div>
-              <div className="price body-text">
-                <span>{data.numberOfSeats}</span>
-              </div>
-            </div>
-            <div className="type  d-flex justify-content-between align-items-center">
-              <div className="body-text mb-1 fw-medium mt-2">Bus type</div>
-              <div className="price body-text">
-                <span>{toNormalText(data.busType)}</span>
-              </div>
-            </div>
-            <div className="type  d-flex justify-content-between align-items-center">
-              <div className="body-text mb-1 fw-medium mt-2">AC/Non-AC</div>
-              <div className="price body-text">
-                <span>{data.ac ? "AC" : "Non-AC"}</span>
-              </div>
-            </div>
-            <div className="type  d-flex justify-content-between align-items-center">
-              <div className="body-text mb-1 fw-medium mt-2">
-                Pushback Seats
-              </div>
-              <div className="price body-text">
-                <span>{data.recliningSeats ? "Yes" : "No"}</span>
-              </div>
-            </div>
-            <div className="type mb-3 d-flex justify-content-between align-items-center">
-              <div className="body-text mb-1 fw-medium mt-2">
-                USB Charging Ports
-              </div>
-              <div className="price body-text">
-                <span>{data.usb ? "Yes" : "No"}</span>
-              </div>
-            </div>
-            <div className="subtitle-text text-muted">Entertainment</div>
-            <div className="type  d-flex justify-content-between align-items-center">
-              <div className="body-text mb-1 fw-medium mt-2">TV</div>
-              <div className="price body-text">
-                <span>{data.tv ? "Yes" : "No"}</span>
-              </div>
-            </div>
-            <div className="type  d-flex justify-content-between align-items-center">
-              <div className="body-text mb-1 fw-medium mt-2">Audio Type</div>
-              <div className="price body-text">
-                <span>
-                  {toTitleCase(data.speakerType)} (
-                  {toTitleCase(data.speakerBrand)})
-                </span>
-              </div>
-            </div>
-            <div className="type  d-flex justify-content-between align-items-center">
-              <div className="body-text mb-1 fw-medium mt-2">WiFi</div>
-              <div className="price body-text">
-                <span>{data.wifi ? "Yes" : "No"}</span>
-              </div>
-            </div>
-          </div>
+
           <hr />
+
+          {/* Reviews */}
           <div className="reviews">
-            <div className="headingAndStars d-flex justify-content-between">
-              <div className="subtitle-text text-muted">Reviews</div>
+            <div className="d-flex justify-content-between align-items-center mb-3">
+              <div>
+                <div className="subtitle-text text-muted">Customer Reviews</div>
+                <div className="small text-muted">{reviews.length} review{reviews.length !== 1 ? "s" : ""}</div>
+              </div>
               <button
-                className="btn primary-700"
+                className="btn primary-700 btn-sm px-3"
                 type="button"
                 data-bs-toggle="collapse"
                 data-bs-target="#collapseExample"
                 aria-expanded="false"
-                aria-controls="collapseExample"
                 onClick={handleReviewtoggle}
               >
-                Add a review
+                Add Review
               </button>
             </div>
 
+            {/* Add Review Form */}
             {currentUser && (
-              <div class="collapse" id="collapseExample">
-                <div className="reviewBox d-flex mt-3">
-                  <div className="photoDiv d-flex">
-                    <div className="d-flex justify-centent-center align-items-center text-center photo primary-600 fs-2 text-white">
-                      <span className="mx-auto">{currentUser.name[0]}</span>
+              <div className="collapse mb-3" id="collapseExample">
+                <div className="border rounded-3 p-3 bg-light">
+                  <div className="d-flex align-items-center gap-2 mb-3">
+                    <div
+                      className="d-flex justify-content-center align-items-center primary-600 text-white rounded-circle fw-bold"
+                      style={{ width: 38, height: 38, fontSize: 16 }}
+                    >
+                      {currentUser.name[0]}
                     </div>
+                    <span className="subtitle-text fw-semibold">{currentUser.name}</span>
                   </div>
-                  <div className="nameAndReview ms-2">
-                    <div className="name subtitle-text">{currentUser.name}</div>
-                    <div className="review body-text">
-                      <form action="" ref={reviewBox} onSubmit={addReview}>
-                        <textarea
-                          name=""
-                          placeholder="Add a review..."
-                          className="form-control shadow-none w-100"
-                          cols="150"
-                          rows="2"
-                          required
-                          value={review}
-                          onChange={(e) => setReview(e.target.value)}
-                        ></textarea>
-                        <div className="d-flex justify-content-center align-items-center flex-column">
-                          <p className="m-0 mt-3">
-                            Your feedback is valuable to us. Please provide your
-                            rating below:
-                          </p>
-                          <StarRating
-                            rating={rating}
-                            maxRating={5}
-                            starColor="#FFD700"
-                            textColor={"white"}
-                            onSetRating={setRating}
-                            size={20}
-                          />
-                          <span className="me-3 text-center">
-                            {rating} stars
-                          </span>
-                        </div>
-                        <button
-                          type="submit"
-                          className="btn primary-700 mt-2 float-end"
-                          disabled={addingReview}
-                        >
-                          {addingReview
-                            ? "Adding your review..."
-                            : "Add Review"}
-                        </button>
-                      </form>
+                  <form ref={reviewBox} onSubmit={addReview}>
+                    <textarea
+                      placeholder="Share your experience..."
+                      className="form-control shadow-none mb-3"
+                      rows="3"
+                      required
+                      value={review}
+                      onChange={(e) => setReview(e.target.value)}
+                    />
+                    <div className="d-flex flex-column align-items-center mb-3">
+                      <p className="small text-muted mb-2">Rate your experience</p>
+                      <StarRating
+                        rating={rating}
+                        maxRating={5}
+                        starColor="#FFD700"
+                        textColor="white"
+                        onSetRating={setRating}
+                        size={24}
+                      />
+                      <span className="small text-muted mt-1">
+                        {rating > 0 ? `${rating} star${rating > 1 ? "s" : ""}` : "Select rating"}
+                      </span>
                     </div>
-                  </div>
+                    <button type="submit" className="btn primary-700 w-100" disabled={addingReview}>
+                      {addingReview ? "Submitting..." : "Submit Review"}
+                    </button>
+                  </form>
                 </div>
               </div>
             )}
-            <div className="review mb-5">
-              {reviews.length > 0 ? (
-                reviews
-                  .slice() // Clone the array to avoid mutating the original state
-                  .reverse()
-                  .map((review) => {
-                    return (
-                      <div className="reviewBox d-flex mt-4" key={review.id}>
-                        <div className="photoDiv d-flex">
-                          <div className="d-flex justify-content-center align-items-center text-center photo primary-600 fs-2 text-white">
-                            <span className="mx-auto">{review.name[0]}</span>
-                          </div>
-                        </div>
-                        <div className="nameAndReview ms-2">
-                          <div className="name subtitle-text">
-                            {review.name}
-                            <span className="small-text ms-2 text-muted">
-                              {convertToAgo(review.createdAt)}
-                            </span>
-                            <div className="review body-text">
-                              {review.review}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })
-              ) : (
-                <p>No reviews yet.</p>
-              )}
-            </div>
+
+            {/* Review List */}
+            {reviews.length > 0 ? (
+              reviews.slice().reverse().map((review) => (
+                <div className="d-flex gap-3 mt-3 pb-3 border-bottom" key={review.reviewId}>
+                  <div
+                    className="d-flex justify-content-center align-items-center primary-600 text-white rounded-circle fw-bold flex-shrink-0"
+                    style={{ width: 40, height: 40, fontSize: 16 }}
+                  >
+                    {review.name[0]}
+                  </div>
+                  <div>
+                    <div className="d-flex align-items-center gap-2">
+                      <span className="subtitle-text fw-semibold">{review.name}</span>
+                      <span className="small text-muted">{convertToAgo(review.createdAt)}</span>
+                    </div>
+                    <div className="body-text mt-1">{review.review}</div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="text-center text-muted py-4">
+                <div className="body-text">No reviews yet. Be the first to review!</div>
+              </div>
+            )}
           </div>
+
         </div>
       </div>
     </div>
