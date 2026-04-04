@@ -74,6 +74,7 @@ export const getPosts = async (req, res) => {
     res.status(500).json({ message: "Failed to get posts" });
   }
 };
+
 export const getHomePosts = async (req, res) => {
   try {
     const posts = await prisma.post.findMany({
@@ -88,23 +89,9 @@ export const getHomePosts = async (req, res) => {
     res.status(500).json({ message: "Failed to get posts" });
   }
 };
+
 export const getPost = async (req, res) => {
   const paramPostId = req.params.id;
-
-    // // Step 1: get all postIds that actually exist
-    // const existingPosts = await prisma.post.findMany({
-    //   select: { postId: true },
-    // });
-    // const existingPostIds = existingPosts.map((p) => p.postId);
-
-    // // Step 2: delete SavedPosts whose postId isn't in that list
-    // await prisma.savedPosts.deleteMany({
-    //   where: {
-    //     postId: {
-    //       notIn: existingPostIds,
-    //     },
-    //   },
-    // });
 
   try {
     const post = await prisma.post.findUnique({

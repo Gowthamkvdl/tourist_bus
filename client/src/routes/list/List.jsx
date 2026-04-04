@@ -227,7 +227,7 @@ const List = () => {
     if (filteredPosts.length > 0) {
       return (
         <>
-          <div className="row">
+          <div className="row mx-auto">
             {filteredPosts.map((post) => (
               <div className="col-md-6" key={post.postId}>
                 <Card post={post} />
